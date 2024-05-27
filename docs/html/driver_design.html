@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>How to write a new user-space device driver for PoCL &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Binary inputs format" href="pocl_binary.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pocl_binary.html" title="Binary inputs format"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="design.html" accesskey="U">Notes on internal design</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">How to write a new user-space device driver for PoCL</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="how-to-write-a-new-user-space-device-driver-for-pocl">
+<h1>How to write a new user-space device driver for PoCL<a class="headerlink" href="#how-to-write-a-new-user-space-device-driver-for-pocl" title="Permalink to this headline">¶</a></h1>
+<p>The first required steps are adding the CMake infrastructure, and
+making the driver known to device initialization. Required CMake
+changes are: a boolean option to enable the driver (optionally
+autodetected at CMake time), adding the bool to config.h.in.cmake,
+finding all required libraries, linking &amp; compilation options,
+and correctly linking the driver depending on <code class="docutils literal notranslate"><span class="pre">ENABLE_LOADABLE_DRIVERS</span></code>
+(these can be copied from existing drivers). To make the driver known
+to device initialization in devices.c, add necessary #includes, and
+the new driver name to <code class="docutils literal notranslate"><span class="pre">pocl_device_types</span></code> and <code class="docutils literal notranslate"><span class="pre">pocl_devices_init_ops</span></code>.</p>
+<section id="setting-device-properties">
+<h2>Setting device properties<a class="headerlink" href="#setting-device-properties" title="Permalink to this headline">¶</a></h2>
+<p>In the driver’s init callback, the driver should discover and set up each device’s properties.
+These are stored as members of <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">_cl_device_id</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">max_work_item_dimensions</span></code> or
+<code class="docutils literal notranslate"><span class="pre">max_compute_units</span></code>. Some of them are internal to PoCL, e.g. <code class="docutils literal notranslate"><span class="pre">device_side_printf</span></code> is a bool
+that changes the processing of the ‘printf’ function in PoCL’s LLVM passes. There are some helpers
+for setting up properties; for setting up versioned (OpenCL 3.0) properties, see <code class="docutils literal notranslate"><span class="pre">lib/CL/devices/common.c</span></code>;
+the same file also has <code class="docutils literal notranslate"><span class="pre">pocl_init_default_device_infos</span></code> which sets up some reasonable defaults.
+By default the entire struct is memset to zero, so all properties are zero / false.</p>
+</section>
+<section id="pocl-s-internal-driver-api">
+<h2>PoCL’s internal driver API<a class="headerlink" href="#pocl-s-internal-driver-api" title="Permalink to this headline">¶</a></h2>
+<p>Next step is to implement PoCL’s internal driver API operations (callbacks) for the device.
+They’re described in lib/CL/pocl_cl.h, in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pocl_device_ops</span></code>. The declarations for all
+operations can be obtained by including <code class="docutils literal notranslate"><span class="pre">prototypes.inc</span></code> and using the <code class="docutils literal notranslate"><span class="pre">GEN_PROTOTYPES</span></code> macro.
+The declarations will be named <code class="docutils literal notranslate"><span class="pre">pocl_&lt;DRIVER_NAME&gt;_&lt;OP_NAME&gt;</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">pocl_level0_map_mem</span></code>.
+Many of these callbacks are optional; there’s no need to implement all to get a useful driver.
+Any callback that is implemented, needs to be assigned in the <code class="docutils literal notranslate"><span class="pre">ops</span></code> struct of the
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">_cl_device_id</span></code> in the <code class="docutils literal notranslate"><span class="pre">pocl_&lt;DRIVER&gt;_init_device_ops</span></code> function. For an example, see
+<code class="docutils literal notranslate"><span class="pre">pocl_basic_init_device_ops</span></code> in <code class="docutils literal notranslate"><span class="pre">lib/CL/devices/basic/basic.c</span></code>. If the callback is optional
+and will not be implemented, it can be left as NULL in <code class="docutils literal notranslate"><span class="pre">ops</span></code>.</p>
+<p>The callbacks can be divided into several groups:</p>
+<ul class="simple">
+<li><p>probe &amp; initialization (required)</p></li>
+<li><p>memory mapping, allocation &amp; freeing (required)</p></li>
+<li><p>event handling (required)</p></li>
+<li><p>compilation callbacks (required)</p></li>
+<li><p>command execution callbacks (optional)</p></li>
+<li><p>SVM callbacks (optional)</p></li>
+<li><p>Image callbacks (optional)</p></li>
+<li><p>Object create / free callbacks (optional)</p></li>
+<li><p>D2D migration callbacks (optional)</p></li>
+</ul>
+<ol class="arabic">
+<li><p>probe &amp; initialization - <code class="docutils literal notranslate"><span class="pre">probe,</span> <span class="pre">init,</span> <span class="pre">reinit,</span> <span class="pre">uninit</span></code></p>
+<p>you’ll need to implement at least <code class="docutils literal notranslate"><span class="pre">probe</span></code> and <code class="docutils literal notranslate"><span class="pre">init</span></code>; <code class="docutils literal notranslate"><span class="pre">probe</span></code> is only called once, when
+libpocl is loaded, and its job is to find out how many devices are available.
+<code class="docutils literal notranslate"><span class="pre">init</span></code> is then called for each device in succession. Implementing <code class="docutils literal notranslate"><span class="pre">reinit</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">uninit</span></code>
+is optional - these release any resources after the last context is released.
+This is useful mainly for debugging memory leaks; since there is no <code class="docutils literal notranslate"><span class="pre">clReleasePlatform</span></code>
+in OpenCL, calling uninit should release everything - anything left over is a leak.</p>
+</li>
+<li><p>memory allocation - <code class="docutils literal notranslate"><span class="pre">alloc_mem_obj,</span> <span class="pre">free</span></code></p>
+<p>these allocate &amp; free device-side memory. See documentation on <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">_cl_mem-&gt;device_ptrs</span></code>
+and <code class="docutils literal notranslate"><span class="pre">pocl_mem_identifier</span></code>. If the device supports images, these must also allocate/free images.
+Buffers (cl_mem objects) in OpenCL are per-context; the allocation of the backing storage
+(device memory) in PoCL is done lazily. IOW a buffer is allocated only on devices which actually run
+commands using those buffers. This happens at clEnqueueXYZ time (<code class="docutils literal notranslate"><span class="pre">clEnqueue</span> <span class="pre">-&gt;</span> <span class="pre">pocl_create_command()</span>
+<span class="pre">-&gt;</span> <span class="pre">can_run_command()</span> <span class="pre">-&gt;</span> <span class="pre">device-&gt;ops-&gt;alloc_mem_obj()</span></code>).</p>
+</li>
+<li><p>memory mapping - <code class="docutils literal notranslate"><span class="pre">get_mapping_ptr,</span> <span class="pre">free_mapping_ptr</span></code></p>
+<p>these are required to support clEnqueueMapBuffer; they don’t execute the actual mapping,
+only return the host pointer where the mapping will exist.</p>
+</li>
+<li><p>event handling - <code class="docutils literal notranslate"><span class="pre">submit,</span> <span class="pre">join,</span> <span class="pre">flush,</span> <span class="pre">notify,</span> <span class="pre">broadcast,</span> <span class="pre">wait_event,</span> <span class="pre">update_event</span></code></p>
+<p>these are required to properly react to and propagate event status changes. With a few exceptions
+(basic, cuda, almaif), the implementations for these are almost identical. Implementing custom
+handling is possible, but must be done extremely carefully, as it can easily lead to issues
+with locking and data races.</p>
+</li>
+<li><p>compilation callbacks - <code class="docutils literal notranslate"><span class="pre">build_source,</span> <span class="pre">build_binary,</span> <span class="pre">link_program</span></code> etc</p>
+<p>the implementation of these depends on what the device intends to support.</p>
+<ol class="loweralpha simple">
+<li><p>if the device will only support offline compilation, this requires only a minimal
+implementation of <code class="docutils literal notranslate"><span class="pre">build_binary</span></code>; PoCL will automatically unpack pocl-binaries
+into the cache directory and setup kernel metadata.</p></li>
+<li><p>if the device wants to support online (OpenCL C) compilation using LLVM infrastructure,
+it can use the generic <code class="docutils literal notranslate"><span class="pre">pocl_driver_XYZ</span></code> callback implementations from <code class="docutils literal notranslate"><span class="pre">common_driver.c</span></code>.
+These will invoke Clang/LLVM compilation, optimization &amp; linking steps.
+However, the device needs to setup its metadata like LLVM triple, whether it’s SPMD,
+and many others. It will also need to provide its builtin library. The existing
+implementations for per-device builtin libraries are in lib/kernel; there are many
+builtins that are device-agnostic, however some are device-specific.</p></li>
+<li><p>if the device wants to support online (source) compilation but is NOT using LLVM,
+it will have to provide its own implementation of all compilation callbacks and
+kernel metadata extraction.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">build_source</span></code> - required; but only if driver wants to support compilation from source.
+Note that builds from SPIR-V input are (currently) handled by the <code class="docutils literal notranslate"><span class="pre">build_binary</span></code> callback.</p>
+<p><code class="docutils literal notranslate"><span class="pre">build_binary</span></code> - required; all drivers (except custom devices) are assumed to support
+clCreateProgramWithBinary() with at least pocl-binaries as input. If the files stored
+in pocl-binaries have everything required, then the implementation of this callback can be
+trivial; otherwise it needs to do the transformation of binaries to final device binaries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">link_program</span></code> - is required to support the <code class="docutils literal notranslate"><span class="pre">clCompile/clLinkProgram</span></code> combo; it’s not
+<em>strictly</em> required for a useful driver, since most OpenCL programs don’t use these.</p>
+<p><code class="docutils literal notranslate"><span class="pre">supports_binary</span></code> - optional; is called to check whether the driver supports a specific binary.
+Note that pocl-binaries are always supported, so this is only called for other binaries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">setup_metadata</span></code> - required; after build, it’s called to set up the
+program &amp; kernel metadata like number of arguments, argument types and so on.</p>
+<p><code class="docutils literal notranslate"><span class="pre">post_build_program</span></code> - optional; it’s called as part of clBuild/Link/Compile
+<em>after</em> everything else has been set up (including metadata).</p>
+<p><code class="docutils literal notranslate"><span class="pre">build_poclbinary</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">compile_kernel</span></code> - optional; clGetProgramInfo() called
+with CL_PROGRAM_BINARIES will call these, if they’re not NULL; the purpose is
+to do any extra steps necessary to have the program cache directory in a “useful”
+state, when the cache directory can be serialized into a pocl-binary.</p>
+</li>
+<li><p>command execution callbacks - <code class="docutils literal notranslate"><span class="pre">read,</span> <span class="pre">copy,</span> <span class="pre">write,</span> <span class="pre">map_mem</span></code> etc</p>
+<p>These are optional because command execution can be implemented in multiple ways.</p>
+<ol class="loweralpha simple">
+<li><p>there is a helper function in PoCL for executing commands in the driver, called <code class="docutils literal notranslate"><span class="pre">pocl_exec_command</span></code>.
+This helper does some preparations, then calls the driver’s callback for the command (e.g.
+<code class="docutils literal notranslate"><span class="pre">device-&gt;ops-&gt;unmap</span></code> for the EnqueUnmap type command), and then cleanups after the command.
+The advantage is that this is the simplest way to implement a command; the disadvantage is
+that <code class="docutils literal notranslate"><span class="pre">pocl_exec_command</span></code> is synchronous and it does not do any optimization
+by grouping commands.</p></li>
+<li><p>the other way to implement command execution is to not use <code class="docutils literal notranslate"><span class="pre">pocl_exec_command</span></code> and
+device-&gt;ops command callbacks, in which case you can leave those NULL and implement
+commands your way. The PoCL library is driven by events, and how the driver executes
+the commands of events, is not important to the runtime, as long as events are correctly
+moved through their stages (submitted-&gt;queued-&gt;running-&gt;complete) and all of the
+“bookkeeping” (e.g. event callbacks) is handled properly.</p></li>
+</ol>
+<dl class="simple">
+<dt>A simple driver implementation using <code class="docutils literal notranslate"><span class="pre">pocl_exec_command()</span></code> could look like this:</dt><dd><ul class="simple">
+<li><p>implement the command execution callbacks (device-&gt;ops-&gt;read etc)</p></li>
+<li><p>create a background thread in <code class="docutils literal notranslate"><span class="pre">pocl_DRIVER_init</span></code> and a simple FIFO queue;</p></li>
+<li><p>when a new event arrives with a command to execute, e.g. through <code class="docutils literal notranslate"><span class="pre">pocl_DRIVER_notify</span></code>
+or <code class="docutils literal notranslate"><span class="pre">pocl_DRIVER_submit</span></code>, check if the event is ready to execute, if it is,
+push into FIFO queue;</p></li>
+<li><p>in the background thread, create a loop that waits for commands to arrive in the FIFO queue,
+then for each command, call <code class="docutils literal notranslate"><span class="pre">pocl_exec_command</span></code> - this will take care of calling
+the correct device-&gt;ops command callback, and various bookkeeping</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>SVM callbacks - <code class="docutils literal notranslate"><span class="pre">svm_free,</span> <span class="pre">svm_alloc,</span> <span class="pre">svm_map,</span> <span class="pre">svm_unmap</span></code> etc</p>
+<p>only required if the device supports SVM. To support SVM, driver will also need to set up
+some properties in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">_cl_device_id</span></code>, at least <code class="docutils literal notranslate"><span class="pre">svm_allocation_priority</span></code>, <code class="docutils literal notranslate"><span class="pre">svm_caps</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">atomic_memory_capabilities</span></code> + <code class="docutils literal notranslate"><span class="pre">atomic_fence_capabilities</span></code>.</p>
+</li>
+<li><p>image support - <code class="docutils literal notranslate"><span class="pre">copy_image_rect,</span> <span class="pre">write_image_rect,</span> <span class="pre">map_image</span></code> etc</p>
+<p>only required if device supports images. To support images, driver will also need to set up
+some properties in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">_cl_device_id</span></code>, at least <code class="docutils literal notranslate"><span class="pre">image_support</span></code>, <code class="docutils literal notranslate"><span class="pre">num_image_formats</span></code>
+and <code class="docutils literal notranslate"><span class="pre">image_formats</span></code> but many others - search for <code class="docutils literal notranslate"><span class="pre">image</span></code> in the struct,
+also look at other driver’s <code class="docutils literal notranslate"><span class="pre">ops-&gt;init</span></code>.</p>
+</li>
+<li><p>create / free callbacks - <code class="docutils literal notranslate"><span class="pre">free_event_data,</span> <span class="pre">create_kernel,</span> <span class="pre">init_queue,</span> <span class="pre">create_sampler</span></code> etc</p>
+<p>all of these are optional. Only necessary if the driver needs some to set up / tear down
+some device-specific (hardware or “backend” API) resources for a cl_object. E.g. the Level0
+driver uses <code class="docutils literal notranslate"><span class="pre">free_kernel</span></code> to release the API’s <code class="docutils literal notranslate"><span class="pre">ze_kernel_handle_t</span></code> handle. The “free”
+callbacks are called only after the refcount on the object reached zero, so it is safe
+to destroy the resource. The “create” callbacks are called after the OpenCL part of
+the cl_object has been set up.</p>
+</li>
+<li><p>device2device migration callbacks - <code class="docutils literal notranslate"><span class="pre">can_migrate_d2d,</span> <span class="pre">migrate_d2d</span></code></p></li>
+</ol>
+<blockquote>
+<div><p>optional; they’re used to implement direct migration of buffers between
+two devices. Direct means avoiding copying the buffer content to
+host memory and then from host memory to the 2nd device.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How to write a new user-space device driver for PoCL</a><ul>
+<li><a class="reference internal" href="#setting-device-properties">Setting device properties</a></li>
+<li><a class="reference internal" href="#pocl-s-internal-driver-api">PoCL’s internal driver API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pocl_binary.html"
+                        title="previous chapter">Binary inputs format</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/driver_design.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pocl_binary.html" title="Binary inputs format"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="design.html" >Notes on internal design</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">How to write a new user-space device driver for PoCL</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

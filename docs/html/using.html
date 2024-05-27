@@ -1,0 +1,565 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Usage &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Supported OpenCL features, device drivers" href="features.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="features.html" title="Supported OpenCL features, device drivers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>The basic usage of pocl should be as easy as any other OpenCL implementation.</p>
+<p>While it is possible to link against pocl directly, the recommended way is to
+use the ICD interface.</p>
+<section id="linking-your-program-with-pocl-through-an-icd-loader">
+<span id="linking-with-icd"></span><h2>Linking your program with pocl through an icd loader<a class="headerlink" href="#linking-your-program-with-pocl-through-an-icd-loader" title="Permalink to this headline">¶</a></h2>
+<p>You can link your OpenCL program against an ICD loader. If your ICD loader is
+correctly configured to load pocl, your program will be able to use pocl.
+See the section below for more information about ICD and  ICD loaders.</p>
+<p>Example of compiling an OpenCL host program using the free ocl-icd loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gcc example1.c -o example `pkg-config --libs --cflags OpenCL`
+</pre></div>
+</div>
+<p>Example of compiling an OpenCL host program using the AMD ICD loader (no
+pkg-config support):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gcc</span> <span class="n">example1</span><span class="o">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">example</span> <span class="o">-</span><span class="n">lOpenCL</span>
+</pre></div>
+</div>
+</section>
+<section id="installable-client-driver-icd">
+<h2>Installable client driver (ICD)<a class="headerlink" href="#installable-client-driver-icd" title="Permalink to this headline">¶</a></h2>
+<p>pocl is built with the ICD extensions of OpenCL by default. This allows you
+to have several OpenCL implementations concurrently on your computer, and
+select the one to use at runtime by selecting the corresponding cl_platform.
+ICD support can be disabled by adding the flag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DENABLE_ICD</span><span class="o">=</span><span class="n">OFF</span>
+</pre></div>
+</div>
+<p>to the CMake invocation.</p>
+<p>The ocl-icd ICD loader allows to use the OCL_ICD_VENDORS environment variable
+to specify a (non-standard) replacement for the /etc/OpenCL/vendors directory.</p>
+<p>An ICD loader is an OpenCL library acting as a “proxy” to one of the various OpenCL
+implementations installed in the system. pocl does not provide an ICD loader itself,
+but NVidia, AMD, Intel, Khronos, and the free ocl-icd project each provides one.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/OCL-dev/ocl-icd">ocl-icd</a></p></li>
+<li><p><a class="reference external" href="http://www.khronos.org/opencl/">Khronos</a></p></li>
+</ul>
+</section>
+<section id="linking-your-program-directly-with-pocl">
+<h2>Linking your program directly with pocl<a class="headerlink" href="#linking-your-program-directly-with-pocl" title="Permalink to this headline">¶</a></h2>
+<p>Passing the appropriate linker flags is enough to use pocl in your
+program. However, please bear in mind that:</p>
+<p>The pkg-config tool is used to locate the libraries and headers in
+the installation directory.</p>
+<p>Example of compiling an OpenCL host program against pocl using
+the pkg-config:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gcc example1.c -o example `pkg-config --libs --cflags pocl`
+</pre></div>
+</div>
+<p>In this link mode, your program will always require the pocl OpenCL library. It
+wont be able to run with another OpenCL implementation without recompilation.</p>
+</section>
+<section id="using-pocl-on-macosx">
+<h2>Using pocl on MacOSX<a class="headerlink" href="#using-pocl-on-macosx" title="Permalink to this headline">¶</a></h2>
+<p>On MacOSX, you can either link your program directly with pocl or link through the
+ICD loader by KhronosGroup.</p>
+<p>Even if you use an ICD loader, the Apple OpenCL implementation will still be invisible,
+unless you use a wrapper library to expose the Apple OpenCL implementation as an ICD.</p>
+<p>When ENABLE_ICD is turned off and an application links directly with PoCL, the only
+platform that is visible to the application will be PoCL.</p>
+</section>
+<section id="tuning-pocl-behavior-with-env-variables">
+<span id="pocl-env-variables"></span><h2>Tuning pocl behavior with ENV variables<a class="headerlink" href="#tuning-pocl-behavior-with-env-variables" title="Permalink to this headline">¶</a></h2>
+<p>The behavior of pocl can be controlled with multiple environment variables
+listed below. The variables are helpful both when using and when developing
+pocl.</p>
+<ul>
+<li><p><strong>POCL_AFFINITY</strong></p>
+<p>Linux-only, specific to ‘cpu’ driver. If set to 1, each thread of
+the driver sets its affinity to its index. This may be useful
+with very long running kernels, or when using subdevices.
+Defaults to 0 (most people don’t need this).</p>
+</li>
+<li><p><strong>POCL_BINARY_SPECIALIZE_WG</strong></p>
+<p>By default the PoCL program binaries store generic kernel binaries which
+can be executed across any grid dimensions. This configuration variable
+can be used to also include specialized work-group functions in the binaries, by
+defining a comma separated list of strings that describe the specialized
+versions. The strings adhere to the directory names in the PoCL cache
+from which the binaries are captured.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">POCL_BINARY_SPECIALIZE_WG</span><span class="o">=</span><span class="s1">&#39;2-1-1,0-0-0-goffs0,13-1-1-smallgrid,128-2-1-goffs0-smallgrid&#39;</span><span class="w"> </span>poclcc<span class="w"> </span><span class="o">[</span>...<span class="o">]</span>
+</pre></div>
+</div>
+<p>This makes poclcc generate a binary which contains the generic work-group
+function binary, a work-group function that is specialized for local size
+of 2x1x1, another with generic local size but specialized for the global
+offset at origo, one with local size of 13x1x1, but which is specialized
+for a “small grid” (size defined by the device driver), and finally one
+that is specialized for local size 128x2x1, an origo global offset and
+a small grid.</p>
+</li>
+<li><p><strong>POCL_BITCODE_FINALIZER</strong></p>
+<p>Defines a custom command that can manipulate the final kernel work-group
+function bitcode produced after all LLVM optimizations and before entering code
+generation. This can be useful, for example, to add instrumentation to the LLVM
+bitcode before proceeding to the backend.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">POCL_BITCODE_FINALIZER</span><span class="o">=</span><span class="s1">&#39;verificarlo %(bc) --emit-llvm -o %(bc)&#39;</span><span class="w"> </span>examples/example1/example1
+</pre></div>
+</div>
+<p>This results in running the above command with ‘%(bc)’ strings replaced with
+the path of the final bitcode’s temporary file. Note that the modified
+bitcode should be written over the same file for it to get picked to the
+code generation.</p>
+<p>Please note that setting the env doesn’t force regeneration of the kernel
+binaries if they are found in the kernel compiler cache. You can either
+use POCL_KERNEL_CACHE=0 to disable the kernel cache, or wipe the kernel
+cache directory manually to force kernel binary rebuild.</p>
+</li>
+<li><p><strong>POCL_BUILDING</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If  set, the pocl helper scripts, kernel library and headers are
+searched first from the pocl build directory. Only has effect if
+ENABLE_POCL_BUILDING was enabled at build (by default it is).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_CACHE_DIR</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If this is set to an existing directory, pocl uses it as the cache
+directory for all compilation results. This allows reusing compilation
+results between pocl invocations. If this env is not set, then the
+default cache directory will be used, which is <code class="docutils literal notranslate"><span class="pre">$XDG_CACHE_HOME/pocl/kcache</span></code>
+(if set) or <code class="docutils literal notranslate"><span class="pre">$HOME/.cache/pocl/kcache/</span></code> on Unix-like systems.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_CPU_LOCAL_MEM_SIZE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Set the local memory size of the CPU devices (cpu, cpu-minimal, cpu-tbb) to the
+given amount in bytes instead of the default one.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_CPU_MAX_CU_COUNT</strong></p></li>
+</ul>
+<blockquote>
+<div><p>The maximum number of threads created for work group execution in the
+‘cpu’ device driver. The default is to determine this from the number of
+hardware threads available in the CPU.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_CPU_VENDOR_ID_OVERRIDE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Overrides the vendor id reported by PoCL for the CPU drivers.
+For example, setting the vendor id to be 32902 (0x8086) and setting the driver
+version using <strong>POCL_DRIVER_VER_OVERRIDE</strong> to “2023.16.7.0.21_160000” (or such) can
+be used to convince binary-distributed DPC++ compilers to compile and run SYCL
+programs on the PoCL-CPU driver.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_DEBUG</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Enables debug messages to stderr. This will be mostly messages from error
+condition checks in OpenCL API calls and Event/API timing information.
+Useful to e.g. distinguish between various reasons a call could return
+CL_INVALID_VALUE. If clock_gettime is available, messages
+will include a timestamp.</p>
+<p>The old way (setting POCL_DEBUG to 1) has been updated to support categories.
+Using this limits the amount of debug messages produced. Current options are:
+‘error’, ‘warning’, ‘general’, ‘memory’, ‘llvm’, ‘events’, ‘cache’, ‘locking’,
+‘refcounts’, ‘timing’, ‘hsa’, ‘tce’, ‘cuda’, ‘vulkan’, ‘proxy’ and ‘all’.
+Note: setting POCL_DEBUG to 1 still works and equals error+warning+general.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_DEBUG_LLVM_PASSES</strong></p></li>
+</ul>
+<blockquote>
+<div><p>When set to 1, enables debug output from LLVM passes during optimization.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_DEVICES</strong> and <strong>POCL_x_PARAMETERS</strong></p></li>
+</ul>
+<blockquote>
+<div><p>POCL_DEVICES is a space separated list of the device instances to be enabled.
+This environment variable is used for the following devices:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>cpu-minimal</strong> A minimalistic example device driver for executing</dt><dd><p>kernels on the host CPU. No multithreading.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>cpu</strong>      Execution of OpenCL kernels on the host CPU using</dt><dd><p>(by default) all available CPU threads via pthread library.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>cpu-tbb</strong>  Uses the Intel Threading Building Blocks (or oneTBB) library</dt><dd><p>for task scheduling on the host CPU.</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>cuda</strong>     An experimental driver that uses libcuda to execute on NVIDIA GPUs.</p></li>
+<li><dl class="simple">
+<dt><strong>hsa</strong>      Uses HSA Runtime API to control HSA-compliant</dt><dd><p>kernel agents that support HSAIL finalization
+(deprecated).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>vulkan</strong>   An experimental driver that uses Vulkan and SPIR-V for executing on</dt><dd><p>Vulkan supported devices.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>ttasim</strong>   Device that simulates a TTA device using the</dt><dd><p>TCE’s ttasim library. Enabled only if TCE libraries
+installed.</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>level0</strong>   An experimental driver that uses libze to execute on Intel GPUs.</p></li>
+</ul>
+<p>If POCL_DEVICES is not set, one cpu device will be used.
+To specify parameters for drivers, the POCL_&lt;drivername&gt;&lt;instance&gt;_PARAMETERS
+environment variable can be specified (where drivername is in uppercase).
+Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">POCL_DEVICES</span><span class="o">=</span><span class="s2">&quot;cpu ttasim ttasim&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">POCL_TTASIM0_PARAMETERS</span><span class="o">=</span><span class="s2">&quot;/path/to/my/machine0.adf&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">POCL_TTASIM1_PARAMETERS</span><span class="o">=</span><span class="s2">&quot;/path/to/my/machine1.adf&quot;</span>
+</pre></div>
+</div>
+<p>Creates three devices, one ‘cpu’ device with multithreading and two
+TTA device simulated with the ttasim. The ttasim devices gets a path to
+the architecture description file of the tta to simulate as a parameter.
+POCL_TTASIM0_PARAMETERS will be passed to the first ttasim driver instantiated
+and POCL_TTASIM1_PARAMETERS to the second one.</p>
+</div></blockquote>
+<ul>
+<li><p><strong>POCL_DRIVER_VERSION_OVERRIDE</strong></p>
+<p>Can be used to override the driver version reported by PoCL.
+See <strong>POCL_CPU_VENDOR_ID_OVERRIDE</strong> for an example use case.</p>
+</li>
+<li><p><strong>POCL_EXTRA_BUILD_FLAGS</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Adds the contents of the environment variable to all clBuildProgram() calls.
+E.g. <code class="docutils literal notranslate"><span class="pre">POCL_EXTRA_BUILD_FLAGS=&quot;-g</span> <span class="pre">-cl-opt-disable&quot;</span></code> can be useful for force
+adding debug data all the built kernels to help debugging kernel issues
+with tools such as gdb or valgrind.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_IGNORE_CL_STD</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Ignores any <code class="docutils literal notranslate"><span class="pre">--cl-std</span></code> options passed to clBuildProgram(). This is useful
+to force-run programs that set the version to 2.x although they do not need
+all of its features which the targeted 3.x driver might not implement.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_KERNEL_CACHE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If this is set to 0 at runtime, kernel compilation files will be deleted at
+clReleaseProgram(). Note that it’s currently not possible for pocl to avoid
+interacting with LLVM via on-disk files, so pocl requires some disk space at
+least temporarily (at runtime).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_LEAVE_KERNEL_COMPILER_TEMP_FILES</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If this is set to 1, the kernel compiler cache/temporary directory that
+contains all the intermediate compiler files are left as it is. This
+will be handy for debugging</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_LEVEL0_JIT</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Sets up Just-In-Time compilation in the Level0 driver.
+(see <a class="reference internal" href="level0.html#pocl-level0-driver"><span class="std std-ref">Level Zero driver</span></a> for details)
+Accepted values: {0,1,auto}</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>0 = always disable JIT</p></li>
+<li><p>1 = always use JIT,</p></li>
+<li><p>auto (default) = guess based on program’s kernel count &amp; SPIR-V size.</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p><strong>POCL_LLVM_VERIFY</strong></p>
+<p>if enabled, some drivers (CUDA, CPU, Level0) use an extra step of
+verification of LLVM modules at certain stages (program.bc always,
+kernel bitcode (parallel.bc) only with some drivers).
+Defaults to 0 if CMAKE_BUILD_TYPE=Debug and 1 otherwise.</p>
+</li>
+<li><p><strong>POCL_MAX_WORK_GROUP_SIZE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Forces the maximum WG size returned by the device or kernel work group queries
+to be at most this number. For certain devices, this is can only be lower than
+their hardware limits.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_MEMORY_LIMIT</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Integer option, unit: gigabytes. Limits the total global memory size
+reported by pocl for the CPU devices (this will also affect
+local/constant/max-alloc-size numbers, since these are derived from
+global mem size).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_OFFLINE_COMPILE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Bool. When enabled(==1), some drivers will create virtual devices which are only
+good for creating pocl binaries. Requires those drivers to be compiled with support
+for compilation for those devices.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_SIGFPE_HANDLER</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Defaults to 1. If set to 0, pocl will not install the SIGFPE handler.
+See <a class="reference internal" href="conformance.html#known-issues"><span class="std std-ref">Known issues related to CTS</span></a></p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_SIGUSR2_HANDLER</strong></p></li>
+</ul>
+<blockquote>
+<div><p>When set to 1 (default 0), pocl installs a SIGUSR2 handler that will print
+some debugging information. Currently it prints the count of live cl_* objects
+by type (buffers, events, etc).</p>
+</div></blockquote>
+<ul>
+<li><p><strong>POCL_STARTUP_DELAY</strong></p>
+<p>Default 0. If set to an integer N &gt; 0, libpocl will make a pause of N seconds
+once, when it’s loading. Useful e.g. to set up a LTTNG tracing session.</p>
+</li>
+<li><p><strong>POCL_TBB_DEV_PER_NUMA_NODE</strong> can be set to either 0 or 1 (default). If set,
+PoCL TBB driver creates a separate OpenCL device per each NUMA node.</p></li>
+<li><p><strong>POCL_TBB_GRAIN_SIZE</strong> can be set specify a grain size for all
+dimensions. More information can be found in TBB documentation.</p></li>
+<li><p><strong>POCL_TBB_PARTITIONER</strong> can be set to one of <code class="docutils literal notranslate"><span class="pre">affinity</span></code>,``auto``,
+<code class="docutils literal notranslate"><span class="pre">simple</span></code>,``static`` to select a partitioner. If no
+partitioner is selected, the TBB library will select the auto partitioner by
+default. More information can be found in TBB documentation.</p></li>
+<li><p><strong>POCL_TRACING</strong>, <strong>POCL_TRACING_OPT</strong> and <strong>POCL_TRACING_FILTER</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If POCL_TRACING is set to some tracer name, then all events
+will be traced automatically. Depending on the backend, traces
+may be output in different formats and collected in a different way.
+POCL_TRACING_FILTER is a comma separated list of string to
+indicate which event status should be filtered. For instance to trace
+complete and running events POCL_TRACING_FILTER should be set
+to “complete,running”. Default behavior is to trace all events.</p>
+<blockquote>
+<div><dl>
+<dt>cq – Dumps a simple per-kernel execution time statistics at the</dt><dd><p>program exit time which is collected from command queue
+start and finish time stamps. Useful for quick and easy profiling
+purposes with accurate kernel execution time stamps produced
+in a per device way. Currently only tracks kernel timings, and
+POCL_TRACING_FILTER has no effect.</p>
+</dd>
+<dt>text   – Basic text logger for each events state</dt><dd><p>Use POCL_TRACING_OPT=&lt;file&gt; to set the
+output file. If not specified, it defaults to
+pocl_trace_event.log</p>
+</dd>
+<dt>lttng  – LTTNG tracepoint support. Requires pocl to be built with <code class="docutils literal notranslate"><span class="pre">-DENABLE_LTTNG=YES</span></code>.</dt><dd><p>When activated, a lttng session must be started.
+The following tracepoints are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>pocl_trace:ndrange_kernel -&gt; Kernel execution</p></li>
+<li><p>pocl_trace:read_buffer    -&gt; Read buffer</p></li>
+<li><p>pocl_trace:write_buffer   -&gt; Write buffer</p></li>
+<li><p>pocl_trace:copy_buffer    -&gt; Copy buffer</p></li>
+<li><p>pocl_trace:map            -&gt; Map image/buffer</p></li>
+<li><p>pocl_trace:command        -&gt; other commands</p></li>
+</ul>
+</div></blockquote>
+<p>For more information, please see lttng documentation:
+<a class="reference external" href="http://lttng.org/docs/#doc-tracing-your-own-user-application">http://lttng.org/docs/#doc-tracing-your-own-user-application</a></p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_VECTORIZER_REMARKS</strong></p></li>
+</ul>
+<blockquote>
+<div><p>When set to 1, prints out remarks produced by the loop vectorizer of LLVM
+during kernel compilation.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_VULKAN_VALIDATE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>When set to 1, and the Vulkan implementation has the validation layers,
+enables the validation layers in the driver. You will also need POCL_DEBUG=vulkan
+or POCL_DEBUG=all to see the output printed.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_WORK_GROUP_METHOD</strong></p></li>
+</ul>
+<blockquote>
+<div><p>The kernel compiler method to produce the work group functions from
+multiple work items. Legal values:</p>
+<blockquote>
+<div><dl>
+<dt>auto   – Choose the best available method depending on the</dt><dd><p>kernel and the work group size. Use
+POCL_FULL_REPLICATION_THRESHOLD=N to set the
+maximum local size for a work group to be
+replicated fully with ‘repl’. Otherwise,
+‘loops’ is used.</p>
+</dd>
+<dt>loops  – Create for-loops that execute the work items</dt><dd><p>(under stabilization). The drawback is the
+need to save the thread contexts in arrays.</p>
+<p>The loops will be unrolled a certain number of
+times of which maximum can be controlled with
+POCL_WILOOPS_MAX_UNROLL_COUNT=N environment
+variable (default is to not perform unrolling).</p>
+</dd>
+<dt>loopvec – Create work-item for-loops (see ‘loops’) and execute</dt><dd><p>the LLVM LoopVectorizer. The loops are not unrolled
+but the unrolling decision is left to the generic
+LLVM passes (the default).</p>
+</dd>
+<dt>repl   – Replicate and chain all work items. This results</dt><dd><p>in more easily scalarizable private variables, thus
+might avoid storing work-item context to memory.
+However, the code bloat is increased with larger
+WG sizes.</p>
+</dd>
+<dt>cbs    – Use continuation-based synchronization to execute work-items</dt><dd><p>on non-SPMD devices.
+CBS is expected to work for kernels that ‘loops’ does not support.
+For most other kernels it is expected to perform slightly worse.
+Also enables the LLVM LoopVectorizer.</p>
+<p>An in-depth explanation of the implementation of CBS and how it
+compares to the other approaches can be found in
+[this thesis](<a class="reference external" href="https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf">https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf</a>).</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p><strong>POCL_WORK_GROUP_SPECIALIZATION</strong></p>
+<p>PoCL specializes work-groups at kernel command launch time by default
+to optimize the execution performance with the cost of cached variations
+of the kernels with the different specialization values.</p>
+<p>The kernel command parameters PoCL currently specializes with include
+the local size, global offset zero or non-zero and maximum grid size.
+The specialization can be disabled by setting this environment variable to 0.</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#linking-your-program-with-pocl-through-an-icd-loader">Linking your program with pocl through an icd loader</a></li>
+<li><a class="reference internal" href="#installable-client-driver-icd">Installable client driver (ICD)</a></li>
+<li><a class="reference internal" href="#linking-your-program-directly-with-pocl">Linking your program directly with pocl</a></li>
+<li><a class="reference internal" href="#using-pocl-on-macosx">Using pocl on MacOSX</a></li>
+<li><a class="reference internal" href="#tuning-pocl-behavior-with-env-variables">Tuning pocl behavior with ENV variables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="features.html"
+                        title="next chapter">Supported OpenCL features, device drivers</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/using.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="features.html" title="Supported OpenCL features, device drivers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

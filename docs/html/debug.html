@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Debugging OpenCL applications with PoCL &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to use PoCL as SYCL’s OpenCL runtime backend on ARM" href="sycl_with_pocl_arm.html" />
+    <link rel="prev" title="Using PoCL on Android" href="android.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="sycl_with_pocl_arm.html" title="How to use PoCL as SYCL’s OpenCL runtime backend on ARM"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="android.html" title="Using PoCL on Android"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Debugging OpenCL applications with PoCL</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="debugging-opencl-applications-with-pocl">
+<h1>Debugging OpenCL applications with PoCL<a class="headerlink" href="#debugging-opencl-applications-with-pocl" title="Permalink to this headline">¶</a></h1>
+<p>There are several ways to debug applications with PoCL,
+differing in debugging coverage and impact on speed.</p>
+<p>This document chapter describes means for debugging OpenCL kernel code by using
+the CPU drivers of PoCL.</p>
+<section id="basic-printf-debugging">
+<h2>Basic printf debugging<a class="headerlink" href="#basic-printf-debugging" title="Permalink to this headline">¶</a></h2>
+<p>The CPU drivers of PoCL flush the OpenCL 1.2 printf() API output immediately
+at the end of the printf call. This is in contrast to some other drivers which
+flush the output only at the end of the kernel command’s execution, making
+debugging crashing (segfaulting) kernels difficult since they never finish
+the command, thus any debug printouts won’t get printed out.</p>
+</section>
+<section id="kernel-compiler-debugging">
+<h2>Kernel compiler debugging<a class="headerlink" href="#kernel-compiler-debugging" title="Permalink to this headline">¶</a></h2>
+<p>Inspecting the kernel compiler intermediate results can be done by
+setting <code class="docutils literal notranslate"><span class="pre">POCL_LEAVE_KERNEL_COMPILER_TEMP_FILES</span></code> env var to 1.
+This causes the intermediate output files from the kernel
+compilation process to be left in PoCL’s disk cache for inspection.
+By default these files are deleted, and only the final executable output is left
+in the cache.</p>
+<p>This is useful for manually inspecting the LLVM IR of the compilation stages,
+but it’s also useful for GDB and Valgrind debugging as described
+later.</p>
+</section>
+<section id="simple-debugging-with-pocl-s-debug-log">
+<h2>Simple debugging with PoCL’s debug log<a class="headerlink" href="#simple-debugging-with-pocl-s-debug-log" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Upsides:</dt><dd><ul class="simple">
+<li><p>doesn’t require recompiling the application or PoCL</p></li>
+</ul>
+</dd>
+<dt>Downsides:</dt><dd><ul class="simple">
+<li><p>very limited scope</p></li>
+</ul>
+</dd>
+</dl>
+<p>Setup:</p>
+<p>Just set the “POCL_DEBUG” environment variable to some value.
+The most useful values are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_DEBUG=err,warn</span></code> - this will limit the output to errors and
+warnings. These messages might help spot some OpenCL API calls which return
+an error value. Also it helps if a call can return CL_INVALID_VALUE for
+multiple reasons, since PoCL prints a more specific reason in that case.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_DEBUG=refcount</span></code> - this will limit the output to refcount increases
+and decreases. Might help spot CL object leaks</p></li>
+</ul>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gcc</span> <span class="n">example</span><span class="o">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">example</span> <span class="o">-</span><span class="n">lOpenCL</span>
+<span class="n">export</span> <span class="n">POCL_DEBUG</span><span class="o">=</span><span class="n">refcount</span>
+<span class="o">./</span><span class="n">example</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">20</span> <span class="mi">12</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mf">18.472185807</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">POclReleaseContext</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">48</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Release</span> <span class="n">Context</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">20</span> <span class="mi">12</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mf">18.472196073</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">POclReleaseContext</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">56</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Free</span> <span class="n">Context</span> <span class="mh">0x5566430d84a0</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">20</span> <span class="mi">12</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mf">18.472207597</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">POclReleaseCommandQueue</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">41</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Release</span> <span class="n">Command</span> <span class="n">Queue</span> <span class="mh">0x5566430d85f0</span>  <span class="mi">0</span>
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">20</span> <span class="mi">12</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mf">18.472228759</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">POclReleaseCommandQueue</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">55</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Free</span> <span class="n">Command</span> <span class="n">Queue</span> <span class="mh">0x5566430d85f0</span>
+</pre></div>
+</div>
+<p>“Release X” is printed when the refcount is lowered by 1.
+“Free X” is printed when the refcount becomes 0 and the object is actually freed.</p>
+</section>
+<section id="debugging-with-gdb">
+<h2>Debugging with GDB<a class="headerlink" href="#debugging-with-gdb" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Upsides:</dt><dd><ul class="simple">
+<li><p>the entire OpenCL application, including the launched kernels can be debugged</p></li>
+<li><p>does not require PoCL recompilation (but it is recommended, if PoCL wasn’t compiled with debuginfo)</p></li>
+<li><p>single stepping kernels</p></li>
+</ul>
+</dd>
+<dt>Downsides:</dt><dd><ul class="simple">
+<li><p>limited scope (not the best tool for tracking memory leaks &amp; race conditions)</p></li>
+</ul>
+</dd>
+<dt>Setup:</dt><dd><ul class="simple">
+<li><p>Optional: build PoCL with <code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE=Debug</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">POCL_EXTRA_BUILD_FLAGS=&quot;-g</span> <span class="pre">-cl-opt-disable&quot;</span></code>,
+or add these flags to the <code class="docutils literal notranslate"><span class="pre">clBuildProgram</span></code> call.
+This will cause all kernels to compile with debuginfo.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">POCL_LEAVE_KERNEL_COMPILER_TEMP_FILES=1</span></code>
+This will leave the source files in PoCL’s cache.</p></li>
+<li><p>Optional: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">POCL_CPU_MAX_CU_COUNT=1</span></code>
+This limits the cpu driver to a single worker thread.</p></li>
+<li><p>Run your application with gdb, as usual.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example 1:</p>
+<p>Let’s say we have an <cite>example</cite> host program with a <cite>dot_product</cite> kernel with this source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">__kernel</span> <span class="n">void</span> <span class="n">dot_product</span> <span class="p">(</span><span class="n">__global</span> <span class="n">const</span> <span class="n">float4</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span>
+                           <span class="n">__global</span> <span class="n">const</span> <span class="n">float4</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span>
+                           <span class="n">__global</span> <span class="n">float4</span> <span class="o">*</span><span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">size_t</span> <span class="n">gid</span> <span class="o">=</span> <span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+  <span class="n">gid</span> <span class="o">+=</span> <span class="mi">18298392</span><span class="n">UL</span><span class="p">;</span>
+  <span class="n">c</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">float4</span><span class="p">)(</span><span class="mf">1.0</span><span class="n">f</span><span class="p">,</span> <span class="mf">6.0</span><span class="n">f</span><span class="p">,</span> <span class="mf">9.0</span><span class="n">f</span><span class="p">,</span> <span class="mf">4.0</span><span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Run it in gdb:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POCL_DEBUG</span><span class="o">=</span><span class="nb">all</span> <span class="n">gdb</span> <span class="o">./</span><span class="n">example</span>
+</pre></div>
+</div>
+<p>Output 1:</p>
+<p>The program crashes since it tries to access memory beyond buffer boundaries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[2020-06-30 08:28:14.888355355]POCL: in fn pocl_check_kernel_disk_cache at line 963:
+  |   GENERAL |  Built a WG function: /tmp/POCL_CACHE/BJ/JMEICBEBICMMDJCKNIADBFKHIMHDBIIKHCHED/dot_product/2-1-1-goffs0-smallgrid/dot_product.so
+
+Thread 8 &quot;example&quot; received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7fffddffe700 (LWP 10585)]
+0x00007fffec532458 in dot_product (a=0x5555557bb580, b=0x5555557e6500, c=0x5555557ba480) at /tmp/POCL_CACHE/tempfile-1c-aa-cd-3e-5e.cl:10
+10    c[gid] = a[gid] * b[gid] + (float4)(1.0f, 6.0f, 9.0f, 4.0f);
+(gdb) list
+5            __global const float4 *b, __global float4 *c)
+6   {
+7     size_t gid = get_global_id(0);
+8
+9     gid += 18298392UL;
+10    c[gid] = a[gid] * b[gid] + (float4)(1.0f, 6.0f, 9.0f, 4.0f);
+11  }
+(gdb) print gid
+$1 = 18298392
+(gdb) bt
+#0  0x00007fffec532458 in dot_product (a=0x5555557bb580, b=0x5555557e6500, c=0x5555557ba480) at /tmp/POCL_CACHE/tempfile-1c-aa-cd-3e-5e.cl:10
+#1  0x00007fffec5324c3 in _pocl_kernel_dot_product_workgroup ()
+   from /tmp/POCL_CACHE/BJ/JMEICBEBICMMDJCKNIADBFKHIMHDBIIKHCHED/dot_product/2-1-1-goffs0-smallgrid/dot_product.so
+#2  0x00007ffff72924ed in work_group_scheduler (k=0x7fffb91935c0, thread_data=0x5555557ae600)
+    at /tmp/pocl_source/lib/CL/devices/pthread/pthread_scheduler.c:307
+#3  0x00007ffff7292b72 in pthread_scheduler_get_work (td=0x5555557ae600) at /tmp/pocl_source/lib/CL/devices/pthread/pthread_scheduler.c:454
+#4  0x00007ffff7292fd2 in pocl_pthread_driver_thread (p=0x5555557ae600) at /tmp/pocl_source/lib/CL/devices/pthread/pthread_scheduler.c:530
+#5  0x00007fffee90e6db in start_thread (arg=0x7fffddffe700) at pthread_create.c:463
+#6  0x00007ffff78faa3f in clone () at ../sysdeps/unix/sysv/linux/x86_64/clone.S:95
+</pre></div>
+</div>
+<p>Note: printing variables (e.g. gid) could instead result in this:</p>
+<blockquote>
+<div><p>(gdb) print gid
+$1 = {{{18298392, 9223372036854775822, 0, 0}}}</p>
+</div></blockquote>
+<p>This happens when PoCL uses the “loops” workgroup method. The high-level overview of “loops”
+is that PoCL it creates a 3D for-loop (for each dimension of workgroup-size) around the kernel
+code, and the LLVM optimizer then tries to vectorize that loop. For this to work, PoCL must
+create a copy of variables in private address space, one copy for each workitem in the
+workgroup; that’s why the variable printed is an array.</p>
+<p>Example 2:</p>
+<p>Lets say we want to step the “dot_product” kernel from the previous example. Launch gdb:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POCL_CPU_MAX_CU_COUNT</span><span class="o">=</span><span class="mi">1</span> <span class="n">gdb</span> <span class="o">./</span><span class="n">example</span>
+</pre></div>
+</div>
+<p>Make a breakpoint on the kernel name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) break dot_product
+Function &quot;dot_product&quot; not defined.
+Make breakpoint pending on future shared library load? (y or [n]) y
+Breakpoint 1 (dot_product) pending.
+</pre></div>
+</div>
+<p>Run the program:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">r</span>
+<span class="n">Starting</span> <span class="n">program</span><span class="p">:</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">example</span>
+<span class="p">[</span><span class="n">Thread</span> <span class="n">debugging</span> <span class="n">using</span> <span class="n">libthread_db</span> <span class="n">enabled</span><span class="p">]</span>
+<span class="n">Using</span> <span class="n">host</span> <span class="n">libthread_db</span> <span class="n">library</span> <span class="s2">&quot;/lib/x86_64-linux-gnu/libthread_db.so.1&quot;</span><span class="o">.</span>
+<span class="p">[</span><span class="n">New</span> <span class="n">Thread</span> <span class="mh">0x7fffedf36700</span> <span class="p">(</span><span class="n">LWP</span> <span class="mi">18595</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">Switching</span> <span class="n">to</span> <span class="n">Thread</span> <span class="mh">0x7fffedf36700</span> <span class="p">(</span><span class="n">LWP</span> <span class="mi">18595</span><span class="p">)]</span>
+
+<span class="n">Thread</span> <span class="mi">2</span> <span class="s2">&quot;example&quot;</span> <span class="n">hit</span> <span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dot_product</span> <span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mh">0x5555557bc080</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mh">0x5555557e5380</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mh">0x5555557baf00</span><span class="p">)</span> <span class="n">at</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">POCL_CACHE</span><span class="o">/</span><span class="n">tempfile</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="mi">70</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">45</span><span class="o">-</span><span class="n">d6</span><span class="o">.</span><span class="n">cl</span><span class="p">:</span><span class="mi">7</span>
+<span class="mi">7</span>         <span class="n">size_t</span> <span class="n">gid</span> <span class="o">=</span> <span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>We can now step through the kernel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) print gid
+$1 = 140737103657472
+(gdb) next
+9         gid += 18298392UL;
+(gdb) print gid
+$2 = 0
+(gdb) next
+10        c[gid] = a[gid] * b[gid] + (float4)(1.0f, 6.0f, 9.0f, 4.0f);
+(gdb) print gid
+$3 = 18298392
+</pre></div>
+</div>
+</section>
+<section id="debugging-with-valgrind">
+<h2>Debugging with Valgrind<a class="headerlink" href="#debugging-with-valgrind" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Upsides:</dt><dd><ul class="simple">
+<li><p>The entire application including kernels can be debugged.</p></li>
+<li><p>Does not strictly require recompilation (though for usable
+backtraces, requires debuginfo).</p></li>
+</ul>
+</dd>
+<dt>Downsides:</dt><dd><ul class="simple">
+<li><p>Can be very slow, especially with computationally intensive kernels.</p></li>
+<li><p>May report some leaks which are not ones (see below).</p></li>
+</ul>
+</dd>
+<dt>Setup:</dt><dd><ul class="simple">
+<li><p>Optional: build PoCL with <code class="docutils literal notranslate"><span class="pre">-DENABLE_VALGRIND=ON</span> <span class="pre">-DCMAKE_BUILD_TYPE=Debug</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">POCL_EXTRA_BUILD_FLAGS=&quot;-g</span> <span class="pre">-cl-opt-disable&quot;</span></code>,
+or add these flags to the <code class="docutils literal notranslate"><span class="pre">clBuildProgram</span></code> call.
+This will cause all kernels to compile with debuginfo.</p></li>
+<li><p>Run your application with valgrind as normally.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example 1:</p>
+<p>Uninitializing both LLVM (calling clUnloadPlatformCompiler) and drivers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POCL_ENABLE_UNINIT</span><span class="o">=</span><span class="mi">1</span> <span class="n">valgrind</span> <span class="o">./</span><span class="n">examples</span><span class="o">/</span><span class="n">example1</span><span class="o">/</span><span class="n">example1</span>
+</pre></div>
+</div>
+<p>Output 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==</span><span class="mi">18291</span><span class="o">==</span> <span class="n">LEAK</span> <span class="n">SUMMARY</span><span class="p">:</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span>    <span class="n">definitely</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">40</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">1</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span>    <span class="n">indirectly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span>      <span class="n">possibly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span>    <span class="n">still</span> <span class="n">reachable</span><span class="p">:</span> <span class="mi">545</span><span class="p">,</span><span class="mi">683</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">2</span><span class="p">,</span><span class="mi">705</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span>         <span class="n">suppressed</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18291</span><span class="o">==</span> <span class="n">Rerun</span> <span class="k">with</span> <span class="o">--</span><span class="n">leak</span><span class="o">-</span><span class="n">check</span><span class="o">=</span><span class="n">full</span> <span class="n">to</span> <span class="n">see</span> <span class="n">details</span> <span class="n">of</span> <span class="n">leaked</span> <span class="n">memory</span>
+</pre></div>
+</div>
+<p>Example 2:</p>
+<p>Uninitializing LLVM (calling clUnloadPlatformCompiler) but not drivers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">valgrind</span> <span class="o">./</span><span class="n">examples</span><span class="o">/</span><span class="n">example1</span><span class="o">/</span><span class="n">example1</span>
+</pre></div>
+</div>
+<p>Output 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==</span><span class="mi">18301</span><span class="o">==</span> <span class="n">LEAK</span> <span class="n">SUMMARY</span><span class="p">:</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span>    <span class="n">definitely</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span>    <span class="n">indirectly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span>      <span class="n">possibly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span><span class="mi">816</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">8</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span>    <span class="n">still</span> <span class="n">reachable</span><span class="p">:</span> <span class="mi">403</span><span class="p">,</span><span class="mi">199</span><span class="p">,</span><span class="mi">350</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">2</span><span class="p">,</span><span class="mi">720</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span>         <span class="n">suppressed</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18301</span><span class="o">==</span> <span class="n">Rerun</span> <span class="k">with</span> <span class="o">--</span><span class="n">leak</span><span class="o">-</span><span class="n">check</span><span class="o">=</span><span class="n">full</span> <span class="n">to</span> <span class="n">see</span> <span class="n">details</span> <span class="n">of</span> <span class="n">leaked</span> <span class="n">memory</span>
+</pre></div>
+</div>
+<p>Example 3:</p>
+<p>Both LLVM and drivers left (not calling clUnloadPlatformCompiler):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">valgrind</span> <span class="o">./</span><span class="n">examples</span><span class="o">/</span><span class="n">example1</span><span class="o">/</span><span class="n">example1</span>
+</pre></div>
+</div>
+<p>Output 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==</span><span class="mi">18726</span><span class="o">==</span> <span class="n">LEAK</span> <span class="n">SUMMARY</span><span class="p">:</span>
+<span class="o">==</span><span class="mi">18726</span><span class="o">==</span>    <span class="n">definitely</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">536</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">2</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18726</span><span class="o">==</span>    <span class="n">indirectly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span><span class="mi">299</span><span class="p">,</span><span class="mi">332</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">3</span><span class="p">,</span><span class="mi">433</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18726</span><span class="o">==</span>      <span class="n">possibly</span> <span class="n">lost</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span><span class="mi">773</span><span class="p">,</span><span class="mi">316</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">524</span><span class="p">,</span><span class="mi">329</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18726</span><span class="o">==</span>    <span class="n">still</span> <span class="n">reachable</span><span class="p">:</span> <span class="mi">411</span><span class="p">,</span><span class="mi">350</span><span class="p">,</span><span class="mi">622</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">73</span><span class="p">,</span><span class="mi">488</span> <span class="n">blocks</span>
+<span class="o">==</span><span class="mi">18726</span><span class="o">==</span>         <span class="n">suppressed</span><span class="p">:</span> <span class="mi">0</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">0</span> <span class="n">blocks</span>
+</pre></div>
+</div>
+</section>
+<section id="debugging-with-thread-address-sanitizers">
+<h2>Debugging with Thread/Address sanitizers<a class="headerlink" href="#debugging-with-thread-address-sanitizers" title="Permalink to this headline">¶</a></h2>
+<p>Currently PoCL recognizes four sanitizers:
+Address, Leak, Undefined behaviour and Thread.</p>
+<p>Corresponding PoCL CMake options to enable them are:
+<code class="docutils literal notranslate"><span class="pre">ENABLE_ASAN,</span> <span class="pre">ENABLE_LSAN,</span> <span class="pre">ENABLE_UBSAN,</span> <span class="pre">ENABLE_TSAN.</span></code></p>
+<dl>
+<dt>Upsides:</dt><dd><ul class="simple">
+<li><p>Much faster than Valgrind.</p></li>
+<li><p>Less false detections.</p></li>
+<li><p>Can check undefined behaviour (most other tools can’t).</p></li>
+</ul>
+</dd>
+<dt>Downsides:</dt><dd><ul class="simple">
+<li><p>Requires rebuilding both the application and PoCL.</p></li>
+<li><p>The application and PoCL’s runtime code are compiled with sanitizer,
+but at the moment, the kernels cannot be compiled with the sanitizer.</p></li>
+</ul>
+</dd>
+<dt>Setup:</dt><dd><ul>
+<li><p>For example, to use the Address Sanitizer (ASan), build PoCL with these flags:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DENABLE_ASAN</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DENABLE_ICD</span><span class="o">=</span><span class="mi">0</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Debug</span> <span class="o">-</span><span class="n">DENABLE_LOADABLE_DRIVERS</span><span class="o">=</span><span class="n">OFF</span>
+</pre></div>
+</div>
+</li>
+<li><p>This will result in <code class="docutils literal notranslate"><span class="pre">lib/CL/libOpenCL.so</span></code>. Rebuild your application
+with the correct <code class="docutils literal notranslate"><span class="pre">-fsanitize=X</span></code> flag and link it to <code class="docutils literal notranslate"><span class="pre">lib/CL/libOpenCL.so</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<blockquote>
+<div><p>Building an “example.c” with the ASan:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gcc</span> <span class="o">-</span><span class="n">O0</span> <span class="o">-</span><span class="n">ggdb</span> <span class="o">-</span><span class="n">fsanitize</span><span class="o">=</span><span class="n">address</span> <span class="o">-</span><span class="n">fno</span><span class="o">-</span><span class="n">omit</span><span class="o">-</span><span class="n">frame</span><span class="o">-</span><span class="n">pointer</span> <span class="o">-</span><span class="n">pthread</span> <span class="o">-</span><span class="n">o</span> <span class="n">example</span><span class="o">.</span><span class="n">o</span> <span class="o">-</span><span class="n">c</span> <span class="n">example</span><span class="o">.</span><span class="n">c</span>
+<span class="n">gcc</span> <span class="o">-</span><span class="n">fsanitize</span><span class="o">=</span><span class="n">address</span> <span class="o">-</span><span class="n">o</span> <span class="n">example</span> <span class="n">example</span><span class="o">.</span><span class="n">o</span> <span class="o">-</span><span class="n">lasan</span> <span class="o">-</span><span class="n">Wl</span><span class="p">,</span><span class="o">-</span><span class="n">rpath</span><span class="p">,</span><span class="o">&lt;</span><span class="n">pocl</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;/</span><span class="n">lib</span><span class="o">/</span><span class="n">CL</span> <span class="o">&lt;</span><span class="n">pocl</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;/</span><span class="n">lib</span><span class="o">/</span><span class="n">CL</span><span class="o">/</span><span class="n">libOpenCL</span><span class="o">.</span><span class="n">so</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Output:</p>
+<blockquote>
+<div><p>If there’s an OpenCL object remaining, ASan will print a backtrace with an OpenCL call name in it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Indirect</span> <span class="n">leak</span> <span class="n">of</span> <span class="mi">8</span> <span class="n">byte</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="mi">1</span> <span class="nb">object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">allocated</span> <span class="n">from</span><span class="p">:</span>
+  <span class="c1">#0 0x7fa8f7b0a198 in calloc (/usr/lib/x86_64-linux-gnu/libasan.so.5+0xee198)</span>
+  <span class="c1">#1 0x7fa8f7607bc0 in pocl_unique_device_list /tmp/lib/CL/pocl_util.c:866</span>
+  <span class="c1">#2 0x7fa8f75d37ca in POclCreateContext /tmp/lib/CL/clCreateContext.c:172</span>
+  <span class="c1">#3 0x55d50f21e428 in poclu_get_any_device2 /tmp/lib/poclu/misc.c:84</span>
+  <span class="c1">#4 0x55d50f21c165 in main /tmp/examples/example1/example1.c:59</span>
+  <span class="c1">#5 0x7fa8f707bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)</span>
+</pre></div>
+</div>
+<p>If there’s any memory leak in the user’s program, ASan will print something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Direct</span> <span class="n">leak</span> <span class="n">of</span> <span class="mi">64</span> <span class="n">byte</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="mi">1</span> <span class="nb">object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">allocated</span> <span class="n">from</span><span class="p">:</span>
+  <span class="c1">#0 0x7f738e999f90 in __interceptor_malloc (/usr/lib/x86_64-linux-gnu/libasan.so.5+0xedf90)</span>
+  <span class="c1">#1 0x562f6f33e493 in main /tmp/examples/example1/example1.c:74</span>
+  <span class="c1">#2 0x7f738df0bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="handling-llvm-and-driver-allocated-memory">
+<h2>Handling LLVM and driver-allocated memory<a class="headerlink" href="#handling-llvm-and-driver-allocated-memory" title="Permalink to this headline">¶</a></h2>
+<p>Both valgrind and sanitizers might report a huge amount of memory leaks
+coming from PoCL; this is caused mainly by two factors;
+LLVM and driver-held static data.</p>
+<p>The problem is that the OpenCL API unfortunately doesn’t provide any API entry to uninitialize
+the entire implementation (e.g. all driver data). It does provide API
+entries to unload compiler though: <code class="docutils literal notranslate"><span class="pre">clUnloadPlatformCompiler()</span></code> and <code class="docutils literal notranslate"><span class="pre">clUnloadCompiler()</span></code>.</p>
+<p>User can use these to ask PoCL to unload all LLVM data, but it should be noted
+that with PoCL, the LLVM data is freed only if all cl_programs and cl_kernels
+have been released before calling it.</p>
+<p>Usage is simple: call <code class="docutils literal notranslate"><span class="pre">clUnloadPlatformCompiler()</span></code> once after
+all other OpenCL objects have been released, right before the
+program exit.</p>
+<p>If the user sets <code class="docutils literal notranslate"><span class="pre">POCL_ENABLE_UNINIT</span></code> env var to 1, PoCL will also try to
+unload driver data. This feature might not work reliably so it’s currently
+considered experimental.</p>
+<p>Example: Running a program compiled with AddrSanitizer, which calls
+<code class="docutils literal notranslate"><span class="pre">clUnloadPlatformCompiler()</span></code>, with <code class="docutils literal notranslate"><span class="pre">POCL_DEBUG=all</span> <span class="pre">POCL_ENABLE_UNINIT=1</span></code>
+env variables will result in (if the program has no memleaks):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mf">01.722343448</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">POclReleaseContext</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">50</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Free</span> <span class="n">Context</span> <span class="mh">0x60f000000310</span>
+
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mf">01.722369150</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">void</span> <span class="n">pocl_llvm_release</span><span class="p">()</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">370</span><span class="p">:</span>
+  <span class="o">|</span>      <span class="n">LLVM</span> <span class="o">|</span>  <span class="n">releasing</span> <span class="n">LLVM</span>
+
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mf">01.823218919</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">pocl_check_uninit_devices</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">107</span><span class="p">:</span>
+  <span class="o">|</span> <span class="n">REFCOUNTS</span> <span class="o">|</span>  <span class="n">Zero</span> <span class="n">contexts</span> <span class="n">left</span><span class="p">,</span> <span class="n">calling</span> <span class="n">pocl_uninit_devices</span>
+
+<span class="p">[</span><span class="mi">2020</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">20</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mf">01.823266761</span><span class="p">]</span><span class="n">POCL</span><span class="p">:</span> <span class="ow">in</span> <span class="n">fn</span> <span class="n">pocl_uninit_devices</span> <span class="n">at</span> <span class="n">line</span> <span class="mi">334</span><span class="p">:</span>
+  <span class="o">|</span>   <span class="n">GENERAL</span> <span class="o">|</span>  <span class="n">UNINIT</span> <span class="nb">all</span> <span class="n">devices</span>
+</pre></div>
+</div>
+<p>Running the same program with empty PoCL cache and removed
+<code class="docutils literal notranslate"><span class="pre">clUnloadPlatformCompiler()</span></code> call (therefore, with LLVM context
+alive at program exit), ASan will print a lot of memory leaks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Indirect</span> <span class="n">leak</span> <span class="n">of</span> <span class="mi">8</span> <span class="n">byte</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="mi">1</span> <span class="nb">object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">allocated</span> <span class="n">from</span><span class="p">:</span>
+    <span class="c1">#0 0x7f99eef43ba0 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.5+0xefba0)</span>
+    <span class="c1">#1 0x7f99eead5aea in WorkItemAliasAnalysis::runOnFunction(llvm::Function&amp;) /tmp/lib/llvmopencl/WorkItemAliasAnalysis.cc:130</span>
+    <span class="c1">#2 0x7f99e6f76ed5 in llvm::FPPassManager::runOnFunction(llvm::Function&amp;) (/usr/lib/llvm-10/lib/libLLVM-10.so.1+0xb11ed5)</span>
+
+<span class="n">SUMMARY</span><span class="p">:</span> <span class="n">AddressSanitizer</span><span class="p">:</span> <span class="mi">1047772</span> <span class="n">byte</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">leaked</span> <span class="ow">in</span> <span class="mi">3046</span> <span class="n">allocation</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Debugging OpenCL applications with PoCL</a><ul>
+<li><a class="reference internal" href="#basic-printf-debugging">Basic printf debugging</a></li>
+<li><a class="reference internal" href="#kernel-compiler-debugging">Kernel compiler debugging</a></li>
+<li><a class="reference internal" href="#simple-debugging-with-pocl-s-debug-log">Simple debugging with PoCL’s debug log</a></li>
+<li><a class="reference internal" href="#debugging-with-gdb">Debugging with GDB</a></li>
+<li><a class="reference internal" href="#debugging-with-valgrind">Debugging with Valgrind</a></li>
+<li><a class="reference internal" href="#debugging-with-thread-address-sanitizers">Debugging with Thread/Address sanitizers</a></li>
+<li><a class="reference internal" href="#handling-llvm-and-driver-allocated-memory">Handling LLVM and driver-allocated memory</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="android.html"
+                        title="previous chapter">Using PoCL on Android</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sycl_with_pocl_arm.html"
+                        title="next chapter">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/debug.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="sycl_with_pocl_arm.html" title="How to use PoCL as SYCL’s OpenCL runtime backend on ARM"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="android.html" title="Using PoCL on Android"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Debugging OpenCL applications with PoCL</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

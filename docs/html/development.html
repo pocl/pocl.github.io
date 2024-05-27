@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Information for PoCL developers &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Notes on internal design" href="design.html" />
+    <link rel="prev" title="Frequently asked questions" href="faq.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="design.html" title="Notes on internal design"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently asked questions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Information for PoCL developers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="information-for-pocl-developers">
+<h1>Information for PoCL developers<a class="headerlink" href="#information-for-pocl-developers" title="Permalink to this headline">¶</a></h1>
+<section id="testsuite">
+<h2>Testsuite<a class="headerlink" href="#testsuite" title="Permalink to this headline">¶</a></h2>
+<p>Before changes are committed to the upstream PoCL, the code must pass the Main
+Test Matrix Github workflow.</p>
+<p>Under the ‘examples’ directory there are directories for
+external OpenCL application projects which are used as test suites for
+pocl (e.g. ViennaCL). These test suites can be enabled for cmake
+with -DENABLE_TESTSUITES (you can specify a list of test suites if you
+do not want to enabled all of them, see <code class="docutils literal notranslate"><span class="pre">examples/CMakeLists.txt</span></code> for the
+available list). Note that these additional test suites require
+additional software (tools and libraries). CMake will check some of them,
+but the checks are not exhaustive. Testsuites are disabled if
+the dependency checks fail.</p>
+<p>You can run the tests or built examples using “ctest” directly;
+<code class="docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">--print-labels</span></code> prints the available labels (testsuites);
+Invoke ctest with -jX option to run X tests in parallel.</p>
+<p>In order to prepare the external OpenCL examples for the testsuite, you
+need to run the following build command once:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">prepare_examples</span>
+</pre></div>
+</div>
+<p>IMPORTANT: using the ICD for in tree ‘make check’ requires an icd
+loader that allows overriding the icd search path. Other ICD loaders
+wont be able to work in tree (they require the ICD config file to be
+installed in the system).  There are now two options for such a loader:
+the open source ocl-icd loader and the Khronos supplied loader with a
+patch applied.</p>
+<section id="debugging-a-failed-test">
+<h3>Debugging a Failed Test<a class="headerlink" href="#debugging-a-failed-test" title="Permalink to this headline">¶</a></h3>
+<p>If there are failing tests in the suite, the usual way to start
+debugging is to look what was printed to the logs for the failing
+cases. After running the test suite, the logs are stored under
+<code class="docutils literal notranslate"><span class="pre">Testing/Temporary/*.log</span></code> Or one could re-run the test with more
+verbose output. Useful ctest options are “-V” and “–output-on-failure”;
+to make pocl more chatty, use the POCL_DEBUG env variable.</p>
+</section>
+</section>
+<section id="ocl-icd">
+<h2>Ocl-icd<a class="headerlink" href="#ocl-icd" title="Permalink to this headline">¶</a></h2>
+<p>Ocl-icd is packaged for most popular linux distributions,
+but can also be downloaded from:</p>
+<p><a class="reference external" href="https://forge.imag.fr/projects/ocl-icd/">https://forge.imag.fr/projects/ocl-icd/</a>.</p>
+<p>It allows overriding the path from which the icd files
+are searched which is used to select only the
+OpenCL library in the build tree of pocl for the make check. Note,
+however, if you run the tests or examples manually this overriding is
+not done automatically. To direct the ocl-icd to use only the pocl <em>in
+the build tree</em>, export the following environment variable in your
+shell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OCL_ICD_VENDORS</span><span class="o">=</span><span class="s2">&quot;PATH_TO_THE_POCL_BUILD_TREE/ocl-vendors&quot;</span>
+</pre></div>
+</div>
+<p>Inside the ‘ocl-vendors’ directory there’s a single .icd file which is
+generated to point to the pocl library in the build tree.</p>
+</section>
+<section id="coding-style">
+<h2>Coding Style<a class="headerlink" href="#coding-style" title="Permalink to this headline">¶</a></h2>
+<p>The code base of pocl consists most of pure C sources and C++ sources.</p>
+<ol class="arabic">
+<li><p>In the C sources, follow the GNU C style, but with spaces for indent.</p>
+<p>The GNU C style guide is here: <a class="reference external" href="http://www.gnu.org/prep/standards/html_node/Writing-C.html">http://www.gnu.org/prep/standards/html_node/Writing-C.html</a></p>
+<p>This guide should be followed except please use 2 spaces instead of the
+confusing “smart” mix of tabs and spaces for indentation.</p>
+</li>
+<li><p>In the C++ sources (mostly the LLVM passes), follow the LLVM coding
+guidelines so it is easier to upstream general code to the LLVM project
+at any point.</p>
+<p><a class="reference external" href="http://llvm.org/docs/CodingStandards.html">http://llvm.org/docs/CodingStandards.html</a></p>
+</li>
+</ol>
+<p>It’s acknowledged that the pocl code base does not fully adhere to these
+principles at the moment, but the aim is to gradually fix the style with
+every new commit improving the style.</p>
+<p>There are clang-format scripts to help in getting the style gradually
+improved. Running <code class="docutils literal notranslate"><span class="pre">tools/scripts/format-branch.sh</span></code> in the root of
+the repository diffs against a <code class="docutils literal notranslate"><span class="pre">master</span></code> branch and formats the difference,
+and leaves the diff uncommitted in the working tree.
+<code class="docutils literal notranslate"><span class="pre">tools/scripts/format-last-commit.sh</span></code> formats only the last commit and can be
+used in an interactive rebase session. Both scripts require “clang-format” binary
+present in PATH.</p>
+<p>An example emacs configuration to help get the pocl code style correct:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">setq</span> <span class="n">default</span><span class="o">-</span><span class="n">tab</span><span class="o">-</span><span class="n">width</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">(</span><span class="n">setq</span><span class="o">-</span><span class="n">default</span> <span class="n">indent</span><span class="o">-</span><span class="n">tabs</span><span class="o">-</span><span class="n">mode</span> <span class="n">nil</span><span class="p">)</span>
+<span class="p">(</span><span class="n">setq</span><span class="o">-</span><span class="n">default</span> <span class="n">show</span><span class="o">-</span><span class="n">trailing</span><span class="o">-</span><span class="n">whitespace</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">defun</span> <span class="n">my</span><span class="o">-</span><span class="n">c</span><span class="o">-</span><span class="n">mode</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">hook</span> <span class="p">()</span>
+  <span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="nb">set</span><span class="o">-</span><span class="n">style</span> <span class="s2">&quot;gnu&quot;</span><span class="p">)</span>
+  <span class="p">(</span><span class="n">setq</span> <span class="n">tab</span><span class="o">-</span><span class="n">width</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">(</span><span class="n">setq</span> <span class="n">c</span><span class="o">-</span><span class="n">basic</span><span class="o">-</span><span class="n">offset</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="p">(</span><span class="n">add</span><span class="o">-</span><span class="n">hook</span> <span class="s1">&#39;c-mode-common-hook &#39;</span><span class="n">my</span><span class="o">-</span><span class="n">c</span><span class="o">-</span><span class="n">mode</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">hook</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">defun</span> <span class="n">my</span><span class="o">-</span><span class="n">cpp</span><span class="o">-</span><span class="n">mode</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">hook</span> <span class="p">()</span>
+  <span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="nb">set</span><span class="o">-</span><span class="n">style</span> <span class="s2">&quot;stroustrup&quot;</span><span class="p">)</span>
+  <span class="p">(</span><span class="n">setq</span> <span class="n">tab</span><span class="o">-</span><span class="n">width</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="p">(</span><span class="n">setq</span> <span class="n">c</span><span class="o">-</span><span class="n">basic</span><span class="o">-</span><span class="n">offset</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">(</span><span class="n">add</span><span class="o">-</span><span class="n">hook</span> <span class="s1">&#39;c++-mode-hook &#39;</span><span class="n">my</span><span class="o">-</span><span class="n">cpp</span><span class="o">-</span><span class="n">mode</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">hook</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">add</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="nb">list</span> <span class="s1">&#39;auto-mode-alist &#39;</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">.cl$&quot;</span> <span class="o">.</span> <span class="n">c</span><span class="o">-</span><span class="n">mode</span><span class="p">))</span>
+<span class="p">(</span><span class="n">add</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="nb">list</span> <span class="s1">&#39;auto-mode-alist &#39;</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">.icc$&quot;</span> <span class="o">.</span> <span class="n">c</span><span class="o">++-</span><span class="n">mode</span><span class="p">))</span>
+<span class="p">(</span><span class="n">add</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="nb">list</span> <span class="s1">&#39;auto-mode-alist &#39;</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">.cc$&quot;</span> <span class="o">.</span> <span class="n">c</span><span class="o">++-</span><span class="n">mode</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="khronos-icd-loader">
+<h2>Khronos ICD Loader<a class="headerlink" href="#khronos-icd-loader" title="Permalink to this headline">¶</a></h2>
+<p>The ICD loader supplied by Khronos can be used for pocl development by
+applying a minor patch that enables overriding the ICD search path as
+explained above (OCL-ICD).</p>
+<p>The steps to build and install the Khronos ICD loader so it can be
+used to run the pocl test suite:</p>
+<ol class="arabic">
+<li><p>Download the loader from <a class="reference external" href="http://www.khronos.org/registry/cl">http://www.khronos.org/registry/cl</a> Unpack
+it. Copy the OpenCL headers to inc/CL like instructed in
+inc/README.txt.</p></li>
+<li><dl>
+<dt>Apply a patch from the pocl checkout::</dt><dd><p>cd icd</p>
+<p>patch -p1 &lt; ~/pocl/tools/patches/khronos-icd-loader.patch</p>
+</dd>
+</dl>
+</li>
+<li><p>Build it with ‘make’.</p></li>
+<li><p>Copy the loader to a library search path: sudo cp bin/libOpenCL* /usr/lib</p></li>
+</ol>
+<p>Now it should use the Khronos loader for ICD dispatching and you (and
+the pocl build system) should be able to override the icd search path
+with OCL_ICD_VENDORS environment variable.</p>
+</section>
+<section id="using-pocl-from-the-build-tree">
+<h2>Using pocl from the Build Tree<a class="headerlink" href="#using-pocl-from-the-build-tree" title="Permalink to this headline">¶</a></h2>
+<p>If you want use the pocl from the build tree, you must export
+POCL_BUILDING=1 so pocl searches for its utility scripts from the
+build tree first, then the installation location. Running PoCL’s ctest
+from the build root will do this automatically.</p>
+<p>There’s a helper script that, when sourced, in addition to setting
+POCL_BUILDING setups the OCL_ICD_VENDORS path to point to the pocl in
+the build tree. This removes the need to install pocl to test the
+built version. It should be executed in the build root, typically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span> <span class="o">../</span><span class="n">tools</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">devel</span><span class="o">-</span><span class="n">envs</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</section>
+<section id="target-and-host-cpu-architectures-for-cpu-devices">
+<h2>Target and Host CPU Architectures for CPU Devices<a class="headerlink" href="#target-and-host-cpu-architectures-for-cpu-devices" title="Permalink to this headline">¶</a></h2>
+<p>By default, pocl build system compiles the kernel libraries for
+the host CPU architecture, to be used by CPU devices (‘cpu’ and ‘cpu-minimal’).</p>
+<p>LLVM is used to detect the CPU variant to be used as target. This
+can be overridden by passing -DLLC_HOST_CPU=… to CMake. See the
+documentation for LLC_HOST_CPU build option.</p>
+<p>Cross-compilation where ‘build’ is different from ‘host’ has not been
+tested.
+Cross-compilation where ‘host’ is a different architecture from ‘target’
+has not been tested for CPU devices.</p>
+</section>
+<section id="writing-documentation">
+<h2>Writing Documentation<a class="headerlink" href="#writing-documentation" title="Permalink to this headline">¶</a></h2>
+<p>The documentation is written using the <a class="reference external" href="http://sphinx-doc.org/">Sphinx documentation generator</a> and the reStructuredText markup.</p>
+<p>This Sphinx documentation can be built by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">doc</span><span class="o">/</span><span class="n">sphinx</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>This builds the html version of the documents under the ‘build/html’ directory.</p>
+</section>
+<section id="maintenance-policy">
+<span id="id1"></span><h2>Maintenance Policy<a class="headerlink" href="#maintenance-policy" title="Permalink to this headline">¶</a></h2>
+<p>pocl development is currently managed mostly by researchers and
+research assistants of the <a class="reference external" href="https://tuni.fi/cpc">Customized Parallel Computing</a>
+group of Tampere University. We provide general maintenance for pocl
+on the side of our research projects (which on the other hand might use
+and/or extend it) because we consider it an important project that helps the
+“heterogeneous parallel programming cause”. However, doing maintenance “on the
+side” unfortunately means that there is limited time to respond to external
+support requests due to other activities.</p>
+<p>To make pocl maintenance feasible within our limited time, we have set the following
+policy regarding releases:
+<strong>External projects using OpenCL that have a test suite included in “regularly
+tested suites” (we later call ‘tier-1’ test suites) will be kept regression free,
+but for the rest we cannot make any promises.</strong></p>
+<p>Tier-1 tests will be executed successfully before the lead developer pushes
+new pull requests (PR) to the master branch, and some of them are additionally
+executed with multiple continuous integration (buildbot) servers on
+different platforms. Active developers are also assumed to run them locally
+before submitting PRs. Thus, regressions on these suites should be detected
+early. The required testsuites can be enabled at buildtime with
+<code class="docutils literal notranslate"><span class="pre">-DENABLE_TESTSUITES=tier1</span></code> cmake option.</p>
+<p>Currently (2023-02-28) the following are included in the tier-1 test suites:</p>
+<ul class="simple">
+<li><p>The standard test suite of pocl.</p></li>
+<li><p>PyOpenCL test suite</p></li>
+<li><p>piglit test suite</p></li>
+<li><p>conformance_suite_micro_main test suite</p></li>
+<li><p>SHOC test suite</p></li>
+<li><p>CHIP-SPV test suite</p></li>
+</ul>
+<p>Please note that not necessarily all the tests currently pass in the suites,
+we just ensure the currently passing ones do not regress with new
+commits (expected failing ones are disabled or skipped).
+The primary test platform is x86-64.</p>
+<p>The latest LLVM release is given priority when testing, and we cannot
+guarantee older LLVM versions keep working over pocl releases due to
+the constantly changing library API.</p>
+<p>If you would like get your favourite OpenCL-using project’s test
+suite included in the tier-1 suite, please send a pull request that
+adds the suite under the ‘examples’ dir and the main CMakeLists.txt along with
+instructions (a README will do) on how to setup it so it is included in
+the ‘make check’ run. Please make the test suite short enough to be suitable for
+frequent “smoke testing” (under 5 minutes per typical run preferred).
+If your favourite project is already under ‘example’, but not listed as a tier-1
+test suite, please update its status so that ‘make check’ passes with the current
+HEAD of pocl and let us know, and we do our best to add it.</p>
+</section>
+<section id="release-management">
+<span id="releasing"></span><h2>Release management<a class="headerlink" href="#release-management" title="Permalink to this headline">¶</a></h2>
+<p>We aim to make a new release according to the Clang/LLVM release schedule.</p>
+<p>For each release, a release manager is assigned. Release manager is responsible
+for creating and uploading new release candidate tar balls and requesting for
+testers from different platforms. After a release candidate round with
+success reports and no failure reports, a release is published.</p>
+<p>See the <a class="reference internal" href="#maintenance-policy">maintenance-policy</a> for the current release criteria.</p>
+<p>A checklist and hints for testing and making a release successfully:</p>
+<ul class="simple">
+<li><p>Check that notes_&lt;VERSION&gt;.rst in <cite>doc/sphinx/source</cite> has the most interesting
+updates done during the release cycle. Add missing changes from git log.</p></li>
+<li><p>Create a single commit in master branch: change the version to the
+release one (without -pre), in all relevant places (doc/<a href="#id2"><span class="problematic" id="id3">**</span></a>/conf.py,
+CMakeLists.txt, etc); update the .so version (if required);
+check that supported LLVM versions in cmake/LLVM.cmake are correct.
+Create the release branch from this commit and push it to github.</p></li>
+<li><p>In the master branch, create a new commit: increase version
+number (with -pre) in all relevant places; update the .so version;
+increase the supported LLVM versions in cmake/LLVM.cmake.
+Commit, push master to github. Now development can go on in master
+while the release branch is being stabilized.</p></li>
+<li><p>The previous two steps ensure that merge-base of release &amp; master is
+the start of release branch, which ensures that merging release
+to the master will not screw up the version numbers in the master.
+Bugs which need to be fixed in both branches, should be committed to
+the release branch, then release branch merged to master.</p></li>
+<li><p>Create a new release on Github. Mark it as pre-release. This should
+create both a tarball and a git tag.</p></li>
+<li><p>Upload the package to portablecl.org/downloads via SFTP or to the
+sourceforge file listing for the pocl project.</p></li>
+<li><p>Request for testers in Twitter and/or mailing list. Point the testers to
+send their test reports to you privately or by adding them to the wiki.
+A good way is to create a wiki page for the release schedule and a test
+log. See <a class="reference external" href="https://github.com/pocl/pocl/wiki/pocl-0.10-release-testing">https://github.com/pocl/pocl/wiki/pocl-0.10-release-testing</a> for
+an example.</p></li>
+<li><p>To publish a release, create a new release on Github without the
+checking the pre-release checkbox.
+Upload the tar ball to the sourceforge download page and
+to <a class="reference external" href="http://portablecl.org/downloads">http://portablecl.org/downloads</a>.</p></li>
+<li><p>Update the CHANGES and ANNOUNCEMENT text files in these directories.
+ANNOUNCEMENT is a copy of the latest release notes. A direct link to it can
+be easily circulated in IRC, for example.</p></li>
+<li><p>Update the <a class="reference external" href="http://portablecl.org">http://portablecl.org</a> web page with the release information.</p></li>
+<li><p>Advertise everywhere you can. At least in Twitter and the mailing list.</p></li>
+</ul>
+<p>In case of any problems, ask any previous release manager for help.
+Previous releases were managed by the following pocl developers:</p>
+<ul class="simple">
+<li><p>0.14: Pekka Jääskeläinen</p></li>
+<li><p>0.11: Michal Babej</p></li>
+<li><p>0.10: Pekka Jääskeläinen</p></li>
+<li><p>0.9: Kalle Raiskila</p></li>
+<li><p>0.8: Erik Schnetter</p></li>
+<li><p>0.6 and 0.7: Pekka Jääskeläinen</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Information for PoCL developers</a><ul>
+<li><a class="reference internal" href="#testsuite">Testsuite</a><ul>
+<li><a class="reference internal" href="#debugging-a-failed-test">Debugging a Failed Test</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ocl-icd">Ocl-icd</a></li>
+<li><a class="reference internal" href="#coding-style">Coding Style</a></li>
+<li><a class="reference internal" href="#khronos-icd-loader">Khronos ICD Loader</a></li>
+<li><a class="reference internal" href="#using-pocl-from-the-build-tree">Using pocl from the Build Tree</a></li>
+<li><a class="reference internal" href="#target-and-host-cpu-architectures-for-cpu-devices">Target and Host CPU Architectures for CPU Devices</a></li>
+<li><a class="reference internal" href="#writing-documentation">Writing Documentation</a></li>
+<li><a class="reference internal" href="#maintenance-policy">Maintenance Policy</a></li>
+<li><a class="reference internal" href="#release-management">Release management</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="faq.html"
+                        title="previous chapter">Frequently asked questions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="design.html"
+                        title="next chapter">Notes on internal design</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/development.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="design.html" title="Notes on internal design"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently asked questions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Information for PoCL developers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>
