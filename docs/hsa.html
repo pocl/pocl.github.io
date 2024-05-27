@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>HSA &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NVIDIA GPU support" href="cuda.html" />
+    <link rel="prev" title="CPU device drivers" href="cpu.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="cuda.html" title="NVIDIA GPU support"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cpu.html" title="CPU device drivers"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HSA</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="hsa">
+<h1>HSA<a class="headerlink" href="#hsa" title="Permalink to this headline">¶</a></h1>
+<p>Note: PoCL’s HSA runtime support is deprecated.</p>
+<p>The experimental HSA driver currently only works with generic HSA Agent
+support (e.g. for your CPU); implementation exists in the phsa project.</p>
+<section id="installing-prerequisite-software">
+<h2>Installing prerequisite software<a class="headerlink" href="#installing-prerequisite-software" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Install PoCL requirements</p></li>
+</ol>
+<blockquote>
+<div><p>Described in <a class="reference internal" href="install.html"><span class="doc">Installation</span></a>.</p>
+</div></blockquote>
+<section id="install-an-phsa-runtime-library">
+<h3>2) Install an phsa runtime library<a class="headerlink" href="#install-an-phsa-runtime-library" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Use <em>phsa</em> to add generic HSA support on your gcc-supported
+CPU. Its installation instructions are here:</p>
+<p><a class="reference external" href="https://github.com/HSAFoundation/phsa">https://github.com/HSAFoundation/phsa</a></p>
+</div></blockquote>
+</section>
+<section id="install-the-gcc-brig-frontend">
+<h3>3) Install the GCC BRIG frontend<a class="headerlink" href="#install-the-gcc-brig-frontend" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>On Ubuntu, it comes packaged:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">gccbrig</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="build-pocl">
+<h3>4) Build pocl<a class="headerlink" href="#build-pocl" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Using CMake in pocl source directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DENABLE_HSA</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DENABLE_HSAIL</span><span class="o">=</span><span class="mi">0</span> <span class="o">-</span><span class="n">DAMD_HSA</span><span class="o">=</span><span class="mi">0</span> <span class="o">..</span>
+</pre></div>
+</div>
+<p>CMake should report “hsa” in list of drivers (OCL_DRIVERS variable).</p>
+</div></blockquote>
+</section>
+<section id="run-tests-play-around">
+<h3>5) Run tests &amp; play around<a class="headerlink" href="#run-tests-play-around" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>After building pocl, you can smoke test the HSA driver by executing the HSA
+tests of the pocl testsuite:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">tools</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">run_hsa_tests</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="hsa-support-notes">
+<h2>HSA Support notes<a class="headerlink" href="#hsa-support-notes" title="Permalink to this headline">¶</a></h2>
+<p>Note that the support is still experimental and very much unfinished. You’re
+welcome to try it out and report any issues, though.</p>
+<section id="phsa">
+<h3>phsa<a class="headerlink" href="#phsa" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://github.com/HSAFoundation/phsa">Portable HSA (phsa)</a> provides similar portable HSA implementation
+for CPUs/DSPs and other processors as pocl aims to do for OpenCL. Using phsa one can implement HSA Agent support
+for any processor which has a gcc backend with ease.</p>
+<p>pocl supports phsa as a backend for its HSA driver, thus any processor utilizing phsa for HSA Agent support
+can get OpenCL support via pocl. We used phsa for testing the HSA driver works with other devices and
+runtimes than AMD’s.</p>
+</section>
+<section id="opencl-2-0-atomics-and-hsa-memory-scope">
+<h3>OpenCL 2.0 Atomics and HSA Memory Scope<a class="headerlink" href="#opencl-2-0-atomics-and-hsa-memory-scope" title="Permalink to this headline">¶</a></h3>
+<p>There is a “memory scope” parameter present in HSA, which applies to atomic memory instructions or
+memory fences. Its purpose is to limit the scope of these instructions. However, pocl translates
+to HSAIL via LLVM bitcode, and the “atomicrmw” LLVM instruction only takes a memory order parameter, not scope.
+For this reason the memory scope in HSAIL is always the widest “system” scope.</p>
+</section>
+<section id="multiple-hsa-agent-support">
+<h3>Multiple HSA Agent Support<a class="headerlink" href="#multiple-hsa-agent-support" title="Permalink to this headline">¶</a></h3>
+<p>While multiple OpenCL device support is not a problem for pocl, the HSA 1.0 specification lacks a “loader/proxy”
+feature that OpenCL has in ICD. Thus, support for devices is limited to what the linked HSA runtime supports.</p>
+<p>Currently, if one wants to control multiple HSA Agents as multiple pocl OpenCL devices, one needs to implement
+a HSA runtime that lists all the Agents to pocl. There is no capability to load multiple HSA runtimes in pocl
+as we consider it out of scope and a job for a proxy HSA runtime similar to ICD.</p>
+</section>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<p>The current implementation was mainly done by our <a class="reference external" href="https://tuni.fi/cpc">Customized Parallel Computing</a> group of
+Tampere University, Finland with early prototype code contributions from the Programming Language Lab
+at National Tsing-Hua University, Hsinchu, Taiwan.</p>
+<p>CPC group thanks HSA Foundation and ARTEMIS JU (under grant agreement no 621439, ALMARVI) for funding
+this initial pocl HSA driver work. This driver added GPU device support to pocl for the first time, and, on the
+other hand, produced an easier path for HSA-supported devices to implement the OpenCL API by utilizing the pocl
+code base as a starting point.</p>
+<p>In the future we hope to see more effort put in optimizing the results to reach the performance of the
+proprietary SDKs on HSA devices.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HSA</a><ul>
+<li><a class="reference internal" href="#installing-prerequisite-software">Installing prerequisite software</a><ul>
+<li><a class="reference internal" href="#install-an-phsa-runtime-library">2) Install an phsa runtime library</a></li>
+<li><a class="reference internal" href="#install-the-gcc-brig-frontend">3) Install the GCC BRIG frontend</a></li>
+<li><a class="reference internal" href="#build-pocl">4) Build pocl</a></li>
+<li><a class="reference internal" href="#run-tests-play-around">5) Run tests &amp; play around</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hsa-support-notes">HSA Support notes</a><ul>
+<li><a class="reference internal" href="#phsa">phsa</a></li>
+<li><a class="reference internal" href="#opencl-2-0-atomics-and-hsa-memory-scope">OpenCL 2.0 Atomics and HSA Memory Scope</a></li>
+<li><a class="reference internal" href="#multiple-hsa-agent-support">Multiple HSA Agent Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cpu.html"
+                        title="previous chapter">CPU device drivers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cuda.html"
+                        title="next chapter">NVIDIA GPU support</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/hsa.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="cuda.html" title="NVIDIA GPU support"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cpu.html" title="CPU device drivers"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HSA</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

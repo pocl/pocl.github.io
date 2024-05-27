@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Supported device drivers &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CPU device drivers" href="cpu.html" />
+    <link rel="prev" title="OpenCL Extensions Supported by PoCL" href="extensions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="cpu.html" title="CPU device drivers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extensions.html" title="OpenCL Extensions Supported by PoCL"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported OpenCL features, device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Supported device drivers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="supported-device-drivers">
+<h1>Supported device drivers<a class="headerlink" href="#supported-device-drivers" title="Permalink to this headline">¶</a></h1>
+<p>Pocl currently supports the following device drivers:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cpu.html">CPU device drivers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cpu.html#cpu-driver">‘cpu’ driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu.html#cpu-minimal-driver">‘cpu-minimal’ driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpu.html#cpu-tbb-driver">‘cpu-tbb’ driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hsa.html">HSA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hsa.html#installing-prerequisite-software">Installing prerequisite software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsa.html#hsa-support-notes">HSA Support notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsa.html#credits">Credits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cuda.html">NVIDIA GPU support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cuda.html#building-pocl-with-cuda-support">Building PoCL with CUDA support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cuda.html#cuda-backend-status">CUDA backend status</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="almaif.html">Fixed-Function Accelerators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="almaif.html#interface">Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="almaif.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="almaif.html#wrapping-a-new-hardware-component">Wrapping a new hardware component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="almaif.html#using-this-work">Using this work</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="proxy.html">Proxy driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html#using-libopencl-stub">Using LIBOPENCL_STUB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proxy.html#known-issues">Known Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vulkan.html">Vulkan driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#what-works">What works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#doesnt-work-missing">Doesnt work / missing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#unfinished-non-optimal">Unfinished / non-optimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#known-bugs">Known Bugs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vulkan.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="level0.html">Level Zero driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#what-s-implemented-some-were-not-tested">What’s implemented (some were not tested)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#unfinished-non-optimal">Unfinished / non-optimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#doesnt-work-missing">Doesnt work / missing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#extra-features-tunables">Extra features / tunables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#known-bugs">Known Bugs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="remote.html">Remote Driver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#more-information">More Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#current-status">Current Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#known-bugs-issues-wip">Known Bugs/Issues/WiP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#known-bugs-issues-in-opencl-implementations">Known Bugs/Issues in OpenCL Implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#how-to-build">How to Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#event-tracing">Event Tracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remote.html#implementation-notes">Implementation Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="android.html">Using PoCL on Android</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="android.html#cmake-arguments">CMake Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="android.html#building-remote-client">Building Remote Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="android.html#building-proxy-device">Building Proxy Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="android.html#setting-pocl-environment-variables">Setting PoCL Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="android.html#using-jocl">Using JOCL</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="extensions.html"
+                        title="previous chapter">OpenCL Extensions Supported by PoCL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cpu.html"
+                        title="next chapter">CPU device drivers</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/drivers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="cpu.html" title="CPU device drivers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extensions.html" title="OpenCL Extensions Supported by PoCL"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Supported device drivers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

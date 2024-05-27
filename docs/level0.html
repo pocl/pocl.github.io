@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Level Zero driver &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Remote Driver" href="remote.html" />
+    <link rel="prev" title="Vulkan driver" href="vulkan.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="remote.html" title="Remote Driver"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vulkan.html" title="Vulkan driver"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Level Zero driver</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="level-zero-driver">
+<span id="pocl-level0-driver"></span><h1>Level Zero driver<a class="headerlink" href="#level-zero-driver" title="Permalink to this headline">¶</a></h1>
+<p>This driver uses libze and LLVM/Clang to run OpenCL code on GPU devices via Level Zero API.</p>
+<p>The implementation is work-in-progress, but usable for various applications.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Required:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Clang+LLVM: 14 and 15 should work, older may work but are untested</p></li>
+<li><p>Level Zero ICD + development files (level-zero and level-zero-devel)</p></li>
+<li><p>Level Zero drivers (on Ubuntu, intel-level-zero-gpu)</p></li>
+<li><p>SPIRV-LLVM-Translator from Khronos (<a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator">https://github.com/KhronosGroup/SPIRV-LLVM-Translator</a>)
+Must be built for the corresponding Clang/LLVM branch.
+Preferably the <cite>llvm-spirv</cite> binary should be in the same path as <cite>llvm-config</cite>,
+otherwise PoCL’s CMake could pick up a different (wrong) <cite>llvm-spirv</cite>.</p></li>
+<li><p>SPIR-V tools (in particular, <cite>spirv-link</cite>)</p></li>
+</ul>
+</div></blockquote>
+<p>The ICD + headers must support at least Level Zero specification version 1.3;
+older may work but are untested.</p>
+<p>To build the Level Zero driver driver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DENABLE_LEVEL0</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DENABLE_LLVM</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DWITH_LLVM_CONFIG</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">config</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">pocl</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>For additional CMake variables see <a class="reference internal" href="install.html#pocl-cmake-variables"><span class="std std-ref">CMake: other options &amp; features</span></a>.</p>
+<p>After build, it can be tested without installation (in the build directory):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OCL_ICD_VENDORS=$PWD/ocl-vendors/pocl-tests.icd POCL_BUILDING=1 POCL_DEVICES=level0 ./examples/example1/example1
+</pre></div>
+</div>
+<p>This assumes that <cite>libOpenCL.so</cite> is the opensource ocl-icd loader; for other ICD loaders
+you will need to somehow point them to the built <cite>libpocl.so</cite>. For the meaning of environment
+variables, see <a class="reference internal" href="using.html#pocl-env-variables"><span class="std std-ref">Tuning pocl behavior with ENV variables</span></a>.</p>
+</section>
+<section id="what-s-implemented-some-were-not-tested">
+<h2>What’s implemented (some were not tested)<a class="headerlink" href="#what-s-implemented-some-were-not-tested" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>buffer read/write/map/unmap</p></li>
+<li><p>kernel execution</p></li>
+<li><p>image support</p></li>
+<li><p>sampler support</p></li>
+<li><p>Spec constants</p></li>
+<li><p>subgroups</p></li>
+<li><p>SVM</p></li>
+<li><p>64bit buffer support (specialization)</p></li>
+<li><p>caching native binaries</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="unfinished-non-optimal">
+<h2>Unfinished / non-optimal<a class="headerlink" href="#unfinished-non-optimal" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>kernel argument metadata parsing (<code class="docutils literal notranslate"><span class="pre">type_name</span></code> is
+not parsed ATM, the other argument attributes are)</p></li>
+<li><p>host synchronization when <code class="docutils literal notranslate"><span class="pre">CL_MEM_USE_HOST_PTR</span></code> is used (works with
+buffers, but doesn’t work with Images)</p></li>
+<li><p>all buffers are allocated using shared memory (<code class="docutils literal notranslate"><span class="pre">zeMemAllocShared</span></code>),
+this might be a performance problem on dGPUs.
+TODO: investigate &amp; possibly use the virtual + physical memory APIs.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="doesnt-work-missing">
+<h2>Doesnt work / missing<a class="headerlink" href="#doesnt-work-missing" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ZE_MEMORY_ADVICE_SET_READ_MOSTLY</span></code> optimization</p></li>
+<li><p>support for row_pitch/slice_pitch arguments of Image APIs
+… there are actually two Level0 extension APIs that have the row/pitch arguments,
+but they currently return <code class="docutils literal notranslate"><span class="pre">ZE_RESULT_ERROR_UNSUPPORTED_FEATURE</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="extra-features-tunables">
+<h2>Extra features / tunables<a class="headerlink" href="#extra-features-tunables" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">POCL_LEVEL0_JIT</span></code> env variable can be used to enable JIT compilation (kernels are
+compiled lazily only when launched via clEnqueueNDRangeKernel, instead of eagerly
+at clBuildProgram-time). Useful with programs that have thousands of kernels
+(e.g. from heavily templated code). See <a class="reference internal" href="using.html#pocl-env-variables"><span class="std std-ref">Tuning pocl behavior with ENV variables</span></a> for accepted values.</p>
+</section>
+<section id="known-bugs">
+<h2>Known Bugs<a class="headerlink" href="#known-bugs" title="Permalink to this headline">¶</a></h2>
+<p>The FP64 support, on some devices, is software emulated. Kernels using FP64
+might not produce results with accuracy that is required by the OpenCL standard.</p>
+<p>Certain tests may pass on some GPUs but not others. Also, the driver is known to fail more
+tests with LLVM 16 because of unsolved bugs related to opaque-pointer changes in LLVM and SPIRV-LLVM-Translator.</p>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>The tests that should work with Level Zero driver can be run with <code class="docutils literal notranslate"><span class="pre">tools/scripts/run_level0_tests</span></code>.</p>
+<p>This driver was tested with these de0vices:</p>
+<ul class="simple">
+<li><p>Intel Tiger Lake integrated GPU</p></li>
+<li><p>Intel Alder Lake integrated GPU</p></li>
+<li><p>Intel Arc A750</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Level Zero driver</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#what-s-implemented-some-were-not-tested">What’s implemented (some were not tested)</a></li>
+<li><a class="reference internal" href="#unfinished-non-optimal">Unfinished / non-optimal</a></li>
+<li><a class="reference internal" href="#doesnt-work-missing">Doesnt work / missing</a></li>
+<li><a class="reference internal" href="#extra-features-tunables">Extra features / tunables</a></li>
+<li><a class="reference internal" href="#known-bugs">Known Bugs</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vulkan.html"
+                        title="previous chapter">Vulkan driver</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="remote.html"
+                        title="next chapter">Remote Driver</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/level0.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="remote.html" title="Remote Driver"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vulkan.html" title="Vulkan driver"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Level Zero driver</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>
