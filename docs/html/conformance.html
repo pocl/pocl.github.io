@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>OpenCL conformance &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,9 +42,9 @@
           <div class="body" role="main">
             
   <section id="opencl-conformance">
-<span id="pocl-conformance"></span><h1>OpenCL conformance<a class="headerlink" href="#opencl-conformance" title="Permalink to this headline">¶</a></h1>
+<span id="pocl-conformance"></span><h1>OpenCL conformance<a class="headerlink" href="#opencl-conformance" title="Link to this heading">¶</a></h1>
 <section id="conformance-related-cmake-options">
-<h2>Conformance related CMake options<a class="headerlink" href="#conformance-related-cmake-options" title="Permalink to this headline">¶</a></h2>
+<h2>Conformance related CMake options<a class="headerlink" href="#conformance-related-cmake-options" title="Link to this heading">¶</a></h2>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_CONFORMANCE=ON/OFF</span></code>
 Defaults to OFF. This option by itself does not guarantee OpenCL-conformant build;
@@ -71,7 +69,7 @@ some CTS tests will fail on such build.</p>
 </ul>
 </section>
 <section id="supported-unsupported-optional-opencl-3-0-features">
-<h2>Supported &amp; Unsupported optional OpenCL 3.0 features<a class="headerlink" href="#supported-unsupported-optional-opencl-3-0-features" title="Permalink to this headline">¶</a></h2>
+<h2>Supported &amp; Unsupported optional OpenCL 3.0 features<a class="headerlink" href="#supported-unsupported-optional-opencl-3-0-features" title="Link to this heading">¶</a></h2>
 <p>This list is only related to CPU devices (cpu &amp; cpu-minimal drivers).
 Other drivers (CUDA, TCE etc) only support OpenCL 1.2.
 Note that 3.0 support on CPU devices requires LLVM 14 or newer.</p>
@@ -104,7 +102,7 @@ Note that 3.0 support on CPU devices requires LLVM 14 or newer.</p>
 </div></blockquote>
 </section>
 <section id="how-to-run-the-opencl-3-0-conformance-test-suite">
-<span id="running-cts"></span><h2>How to run the OpenCL 3.0 conformance test suite<a class="headerlink" href="#how-to-run-the-opencl-3-0-conformance-test-suite" title="Permalink to this headline">¶</a></h2>
+<span id="running-cts"></span><h2>How to run the OpenCL 3.0 conformance test suite<a class="headerlink" href="#how-to-run-the-opencl-3-0-conformance-test-suite" title="Link to this heading">¶</a></h2>
 <p>You’ll need to build PoCL with enabled ICD, and the ICD must be one that supports
 OpenCL version 3.0 (for ocl-icd, this is available since version 2.3.0).
 This is because while the CTS will run with 1.2 devices, it requires 3.0 headers
@@ -132,12 +130,10 @@ to run tests which are only relevant to OpenCL 3.0.</p>
 <p>CPU device version 1.2 should also work with CTS 3.0 (tests will be skipped).</p>
 </section>
 <section id="known-issues-related-to-cts">
-<span id="known-issues"></span><h2>Known issues related to CTS<a class="headerlink" href="#known-issues-related-to-cts" title="Permalink to this headline">¶</a></h2>
+<span id="known-issues"></span><h2>Known issues related to CTS<a class="headerlink" href="#known-issues-related-to-cts" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>a few tests from <code class="docutils literal notranslate"><span class="pre">basic/test_basic</span></code> may fail / segfault because they
 request a huge amount of memory for buffers.</p></li>
-<li><p>some tests from <code class="docutils literal notranslate"><span class="pre">relationals/test_relationals</span></code> can fail with specific
-LLVM versions, this is an LLVM bug, fixed in LLVM 13.</p></li>
 <li><p>a few tests may run much faster if you limit the reported Global memory size
 with POCL_MEMORY_LIMIT env var. In particular, “kernel_image_methods” test
 with “max_images” argument.</p></li>
@@ -169,17 +165,12 @@ the conversions conformance test.</p></li>
 </ul>
 </section>
 <section id="conformance-tests-results-precision-of-builtin-math-library-functions">
-<h2>Conformance tests results (precision of builtin math library functions)<a class="headerlink" href="#conformance-tests-results-precision-of-builtin-math-library-functions" title="Permalink to this headline">¶</a></h2>
+<h2>Conformance tests results (precision of builtin math library functions)<a class="headerlink" href="#conformance-tests-results-precision-of-builtin-math-library-functions" title="Link to this heading">¶</a></h2>
 <p>Note that it’s impossible to test double precision on the entire range,
 therefore the results may vary.</p>
 <section id="x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017">
-<h3>x86-64 CPU with AVX2+FMA, LLVM 4.0, tested on Nov 1, 2017<a class="headerlink" href="#x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017" title="Permalink to this headline">¶</a></h3>
+<h3>x86-64 CPU with AVX2+FMA, LLVM 4.0, tested on Nov 1, 2017<a class="headerlink" href="#x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 24%" />
-<col style="width: 57%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>NAME</p></th>
 <th class="head"><p>Worst ULP</p></th>
@@ -640,8 +631,9 @@ therefore the results may vary.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">OpenCL conformance</a><ul>
 <li><a class="reference internal" href="#conformance-related-cmake-options">Conformance related CMake options</a></li>
 <li><a class="reference internal" href="#supported-unsupported-optional-opencl-3-0-features">Supported &amp; Unsupported optional OpenCL 3.0 features</a></li>
@@ -655,12 +647,17 @@ therefore the results may vary.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="opencl_status.html"
-                        title="previous chapter">Supported OpenCL features</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="extensions.html"
-                        title="next chapter">OpenCL Extensions Supported by PoCL</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="opencl_status.html"
+                          title="previous chapter">Supported OpenCL features</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="extensions.html"
+                          title="next chapter">OpenCL Extensions Supported by PoCL</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -677,7 +674,7 @@ therefore the results may vary.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -700,8 +697,8 @@ therefore the results may vary.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Frequently asked questions &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -43,13 +41,13 @@
           <div class="body" role="main">
             
   <section id="frequently-asked-questions">
-<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">¶</a></h1>
 <p>Common problems and questions related to using and developing pocl
 are listed here.</p>
 <section id="using-pocl">
-<h2>Using pocl<a class="headerlink" href="#using-pocl" title="Permalink to this headline">¶</a></h2>
+<h2>Using pocl<a class="headerlink" href="#using-pocl" title="Link to this heading">¶</a></h2>
 <section id="supported-compilers-and-compiler-combinations">
-<span id="supported-compilers"></span><h3>Supported compilers and compiler combinations<a class="headerlink" href="#supported-compilers-and-compiler-combinations" title="Permalink to this headline">¶</a></h3>
+<span id="supported-compilers"></span><h3>Supported compilers and compiler combinations<a class="headerlink" href="#supported-compilers-and-compiler-combinations" title="Link to this heading">¶</a></h3>
 <p>PoCL usually uses two different compilers (though may be built
 using only one). One is used to compile C and C++ files - this is usually
 the “system compiler”. It’s specified by CMAKE_C{,XX}_COMPILER variables
@@ -69,7 +67,7 @@ while most Linux distributions use GCC to build their Clang/LLVM,
 the official downloads from llvm.org are built using Clang.</p>
 </section>
 <section id="pocl-is-not-listed-by-clinfo-is-not-found">
-<h3>PoCL is not listed by clinfo / is not found<a class="headerlink" href="#pocl-is-not-listed-by-clinfo-is-not-found" title="Permalink to this headline">¶</a></h3>
+<h3>PoCL is not listed by clinfo / is not found<a class="headerlink" href="#pocl-is-not-listed-by-clinfo-is-not-found" title="Link to this heading">¶</a></h3>
 <p>Occasionally, proprietary implementations rewrite the ICD loader by their own
 version. E.g. Intel SDK installer silently replaces
 <code class="docutils literal notranslate"><span class="pre">/usr/lib/x86_64-linux-gnu/libOpenCL.so</span></code> with a link to
@@ -79,7 +77,7 @@ and reinstall the ICD loader after which both pocl and the Intel SDK
 can be used through the ICD loader.</p>
 </section>
 <section id="deadlocks-freezes-on-freebsd">
-<h3>Deadlocks (freezes) on FreeBSD<a class="headerlink" href="#deadlocks-freezes-on-freebsd" title="Permalink to this headline">¶</a></h3>
+<h3>Deadlocks (freezes) on FreeBSD<a class="headerlink" href="#deadlocks-freezes-on-freebsd" title="Link to this heading">¶</a></h3>
 <p>The issue here is that a library may not initialize the threading on BSD
 independently.
 This will cause pocl to stall on some uninitialized internal mutex.
@@ -90,7 +88,7 @@ is used. The internal testsuite works only if “-pthread” is passed
 to ./configure in CFLAGS and CXXFLAGS, even if an ICD loader is used.</p>
 </section>
 <section id="clreleasedevice-or-clcreateimage-missing-when-linking-against-lopencl-icd">
-<h3>clReleaseDevice or clCreateImage missing when linking against -lOpenCL (ICD)<a class="headerlink" href="#clreleasedevice-or-clcreateimage-missing-when-linking-against-lopencl-icd" title="Permalink to this headline">¶</a></h3>
+<h3>clReleaseDevice or clCreateImage missing when linking against -lOpenCL (ICD)<a class="headerlink" href="#clreleasedevice-or-clcreateimage-missing-when-linking-against-lopencl-icd" title="Link to this heading">¶</a></h3>
 <p>These functions were introduced in OpenCL 1.2. If you have built your ICD
 loader against 1.1 headers, you cannot access the pocl implementations of
 them because they are missing from the ICD dispatcher.</p>
@@ -98,7 +96,7 @@ them because they are missing from the ICD dispatcher.</p>
 <p>See: <a class="reference external" href="https://github.com/pocl/pocl/issues/27">https://github.com/pocl/pocl/issues/27</a></p>
 </section>
 <section id="two-passes-with-the-same-argument-barriers-attempted-to-be-registered">
-<h3>“Two passes with the same argument (-barriers) attempted to be registered!”<a class="headerlink" href="#two-passes-with-the-same-argument-barriers-attempted-to-be-registered" title="Permalink to this headline">¶</a></h3>
+<h3>“Two passes with the same argument (-barriers) attempted to be registered!”<a class="headerlink" href="#two-passes-with-the-same-argument-barriers-attempted-to-be-registered" title="Link to this heading">¶</a></h3>
 <p>If you see this error:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Two passes with the same argument (-barriers) attempted to be registered!
 UNREACHABLE executed at &lt;path..&gt;/include/llvm/Support/PassNameParser.h:73!
@@ -121,7 +119,7 @@ system-installed libOpenCL.so (usually the ICD loader);</p></li>
 in other cases; another solution is to uninstall the hwloc “plugins” package.</p>
 </section>
 <section id="why-is-pocl-slow">
-<h3>Why is pocl slow?<a class="headerlink" href="#why-is-pocl-slow" title="Permalink to this headline">¶</a></h3>
+<h3>Why is pocl slow?<a class="headerlink" href="#why-is-pocl-slow" title="Link to this heading">¶</a></h3>
 <p>If pocl’s kernel build seems really slow, it is very possible you have
 built your LLVM with Debug+Asserts on (not configure –enable-optimized).
 This should result in up to 10x kernel compiler slow downs. You can
@@ -137,9 +135,9 @@ please report a bug.</p>
 </section>
 </section>
 <section id="pocl-source-code">
-<h2>pocl source code<a class="headerlink" href="#pocl-source-code" title="Permalink to this headline">¶</a></h2>
+<h2>pocl source code<a class="headerlink" href="#pocl-source-code" title="Link to this heading">¶</a></h2>
 <section id="why-c99-in-host-library">
-<h3>Why C99 in host library?<a class="headerlink" href="#why-c99-in-host-library" title="Permalink to this headline">¶</a></h3>
+<h3>Why C99 in host library?<a class="headerlink" href="#why-c99-in-host-library" title="Link to this heading">¶</a></h3>
 <p>The kernel compiler passes and some of the driver implementations are in C++11
 and it’s much faster to implement things in C++11. Why require using C99 in
 the host library?</p>
@@ -155,7 +153,7 @@ Benchmarks
 </section>
 </section>
 <section id="clpeak-issues">
-<h2>CLPeak issues<a class="headerlink" href="#clpeak-issues" title="Permalink to this headline">¶</a></h2>
+<h2>CLPeak issues<a class="headerlink" href="#clpeak-issues" title="Link to this heading">¶</a></h2>
 <p>Currently (Dec 2017) does not work. First, there’s a global memory size
 detection bug in CLPeak which makes it fail on all OpenCL calls (this
 can be workarounded by using POCL_MEMORY_LIMIT=1). Second, compilation
@@ -170,7 +168,7 @@ perhaps using loop re-rolling, and as such are not a reliable measure
 of peak device FLOPS.</p>
 </section>
 <section id="luxmark-issues">
-<h2>Luxmark issues<a class="headerlink" href="#luxmark-issues" title="Permalink to this headline">¶</a></h2>
+<h2>Luxmark issues<a class="headerlink" href="#luxmark-issues" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Using the binary downloaded from www.luxmark.info might lead to pocl
 abort on creating cache directory. This is not a bug in Pocl, it’s a
@@ -196,8 +194,9 @@ with LLVM 6 and newer.</p></li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Frequently asked questions</a><ul>
 <li><a class="reference internal" href="#using-pocl">Using pocl</a><ul>
 <li><a class="reference internal" href="#supported-compilers-and-compiler-combinations">Supported compilers and compiler combinations</a></li>
@@ -218,12 +217,17 @@ with LLVM 6 and newer.</p></li>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="sycl_with_pocl_arm.html"
-                        title="previous chapter">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="development.html"
-                        title="next chapter">Information for PoCL developers</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="sycl_with_pocl_arm.html"
+                          title="previous chapter">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="development.html"
+                          title="next chapter">Information for PoCL developers</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -240,7 +244,7 @@ with LLVM 6 and newer.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -262,8 +266,8 @@ with LLVM 6 and newer.</p></li>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Information for PoCL developers &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -43,9 +41,9 @@
           <div class="body" role="main">
             
   <section id="information-for-pocl-developers">
-<h1>Information for PoCL developers<a class="headerlink" href="#information-for-pocl-developers" title="Permalink to this headline">¶</a></h1>
+<h1>Information for PoCL developers<a class="headerlink" href="#information-for-pocl-developers" title="Link to this heading">¶</a></h1>
 <section id="testsuite">
-<h2>Testsuite<a class="headerlink" href="#testsuite" title="Permalink to this headline">¶</a></h2>
+<h2>Testsuite<a class="headerlink" href="#testsuite" title="Link to this heading">¶</a></h2>
 <p>Before changes are committed to the upstream PoCL, the code must pass the Main
 Test Matrix Github workflow.</p>
 <p>Under the ‘examples’ directory there are directories for
@@ -72,7 +70,7 @@ installed in the system).  There are now two options for such a loader:
 the open source ocl-icd loader and the Khronos supplied loader with a
 patch applied.</p>
 <section id="debugging-a-failed-test">
-<h3>Debugging a Failed Test<a class="headerlink" href="#debugging-a-failed-test" title="Permalink to this headline">¶</a></h3>
+<h3>Debugging a Failed Test<a class="headerlink" href="#debugging-a-failed-test" title="Link to this heading">¶</a></h3>
 <p>If there are failing tests in the suite, the usual way to start
 debugging is to look what was printed to the logs for the failing
 cases. After running the test suite, the logs are stored under
@@ -82,7 +80,7 @@ to make pocl more chatty, use the POCL_DEBUG env variable.</p>
 </section>
 </section>
 <section id="ocl-icd">
-<h2>Ocl-icd<a class="headerlink" href="#ocl-icd" title="Permalink to this headline">¶</a></h2>
+<h2>Ocl-icd<a class="headerlink" href="#ocl-icd" title="Link to this heading">¶</a></h2>
 <p>Ocl-icd is packaged for most popular linux distributions,
 but can also be downloaded from:</p>
 <p><a class="reference external" href="https://forge.imag.fr/projects/ocl-icd/">https://forge.imag.fr/projects/ocl-icd/</a>.</p>
@@ -100,7 +98,7 @@ shell:</p>
 generated to point to the pocl library in the build tree.</p>
 </section>
 <section id="coding-style">
-<h2>Coding Style<a class="headerlink" href="#coding-style" title="Permalink to this headline">¶</a></h2>
+<h2>Coding Style<a class="headerlink" href="#coding-style" title="Link to this heading">¶</a></h2>
 <p>The code base of pocl consists most of pure C sources and C++ sources.</p>
 <ol class="arabic">
 <li><p>In the C sources, follow the GNU C style, but with spaces for indent.</p>
@@ -150,7 +148,7 @@ present in PATH.</p>
 </div>
 </section>
 <section id="khronos-icd-loader">
-<h2>Khronos ICD Loader<a class="headerlink" href="#khronos-icd-loader" title="Permalink to this headline">¶</a></h2>
+<h2>Khronos ICD Loader<a class="headerlink" href="#khronos-icd-loader" title="Link to this heading">¶</a></h2>
 <p>The ICD loader supplied by Khronos can be used for pocl development by
 applying a minor patch that enables overriding the ICD search path as
 explained above (OCL-ICD).</p>
@@ -174,7 +172,7 @@ the pocl build system) should be able to override the icd search path
 with OCL_ICD_VENDORS environment variable.</p>
 </section>
 <section id="using-pocl-from-the-build-tree">
-<h2>Using pocl from the Build Tree<a class="headerlink" href="#using-pocl-from-the-build-tree" title="Permalink to this headline">¶</a></h2>
+<h2>Using pocl from the Build Tree<a class="headerlink" href="#using-pocl-from-the-build-tree" title="Link to this heading">¶</a></h2>
 <p>If you want use the pocl from the build tree, you must export
 POCL_BUILDING=1 so pocl searches for its utility scripts from the
 build tree first, then the installation location. Running PoCL’s ctest
@@ -188,7 +186,7 @@ built version. It should be executed in the build root, typically:</p>
 </div>
 </section>
 <section id="target-and-host-cpu-architectures-for-cpu-devices">
-<h2>Target and Host CPU Architectures for CPU Devices<a class="headerlink" href="#target-and-host-cpu-architectures-for-cpu-devices" title="Permalink to this headline">¶</a></h2>
+<h2>Target and Host CPU Architectures for CPU Devices<a class="headerlink" href="#target-and-host-cpu-architectures-for-cpu-devices" title="Link to this heading">¶</a></h2>
 <p>By default, pocl build system compiles the kernel libraries for
 the host CPU architecture, to be used by CPU devices (‘cpu’ and ‘cpu-minimal’).</p>
 <p>LLVM is used to detect the CPU variant to be used as target. This
@@ -200,7 +198,7 @@ Cross-compilation where ‘host’ is a different architecture from ‘target’
 has not been tested for CPU devices.</p>
 </section>
 <section id="writing-documentation">
-<h2>Writing Documentation<a class="headerlink" href="#writing-documentation" title="Permalink to this headline">¶</a></h2>
+<h2>Writing Documentation<a class="headerlink" href="#writing-documentation" title="Link to this heading">¶</a></h2>
 <p>The documentation is written using the <a class="reference external" href="http://sphinx-doc.org/">Sphinx documentation generator</a> and the reStructuredText markup.</p>
 <p>This Sphinx documentation can be built by:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">doc</span><span class="o">/</span><span class="n">sphinx</span>
@@ -210,7 +208,7 @@ has not been tested for CPU devices.</p>
 <p>This builds the html version of the documents under the ‘build/html’ directory.</p>
 </section>
 <section id="maintenance-policy">
-<span id="id1"></span><h2>Maintenance Policy<a class="headerlink" href="#maintenance-policy" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Maintenance Policy<a class="headerlink" href="#maintenance-policy" title="Link to this heading">¶</a></h2>
 <p>pocl development is currently managed mostly by researchers and
 research assistants of the <a class="reference external" href="https://tuni.fi/cpc">Customized Parallel Computing</a>
 group of Tampere University. We provide general maintenance for pocl
@@ -258,7 +256,7 @@ test suite, please update its status so that ‘make check’ passes with the cu
 HEAD of pocl and let us know, and we do our best to add it.</p>
 </section>
 <section id="release-management">
-<span id="releasing"></span><h2>Release management<a class="headerlink" href="#release-management" title="Permalink to this headline">¶</a></h2>
+<span id="releasing"></span><h2>Release management<a class="headerlink" href="#release-management" title="Link to this heading">¶</a></h2>
 <p>We aim to make a new release according to the Clang/LLVM release schedule.</p>
 <p>For each release, a release manager is assigned. Release manager is responsible
 for creating and uploading new release candidate tar balls and requesting for
@@ -323,8 +321,9 @@ Previous releases were managed by the following pocl developers:</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Information for PoCL developers</a><ul>
 <li><a class="reference internal" href="#testsuite">Testsuite</a><ul>
 <li><a class="reference internal" href="#debugging-a-failed-test">Debugging a Failed Test</a></li>
@@ -342,12 +341,17 @@ Previous releases were managed by the following pocl developers:</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="faq.html"
-                        title="previous chapter">Frequently asked questions</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="design.html"
-                        title="next chapter">Notes on internal design</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="faq.html"
+                          title="previous chapter">Frequently asked questions</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="design.html"
+                          title="next chapter">Notes on internal design</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -364,7 +368,7 @@ Previous releases were managed by the following pocl developers:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -386,8 +390,8 @@ Previous releases were managed by the following pocl developers:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

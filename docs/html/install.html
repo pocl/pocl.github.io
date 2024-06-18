@@ -1,24 +1,22 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Installation &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Usage" href="using.html" />
-    <link rel="prev" title="Welcome to Portable Computing Language (pocl)’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to Portable Computing Language (PoCL)’s documentation!" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,7 +28,7 @@
           <a href="using.html" title="Usage"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Portable Computing Language (pocl)’s documentation!"
+          <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
@@ -43,9 +41,9 @@
           <div class="body" role="main">
             
   <section id="installation">
-<span id="pocl-install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<span id="pocl-install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
 <p>In order to build pocl, you need the following support libraries and
 tools:</p>
 <blockquote>
@@ -65,7 +63,7 @@ required for SPIR-V support in CPU / CUDA; Vulkan driver supports SPIR-V through
 </div></blockquote>
 </section>
 <section id="installing-requirements-for-ubuntu">
-<h2>Installing requirements for Ubuntu<a class="headerlink" href="#installing-requirements-for-ubuntu" title="Permalink to this headline">¶</a></h2>
+<h2>Installing requirements for Ubuntu<a class="headerlink" href="#installing-requirements-for-ubuntu" title="Link to this heading">¶</a></h2>
 <p>Note: The binary packages from <a class="reference external" href="https://apt.llvm.org/">https://apt.llvm.org/</a> are recommended
 (and tested for each release) instead of the binary tar balls or
 the packages included in the distribution. The following assumes
@@ -85,17 +83,15 @@ apt.llvm.org is added to your apt repos:</p>
 distributions in <code class="docutils literal notranslate"><span class="pre">tools/docker</span></code>, looking into them might be helpful.</p>
 </section>
 <section id="opencl-3-0-support">
-<h2>OpenCL 3.0 support<a class="headerlink" href="#opencl-3-0-support" title="Permalink to this headline">¶</a></h2>
+<h2>OpenCL 3.0 support<a class="headerlink" href="#opencl-3-0-support" title="Link to this heading">¶</a></h2>
 <p>If you want PoCL built with ICD and OpenCL 3.0 support at platform level, you will
 need sufficiently new ocl-icd (2.3.x). For Ubuntu, it can be installed from
-this PPA: <a class="reference external" href="https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa">https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa</a>
-Additionally, if you want the CPU device to report as 3.0 OpenCL,
-you will need LLVM 14 or newer.</p>
+this PPA: <a class="reference external" href="https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa">https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa</a></p>
 <p>Note: PoCL assumes that the OpenCL development headers and the ICD loader
 (if present on your system) are version compatible.</p>
 </section>
 <section id="clang-llvm-notes">
-<h2>Clang / LLVM Notes<a class="headerlink" href="#clang-llvm-notes" title="Permalink to this headline">¶</a></h2>
+<h2>Clang / LLVM Notes<a class="headerlink" href="#clang-llvm-notes" title="Link to this heading">¶</a></h2>
 <p><strong>IMPORTANT NOTE!</strong> Some targets (TCE and possibly HSA) require that
 you compile &amp; build LLVM with RTTI on. It can be enabled on cmake command
 line, as follows:</p>
@@ -103,7 +99,7 @@ line, as follows:</p>
 </pre></div>
 </div>
 <section id="supported-llvm-versions">
-<h3>Supported LLVM versions<a class="headerlink" href="#supported-llvm-versions" title="Permalink to this headline">¶</a></h3>
+<h3>Supported LLVM versions<a class="headerlink" href="#supported-llvm-versions" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>Note that pocl aims to support <strong>the latest LLVM version</strong> at the time
 of pocl release, <strong>plus the previous</strong> LLVM version. All older LLVM
@@ -114,7 +110,7 @@ possible breakage.</p>
 </section>
 </section>
 <section id="configure-build">
-<h2>Configure &amp; Build<a class="headerlink" href="#configure-build" title="Permalink to this headline">¶</a></h2>
+<h2>Configure &amp; Build<a class="headerlink" href="#configure-build" title="Link to this heading">¶</a></h2>
 <p>CMake version 3.12 or higher is required.</p>
 <p>The build+install is the usual CMake way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">directory</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">pocl</span><span class="o">-</span><span class="n">sources</span><span class="o">&gt;</span>
@@ -127,7 +123,7 @@ possible breakage.</p>
 <p>To see the default detected values, run <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">..</span></code> without any options,
 it will produce a summary.</p>
 <section id="cmake-variables">
-<h3>CMake variables<a class="headerlink" href="#cmake-variables" title="Permalink to this headline">¶</a></h3>
+<h3>CMake variables<a class="headerlink" href="#cmake-variables" title="Link to this heading">¶</a></h3>
 <p>Since pocl includes a compiler for the kernels, it both compiles (producing
 code) and is compiled (it consists of code). This distinction typically called
 “host” and “target”: The host is where pocl is running, the target is
@@ -140,7 +136,7 @@ with (because the LLVM-related parts of pocl take LLVM’s CXXFLAGS from
 llvm-config and pass them to the host compiler).</p>
 </section>
 <section id="cmake-host-flags">
-<h3>CMake host flags<a class="headerlink" href="#cmake-host-flags" title="Permalink to this headline">¶</a></h3>
+<h3>CMake host flags<a class="headerlink" href="#cmake-host-flags" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>Compile C:</dt><dd><p>CMAKE_C_FLAGS
 CMAKE_C_FLAGS_&lt;build-type&gt;</p>
@@ -151,7 +147,7 @@ CMAKE_CXX_FLAGS_&lt;build-type&gt;</p>
 </dl>
 </section>
 <section id="building-kernels-and-the-kernel-library-i-e-target-flags">
-<h3>Building kernels and the kernel library, i.e. target flags<a class="headerlink" href="#building-kernels-and-the-kernel-library-i-e-target-flags" title="Permalink to this headline">¶</a></h3>
+<h3>Building kernels and the kernel library, i.e. target flags<a class="headerlink" href="#building-kernels-and-the-kernel-library-i-e-target-flags" title="Link to this heading">¶</a></h3>
 <p>All of these empty by default. There are hardcoded defaults which may
 be overridden by setting these variables (rarely needed).</p>
 <dl class="simple">
@@ -172,7 +168,7 @@ language-independent options</p>
 </dl>
 </section>
 <section id="cmake-other-options-features">
-<span id="pocl-cmake-variables"></span><h3>CMake: other options &amp; features<a class="headerlink" href="#cmake-other-options-features" title="Permalink to this headline">¶</a></h3>
+<span id="pocl-cmake-variables"></span><h3>CMake: other options &amp; features<a class="headerlink" href="#cmake-other-options-features" title="Link to this heading">¶</a></h3>
 <p>Note that there are a few more packaging-related options described
 in <code class="docutils literal notranslate"><span class="pre">README.packaging</span></code>.</p>
 <p>For multiple-item options like KERNELLIB_HOST_CPU_VARIANTS,
@@ -272,7 +268,7 @@ tests are run through the Emulator. Mostly useful to test AVX512.</p></li>
 </ul>
 </section>
 <section id="llvm-less-build">
-<span id="pocl-without-llvm"></span><h3>LLVM-less build<a class="headerlink" href="#llvm-less-build" title="Permalink to this headline">¶</a></h3>
+<span id="pocl-without-llvm"></span><h3>LLVM-less build<a class="headerlink" href="#llvm-less-build" title="Link to this heading">¶</a></h3>
 <p>You can build a runtime-only pocl to run prebuilt pocl binaries on a device.
 To do this</p>
 <ul>
@@ -303,22 +299,22 @@ accelerators don’t require compiling OpenCL kernels, therefore, no hash will e
 </section>
 </section>
 <section id="cross-compile-pocl">
-<h2>Cross-compile PoCL<a class="headerlink" href="#cross-compile-pocl" title="Permalink to this headline">¶</a></h2>
+<h2>Cross-compile PoCL<a class="headerlink" href="#cross-compile-pocl" title="Link to this heading">¶</a></h2>
 <p>It’s now possible to cross-compile pocl on x86-64 to run on ARM/MIPS/etc,
 There is a ToolchainExample.cmake file;
 copy it under different name, then follow the instructions in the file.</p>
 </section>
 <section id="known-build-time-issues">
-<h2>Known build-time issues<a class="headerlink" href="#known-build-time-issues" title="Permalink to this headline">¶</a></h2>
+<h2>Known build-time issues<a class="headerlink" href="#known-build-time-issues" title="Link to this heading">¶</a></h2>
 <p>There are unsolved issues and bugs in pocl. See the bug listing
 for a complete listing at <a class="reference external" href="https://github.com/pocl/pocl/issues">https://github.com/pocl/pocl/issues</a></p>
 </section>
 <section id="building-running-in-docker">
-<h2>Building &amp; running in Docker<a class="headerlink" href="#building-running-in-docker" title="Permalink to this headline">¶</a></h2>
+<h2>Building &amp; running in Docker<a class="headerlink" href="#building-running-in-docker" title="Link to this heading">¶</a></h2>
 <p>Make sure you have enough space (default location is usually <code class="docutils literal notranslate"><span class="pre">/var/lib/docker</span></code>,
 required storage for standard pocl build is about 1.5 GB per container)</p>
 <section id="build-start-pocl-container">
-<h3>Build &amp; start Pocl container<a class="headerlink" href="#build-start-pocl-container" title="Permalink to this headline">¶</a></h3>
+<h3>Build &amp; start Pocl container<a class="headerlink" href="#build-start-pocl-container" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">tools/docker</span></code></p></li>
 <li><p>pick a Dockerfile from tools/docker, e.g. Fedora/default</p></li>
@@ -330,7 +326,7 @@ run docker build with <code class="docutils literal notranslate"><span class="pr
 </ul>
 </section>
 <section id="dockerfiles">
-<h3>Dockerfiles<a class="headerlink" href="#dockerfiles" title="Permalink to this headline">¶</a></h3>
+<h3>Dockerfiles<a class="headerlink" href="#dockerfiles" title="Link to this heading">¶</a></h3>
 <p>Note that some images (e.g. RHEL and PHSA) may be impossible to build,
 due to not having a sufficiently new version of LLVM available.</p>
 <p>Dockerfiles are named according to what they build, or the release they’re based on:</p>
@@ -353,7 +349,7 @@ due to not having a sufficiently new version of LLVM available.</p>
 </section>
 </section>
 <section id="arm-32-64bit-support">
-<h2>ARM 32/64bit support<a class="headerlink" href="#arm-32-64bit-support" title="Permalink to this headline">¶</a></h2>
+<h2>ARM 32/64bit support<a class="headerlink" href="#arm-32-64bit-support" title="Link to this heading">¶</a></h2>
 <p>Status:</p>
 <p>PoCL builds (as of Dec 2023) on ODROID XU3 and ODROID C2
 and almost all tests pass.</p>
@@ -370,7 +366,7 @@ running <cite>llc -mcpu=help</cite>.</p></li>
 </ul>
 </section>
 <section id="risc-v-support">
-<h2>RISC-V support<a class="headerlink" href="#risc-v-support" title="Permalink to this headline">¶</a></h2>
+<h2>RISC-V support<a class="headerlink" href="#risc-v-support" title="Link to this heading">¶</a></h2>
 <p>The RISC-V support has been tested (as of Dec 2023) on Starfive VisionFive 2 using Ubuntu 23.10 preinstalled image,
 with LLVM 17 and GCC 13.2; of the internal tests, 98% tests pass, 4 tests fail out of 253.
 In particular, tests using printf with vector arguments are broken ATM. Other boards / CPUs
@@ -403,8 +399,9 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installing-requirements-for-ubuntu">Installing requirements for Ubuntu</a></li>
@@ -434,12 +431,17 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to Portable Computing Language (pocl)’s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="using.html"
-                        title="next chapter">Usage</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to Portable Computing Language (PoCL)’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="using.html"
+                          title="next chapter">Usage</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -456,7 +458,7 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -471,15 +473,15 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
           <a href="using.html" title="Usage"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Portable Computing Language (pocl)’s documentation!"
+          <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

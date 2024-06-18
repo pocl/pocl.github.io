@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Supported OpenCL features &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,15 +42,15 @@
           <div class="body" role="main">
             
   <section id="supported-opencl-features">
-<h1>Supported OpenCL features<a class="headerlink" href="#supported-opencl-features" title="Permalink to this headline">¶</a></h1>
+<h1>Supported OpenCL features<a class="headerlink" href="#supported-opencl-features" title="Link to this heading">¶</a></h1>
 <p>All mandatory features for OpenCL 1.2 and 3.0 are supported
 on x86-64+Linux, see <a class="reference internal" href="conformance.html#pocl-conformance"><span class="std std-ref">OpenCL conformance</span></a> for details.</p>
 </section>
 <section id="known-unsupported-opencl-features">
-<h1>Known unsupported OpenCL features<a class="headerlink" href="#known-unsupported-opencl-features" title="Permalink to this headline">¶</a></h1>
+<h1>Known unsupported OpenCL features<a class="headerlink" href="#known-unsupported-opencl-features" title="Link to this heading">¶</a></h1>
 <p>The known unsupported OpenCL features are listed here as encountered.</p>
 <section id="unimplemented-device-side-features">
-<h2>Unimplemented device-side features<a class="headerlink" href="#unimplemented-device-side-features" title="Permalink to this headline">¶</a></h2>
+<h2>Unimplemented device-side features<a class="headerlink" href="#unimplemented-device-side-features" title="Link to this heading">¶</a></h2>
 <ul>
 <li><p>OpenCL 2.0</p>
 <ul class="simple">
@@ -66,12 +64,12 @@ on x86-64+Linux, see <a class="reference internal" href="conformance.html#pocl-c
 </ul>
 </section>
 <section id="unimplemented-host-side-features">
-<h2>Unimplemented host-side features<a class="headerlink" href="#unimplemented-host-side-features" title="Permalink to this headline">¶</a></h2>
+<h2>Unimplemented host-side features<a class="headerlink" href="#unimplemented-host-side-features" title="Link to this heading">¶</a></h2>
 <p>All 1.2 runtime API call are implemented. From the 2.x and 3.0 API, all should
 exist, but some might have “dummy” implementations (they always return an error).</p>
 </section>
 <section id="unimplemented-extensions">
-<h2>Unimplemented extensions<a class="headerlink" href="#unimplemented-extensions" title="Permalink to this headline">¶</a></h2>
+<h2>Unimplemented extensions<a class="headerlink" href="#unimplemented-extensions" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>OpenGL interoperability extension</p></li>
@@ -81,14 +79,14 @@ exist, but some might have “dummy” implementations (they always return an er
 </section>
 </section>
 <section id="spir-v-support">
-<h1>SPIR-V support<a class="headerlink" href="#spir-v-support" title="Permalink to this headline">¶</a></h1>
+<h1>SPIR-V support<a class="headerlink" href="#spir-v-support" title="Link to this heading">¶</a></h1>
 <p>There is now extensive support available for SPIR-V.</p>
 <p>Note that SPIR-V format supports different “capabilities” which in effect
 are different “dialects” of SPIR-V. The CPU driver supports the “Kernel” dialect,
 produced by llvm-spirv, Vulkan driver supports the “Shader” dialect produced
 by clspv.</p>
 <section id="how-to-build-pocl-with-spir-v-support-cpu-cuda-devices">
-<h2>How to build PoCL with SPIR-V support (CPU / CUDA devices)<a class="headerlink" href="#how-to-build-pocl-with-spir-v-support-cpu-cuda-devices" title="Permalink to this headline">¶</a></h2>
+<h2>How to build PoCL with SPIR-V support (CPU / CUDA devices)<a class="headerlink" href="#how-to-build-pocl-with-spir-v-support-cpu-cuda-devices" title="Link to this heading">¶</a></h2>
 <p>Support for SPIR-V binaries depends on functional llvm-spirv translator and some packages.
 See <a class="reference internal" href="install.html#pocl-install"><span class="std std-ref">Installation</span></a> for additional requirements for SPIR-V support.</p>
 <p>Requirements:</p>
@@ -112,7 +110,7 @@ See <a class="reference internal" href="install.html#pocl-install"><span class="
 then when running CMake on PoCL sources, add to the command line: <code class="docutils literal notranslate"><span class="pre">-DLLVM_SPIRV=/path/to/llvm-spirv</span></code></p>
 </section>
 <section id="compiling-source-to-spir-spir-v">
-<h2>Compiling source to SPIR/SPIR-V<a class="headerlink" href="#compiling-source-to-spir-spir-v" title="Permalink to this headline">¶</a></h2>
+<h2>Compiling source to SPIR/SPIR-V<a class="headerlink" href="#compiling-source-to-spir-spir-v" title="Link to this heading">¶</a></h2>
 <p>PoCL’s own binary format doesn’t use SPIR-V, but it’s possible
 to compile OpenCL sources directly to SPIR (LLVM IR with SPIR target),
 using Clang:</p>
@@ -132,7 +130,7 @@ using Clang:</p>
 </div>
 </section>
 <section id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h2>
 <p>The most complete support is for the CPU device on x86-64 and ARM64 platforms,
 but there is also some support for CUDA and CPU devices on other platforms.</p>
 </section>
@@ -145,8 +143,9 @@ but there is also some support for CUDA and CPU devices on other platforms.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Supported OpenCL features</a></li>
 <li><a class="reference internal" href="#known-unsupported-opencl-features">Known unsupported OpenCL features</a><ul>
 <li><a class="reference internal" href="#unimplemented-device-side-features">Unimplemented device-side features</a></li>
@@ -162,12 +161,17 @@ but there is also some support for CUDA and CPU devices on other platforms.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="features.html"
-                        title="previous chapter">Supported OpenCL features, device drivers</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="conformance.html"
-                        title="next chapter">OpenCL conformance</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="features.html"
+                          title="previous chapter">Supported OpenCL features, device drivers</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="conformance.html"
+                          title="next chapter">OpenCL conformance</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -184,7 +188,7 @@ but there is also some support for CUDA and CPU devices on other platforms.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -207,8 +211,8 @@ but there is also some support for CUDA and CPU devices on other platforms.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

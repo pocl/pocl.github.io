@@ -1,22 +1,22 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Release Notes for PoCL 5.0 &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release Notes for PoCL 6.0" href="notes_6_0.html" />
+    <link rel="prev" title="Release Notes" href="release_notes.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -24,7 +24,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="notes_6_0.html" title="Release Notes for PoCL 6.0"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="release_notes.html" title="Release Notes"
+             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" accesskey="U">Release Notes</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 5.0</a></li> 
       </ul>
     </div>  
@@ -35,18 +42,18 @@
           <div class="body" role="main">
             
   <section id="release-notes-for-pocl-5-0">
-<h1>Release Notes for PoCL 5.0<a class="headerlink" href="#release-notes-for-pocl-5-0" title="Permalink to this headline">¶</a></h1>
+<h1>Release Notes for PoCL 5.0<a class="headerlink" href="#release-notes-for-pocl-5-0" title="Link to this heading">¶</a></h1>
 <section id="new-backend-remote">
-<h2>New backend: Remote<a class="headerlink" href="#new-backend-remote" title="Permalink to this headline">¶</a></h2>
+<h2>New backend: Remote<a class="headerlink" href="#new-backend-remote" title="Link to this heading">¶</a></h2>
 <p>PoCL now has a new backend (called ‘remote’) for offloading OpenCL commands
 across a network to one or more servers that are running the ‘pocld’ daemon
 shipped with PoCL. See the <a class="reference external" href="http://portablecl.org/remote-backend.html">announcement</a>
 and the <a class="reference external" href="http://portablecl.org/docs/html/remote.html">documentation</a> for more details.</p>
 </section>
 <section id="driver-specific-features">
-<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Permalink to this headline">¶</a></h2>
+<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Link to this heading">¶</a></h2>
 <section id="cuda-driver-more-opencl-3-0-features-and-extensions-implemented">
-<h3>CUDA driver: More OpenCL 3.0 features and extensions implemented<a class="headerlink" href="#cuda-driver-more-opencl-3-0-features-and-extensions-implemented" title="Permalink to this headline">¶</a></h3>
+<h3>CUDA driver: More OpenCL 3.0 features and extensions implemented<a class="headerlink" href="#cuda-driver-more-opencl-3-0-features-and-extensions-implemented" title="Link to this heading">¶</a></h3>
 <p>CUDA driver received new features to support more optional OpenCL 3.0
 features and various extensions that are needed to (better)
 run <a class="reference external" href="http://github.com/CHIP-SPV/chipStar">chipStar</a>:</p>
@@ -61,13 +68,13 @@ get_sub_group_local_id, sub_group_barrier, sub_group_ballot</p></li>
 </ul>
 </section>
 <section id="risc-v-cpu-support-improved">
-<h3>RISC-V CPU support improved<a class="headerlink" href="#risc-v-cpu-support-improved" title="Permalink to this headline">¶</a></h3>
+<h3>RISC-V CPU support improved<a class="headerlink" href="#risc-v-cpu-support-improved" title="Link to this heading">¶</a></h3>
 <p>In this release we improved support for RISC-V CPUs. We tested PoCL on
 a Starfive VisionFive 2 using a Ubuntu 23.10 preinstalled image. With
 LLVM 17 and GCC 13.2, 98% tests pass (only 4 tests fail out of 253).</p>
 </section>
 <section id="other-cpu-improvements">
-<h3>Other CPU improvements<a class="headerlink" href="#other-cpu-improvements" title="Permalink to this headline">¶</a></h3>
+<h3>Other CPU improvements<a class="headerlink" href="#other-cpu-improvements" title="Link to this heading">¶</a></h3>
 <p>There were also many other CPU driver improvements, this time
 mostly driven by <a class="reference external" href="http://github.com/CHIP-SPV/chipStar">chipStar’s</a> needs:</p>
 <ul class="simple">
@@ -76,7 +83,7 @@ mostly driven by <a class="reference external" href="http://github.com/CHIP-SPV/
 </ul>
 </section>
 <section id="experimental-built-in-kernel-library-based-fpga-backend">
-<h3>Experimental built-in-kernel library based FPGA backend<a class="headerlink" href="#experimental-built-in-kernel-library-based-fpga-backend" title="Permalink to this headline">¶</a></h3>
+<h3>Experimental built-in-kernel library based FPGA backend<a class="headerlink" href="#experimental-built-in-kernel-library-based-fpga-backend" title="Link to this heading">¶</a></h3>
 <p>AlmaIF backend added a DBDevice backend, which can be used to transparently
 reconfigure FPGAs from different vendors using a database of bitstreams.
 This work is from an in-progress research work and can be considered
@@ -87,16 +94,16 @@ Programming of FPGAs via Automated Built-in Kernel Management” (NorCAS 2023)</
 </section>
 </section>
 <section id="deprecation-feature-removal-notices">
-<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Permalink to this headline">¶</a></h2>
+<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Link to this heading">¶</a></h2>
 <p>There are some features we plan to deprecate or remove to clean up
 the codebase a bit.</p>
 <section id="llvm-old-versions-cleanup">
-<h3>LLVM: old versions cleanup<a class="headerlink" href="#llvm-old-versions-cleanup" title="Permalink to this headline">¶</a></h3>
+<h3>LLVM: old versions cleanup<a class="headerlink" href="#llvm-old-versions-cleanup" title="Link to this heading">¶</a></h3>
 <p>Support for LLVM versions 10 to 13 inclusive is deprecated and will be
 removed in next PoCL release.</p>
 </section>
 <section id="the-old-spir-support-will-be-removed">
-<h3>The old SPIR support will be removed<a class="headerlink" href="#the-old-spir-support-will-be-removed" title="Permalink to this headline">¶</a></h3>
+<h3>The old SPIR support will be removed<a class="headerlink" href="#the-old-spir-support-will-be-removed" title="Link to this heading">¶</a></h3>
 <p>CPU drivers currently report <cite>cl_khr_spir</cite> for SPIR 1.x/2.0 support, but the
 support has never been finished nor tested properly and is likely completely
 unused. Thus, we believe it’s time to remove the partial implementation in the
@@ -113,8 +120,9 @@ recommended intermediate language input option.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Release Notes for PoCL 5.0</a><ul>
 <li><a class="reference internal" href="#new-backend-remote">New backend: Remote</a></li>
 <li><a class="reference internal" href="#driver-specific-features">Driver-specific features</a><ul>
@@ -133,6 +141,17 @@ recommended intermediate language input option.</p>
 </li>
 </ul>
 
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="release_notes.html"
+                          title="previous chapter">Release Notes</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="notes_6_0.html"
+                          title="next chapter">Release Notes for PoCL 6.0</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -149,7 +168,7 @@ recommended intermediate language input option.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -160,13 +179,20 @@ recommended intermediate language input option.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="notes_6_0.html" title="Release Notes for PoCL 6.0"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="release_notes.html" title="Release Notes"
+             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" >Release Notes</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 5.0</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

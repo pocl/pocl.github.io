@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Kernel compiler &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,7 +42,7 @@
           <div class="body" role="main">
             
   <section id="kernel-compiler">
-<h1>Kernel compiler<a class="headerlink" href="#kernel-compiler" title="Permalink to this headline">¶</a></h1>
+<h1>Kernel compiler<a class="headerlink" href="#kernel-compiler" title="Link to this heading">¶</a></h1>
 <p>The compilation of kernels in pocl is performed roughly as follows.</p>
 <ol class="arabic">
 <li><p>Produce an LLVM bitcode of the entire program.</p>
@@ -82,7 +80,7 @@ from the CPU device layer implementations
 </li>
 </ol>
 <section id="multiple-logical-address-spaces">
-<h2>Multiple logical address spaces<a class="headerlink" href="#multiple-logical-address-spaces" title="Permalink to this headline">¶</a></h2>
+<h2>Multiple logical address spaces<a class="headerlink" href="#multiple-logical-address-spaces" title="Link to this heading">¶</a></h2>
 <p>By default, Clang converts the OpenCL C address space qualifiers to “language”
 address space identifiers, which are later converted to target-specific address
 spaces. That is, e.g., for the common CPU targets with single uniform address space,
@@ -97,7 +95,7 @@ treatment of the pointers pointing to (logically) different address spaces (e.g.
 disjoint address space alias analysis, see <a class="reference internal" href="#opencl-optimizations"><span class="std std-ref">Other OpenCL-specific optimizations</span></a>).</p>
 </section>
 <section id="work-group-function-generation">
-<h2>Work group function generation<a class="headerlink" href="#work-group-function-generation" title="Permalink to this headline">¶</a></h2>
+<h2>Work group function generation<a class="headerlink" href="#work-group-function-generation" title="Link to this heading">¶</a></h2>
 <p>The work-group function simply produces the execution of the whole local
 space, i.e., it executes the kernel code for all work-items in a work-group.
 Currently one work-group function is produced for each different local
@@ -158,7 +156,7 @@ are replicated as scalars for each work-item which are visible across the whole
 work-group function without needing to restore them separately.</p>
 </section>
 <section id="work-group-autovectorization">
-<h2>Work-group autovectorization<a class="headerlink" href="#work-group-autovectorization" title="Permalink to this headline">¶</a></h2>
+<h2>Work-group autovectorization<a class="headerlink" href="#work-group-autovectorization" title="Link to this heading">¶</a></h2>
 <p>The work-group functions can be vectorized “horizontally” (across multiple
 work-items in the work-group function) by using the
 <code class="docutils literal notranslate"><span class="pre">WorkitemLoops</span></code> to produce parallel loops for the parallel regions. These
@@ -238,7 +236,7 @@ between work-items). It falls back to <em>variable</em> in case it cannot prove 
 uniformity.</p>
 </section>
 <section id="creating-the-work-group-function-launchers">
-<span id="wg-functions"></span><h2>Creating the work-group function launchers<a class="headerlink" href="#creating-the-work-group-function-launchers" title="Permalink to this headline">¶</a></h2>
+<span id="wg-functions"></span><h2>Creating the work-group function launchers<a class="headerlink" href="#creating-the-work-group-function-launchers" title="Link to this heading">¶</a></h2>
 <p>The kernel compiler creates functions for launching the work-group functions that
 are built into the same module as the kernel. These functions can be used as
 access points from the host code or from separate control/scheduler code at the device
@@ -291,7 +289,7 @@ buffer.</p>
 workgroups are called from the host code.</p>
 </section>
 <section id="assisting-transformations">
-<h2>Assisting transformations<a class="headerlink" href="#assisting-transformations" title="Permalink to this headline">¶</a></h2>
+<h2>Assisting transformations<a class="headerlink" href="#assisting-transformations" title="Link to this heading">¶</a></h2>
 <p>Several transformations are done to the LLVM bytecode to assist in the work-group
 generation effort. Most of them are required by the actual parallel region formation.
 Some of them are listed in the following:</p>
@@ -356,7 +354,7 @@ in the kernel.</p>
 </div></blockquote>
 </section>
 <section id="other-opencl-specific-optimizations">
-<span id="opencl-optimizations"></span><h2>Other OpenCL-specific optimizations<a class="headerlink" href="#other-opencl-specific-optimizations" title="Permalink to this headline">¶</a></h2>
+<span id="opencl-optimizations"></span><h2>Other OpenCL-specific optimizations<a class="headerlink" href="#other-opencl-specific-optimizations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WorkitemAliasAnalyzer</span></code></p></li>
 </ul>
@@ -376,8 +374,9 @@ address spaces do not alias).</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Kernel compiler</a><ul>
 <li><a class="reference internal" href="#multiple-logical-address-spaces">Multiple logical address spaces</a></li>
 <li><a class="reference internal" href="#work-group-function-generation">Work group function generation</a></li>
@@ -389,12 +388,17 @@ address spaces do not alias).</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="host_library.html"
-                        title="previous chapter">OpenCL host library</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="memory_management.html"
-                        title="next chapter">Memory management in PoCL</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="host_library.html"
+                          title="previous chapter">OpenCL host library</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="memory_management.html"
+                          title="next chapter">Memory management in PoCL</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -411,7 +415,7 @@ address spaces do not alias).</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -434,8 +438,8 @@ address spaces do not alias).</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

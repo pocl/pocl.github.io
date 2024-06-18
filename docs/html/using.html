@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Usage &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -43,12 +41,12 @@
           <div class="body" role="main">
             
   <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
 <p>The basic usage of pocl should be as easy as any other OpenCL implementation.</p>
 <p>While it is possible to link against pocl directly, the recommended way is to
 use the ICD interface.</p>
 <section id="linking-your-program-with-pocl-through-an-icd-loader">
-<span id="linking-with-icd"></span><h2>Linking your program with pocl through an icd loader<a class="headerlink" href="#linking-your-program-with-pocl-through-an-icd-loader" title="Permalink to this headline">¶</a></h2>
+<span id="linking-with-icd"></span><h2>Linking your program with pocl through an icd loader<a class="headerlink" href="#linking-your-program-with-pocl-through-an-icd-loader" title="Link to this heading">¶</a></h2>
 <p>You can link your OpenCL program against an ICD loader. If your ICD loader is
 correctly configured to load pocl, your program will be able to use pocl.
 See the section below for more information about ICD and  ICD loaders.</p>
@@ -63,7 +61,7 @@ pkg-config support):</p>
 </div>
 </section>
 <section id="installable-client-driver-icd">
-<h2>Installable client driver (ICD)<a class="headerlink" href="#installable-client-driver-icd" title="Permalink to this headline">¶</a></h2>
+<h2>Installable client driver (ICD)<a class="headerlink" href="#installable-client-driver-icd" title="Link to this heading">¶</a></h2>
 <p>pocl is built with the ICD extensions of OpenCL by default. This allows you
 to have several OpenCL implementations concurrently on your computer, and
 select the one to use at runtime by selecting the corresponding cl_platform.
@@ -83,7 +81,7 @@ but NVidia, AMD, Intel, Khronos, and the free ocl-icd project each provides one.
 </ul>
 </section>
 <section id="linking-your-program-directly-with-pocl">
-<h2>Linking your program directly with pocl<a class="headerlink" href="#linking-your-program-directly-with-pocl" title="Permalink to this headline">¶</a></h2>
+<h2>Linking your program directly with pocl<a class="headerlink" href="#linking-your-program-directly-with-pocl" title="Link to this heading">¶</a></h2>
 <p>Passing the appropriate linker flags is enough to use pocl in your
 program. However, please bear in mind that:</p>
 <p>The pkg-config tool is used to locate the libraries and headers in
@@ -97,7 +95,7 @@ the pkg-config:</p>
 wont be able to run with another OpenCL implementation without recompilation.</p>
 </section>
 <section id="using-pocl-on-macosx">
-<h2>Using pocl on MacOSX<a class="headerlink" href="#using-pocl-on-macosx" title="Permalink to this headline">¶</a></h2>
+<h2>Using pocl on MacOSX<a class="headerlink" href="#using-pocl-on-macosx" title="Link to this heading">¶</a></h2>
 <p>On MacOSX, you can either link your program directly with pocl or link through the
 ICD loader by KhronosGroup.</p>
 <p>Even if you use an ICD loader, the Apple OpenCL implementation will still be invisible,
@@ -106,7 +104,7 @@ unless you use a wrapper library to expose the Apple OpenCL implementation as an
 platform that is visible to the application will be PoCL.</p>
 </section>
 <section id="tuning-pocl-behavior-with-env-variables">
-<span id="pocl-env-variables"></span><h2>Tuning pocl behavior with ENV variables<a class="headerlink" href="#tuning-pocl-behavior-with-env-variables" title="Permalink to this headline">¶</a></h2>
+<span id="pocl-env-variables"></span><h2>Tuning pocl behavior with ENV variables<a class="headerlink" href="#tuning-pocl-behavior-with-env-variables" title="Link to this heading">¶</a></h2>
 <p>The behavior of pocl can be controlled with multiple environment variables
 listed below. The variables are helpful both when using and when developing
 pocl.</p>
@@ -319,13 +317,11 @@ will be handy for debugging</p>
 <div><p>Sets up Just-In-Time compilation in the Level0 driver.
 (see <a class="reference internal" href="level0.html#pocl-level0-driver"><span class="std std-ref">Level Zero driver</span></a> for details)
 Accepted values: {0,1,auto}</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>0 = always disable JIT</p></li>
 <li><p>1 = always use JIT,</p></li>
 <li><p>auto (default) = guess based on program’s kernel count &amp; SPIR-V size.</p></li>
 </ul>
-</div></blockquote>
 </div></blockquote>
 <ul>
 <li><p><strong>POCL_LLVM_VERIFY</strong></p>
@@ -396,22 +392,27 @@ POCL_TRACING_FILTER is a comma separated list of string to
 indicate which event status should be filtered. For instance to trace
 complete and running events POCL_TRACING_FILTER should be set
 to “complete,running”. Default behavior is to trace all events.</p>
-<blockquote>
-<div><dl>
-<dt>cq – Dumps a simple per-kernel execution time statistics at the</dt><dd><p>program exit time which is collected from command queue
+<ul>
+<li><dl class="simple">
+<dt><strong>cq</strong> – Dumps a simple per-kernel execution time statistics at the</dt><dd><p>program exit time which is collected from command queue
 start and finish time stamps. Useful for quick and easy profiling
 purposes with accurate kernel execution time stamps produced
 in a per device way. Currently only tracks kernel timings, and
 POCL_TRACING_FILTER has no effect.</p>
 </dd>
-<dt>text   – Basic text logger for each events state</dt><dd><p>Use POCL_TRACING_OPT=&lt;file&gt; to set the
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>text</strong> – Basic text logger for each events state</dt><dd><p>Use POCL_TRACING_OPT=&lt;file&gt; to set the
 output file. If not specified, it defaults to
 pocl_trace_event.log</p>
 </dd>
-<dt>lttng  – LTTNG tracepoint support. Requires pocl to be built with <code class="docutils literal notranslate"><span class="pre">-DENABLE_LTTNG=YES</span></code>.</dt><dd><p>When activated, a lttng session must be started.
+</dl>
+</li>
+<li><dl>
+<dt><strong>lttng</strong> – LTTNG tracepoint support. Requires pocl to be built with <code class="docutils literal notranslate"><span class="pre">-DENABLE_LTTNG=YES</span></code>.</dt><dd><p>When activated, a lttng session must be started.
 The following tracepoints are available:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>pocl_trace:ndrange_kernel -&gt; Kernel execution</p></li>
 <li><p>pocl_trace:read_buffer    -&gt; Read buffer</p></li>
 <li><p>pocl_trace:write_buffer   -&gt; Write buffer</p></li>
@@ -419,12 +420,12 @@ The following tracepoints are available:</p>
 <li><p>pocl_trace:map            -&gt; Map image/buffer</p></li>
 <li><p>pocl_trace:command        -&gt; other commands</p></li>
 </ul>
-</div></blockquote>
 <p>For more information, please see lttng documentation:
 <a class="reference external" href="http://lttng.org/docs/#doc-tracing-your-own-user-application">http://lttng.org/docs/#doc-tracing-your-own-user-application</a></p>
 </dd>
 </dl>
-</div></blockquote>
+</li>
+</ul>
 </div></blockquote>
 <ul class="simple">
 <li><p><strong>POCL_VECTORIZER_REMARKS</strong></p></li>
@@ -447,31 +448,43 @@ or POCL_DEBUG=all to see the output printed.</p>
 <blockquote>
 <div><p>The kernel compiler method to produce the work group functions from
 multiple work items. Legal values:</p>
-<blockquote>
-<div><dl>
-<dt>auto   – Choose the best available method depending on the</dt><dd><p>kernel and the work group size. Use
+<ul>
+<li><dl class="simple">
+<dt><strong>auto</strong>   – Choose the best available method depending on the</dt><dd><p>kernel and the work group size. Use
 POCL_FULL_REPLICATION_THRESHOLD=N to set the
 maximum local size for a work group to be
 replicated fully with ‘repl’. Otherwise,
 ‘loops’ is used.</p>
 </dd>
-<dt>loops  – Create for-loops that execute the work items</dt><dd><p>(under stabilization). The drawback is the
+</dl>
+</li>
+<li><dl>
+<dt><strong>loops</strong>  – Create for-loops that execute the work items</dt><dd><p>(under stabilization). The drawback is the
 need to save the thread contexts in arrays.</p>
 <p>The loops will be unrolled a certain number of
 times of which maximum can be controlled with
 POCL_WILOOPS_MAX_UNROLL_COUNT=N environment
 variable (default is to not perform unrolling).</p>
 </dd>
-<dt>loopvec – Create work-item for-loops (see ‘loops’) and execute</dt><dd><p>the LLVM LoopVectorizer. The loops are not unrolled
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>loopvec</strong> – Create work-item for-loops (see ‘loops’) and execute</dt><dd><p>the LLVM LoopVectorizer. The loops are not unrolled
 but the unrolling decision is left to the generic
 LLVM passes (the default).</p>
 </dd>
-<dt>repl   – Replicate and chain all work items. This results</dt><dd><p>in more easily scalarizable private variables, thus
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>repl</strong>   – Replicate and chain all work items. This results</dt><dd><p>in more easily scalarizable private variables, thus
 might avoid storing work-item context to memory.
 However, the code bloat is increased with larger
 WG sizes.</p>
 </dd>
-<dt>cbs    – Use continuation-based synchronization to execute work-items</dt><dd><p>on non-SPMD devices.
+</dl>
+</li>
+<li><dl>
+<dt><strong>cbs</strong>    – Use continuation-based synchronization to execute work-items</dt><dd><p>on non-SPMD devices.
 CBS is expected to work for kernels that ‘loops’ does not support.
 For most other kernels it is expected to perform slightly worse.
 Also enables the LLVM LoopVectorizer.</p>
@@ -480,7 +493,8 @@ compares to the other approaches can be found in
 [this thesis](<a class="reference external" href="https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf">https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf</a>).</p>
 </dd>
 </dl>
-</div></blockquote>
+</li>
+</ul>
 </div></blockquote>
 <ul>
 <li><p><strong>POCL_WORK_GROUP_SPECIALIZATION</strong></p>
@@ -502,8 +516,9 @@ The specialization can be disabled by setting this environment variable to 0.</p
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Usage</a><ul>
 <li><a class="reference internal" href="#linking-your-program-with-pocl-through-an-icd-loader">Linking your program with pocl through an icd loader</a></li>
 <li><a class="reference internal" href="#installable-client-driver-icd">Installable client driver (ICD)</a></li>
@@ -514,12 +529,17 @@ The specialization can be disabled by setting this environment variable to 0.</p
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="install.html"
-                        title="previous chapter">Installation</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="features.html"
-                        title="next chapter">Supported OpenCL features, device drivers</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="install.html"
+                          title="previous chapter">Installation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="features.html"
+                          title="next chapter">Supported OpenCL features, device drivers</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -536,7 +556,7 @@ The specialization can be disabled by setting this environment variable to 0.</p
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -558,8 +578,8 @@ The specialization can be disabled by setting this environment variable to 0.</p
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Remote Driver &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,9 +43,9 @@
           <div class="body" role="main">
             
   <section id="remote-driver">
-<span id="remote-label"></span><h1>Remote Driver<a class="headerlink" href="#remote-driver" title="Permalink to this headline">¶</a></h1>
+<span id="remote-label"></span><h1>Remote Driver<a class="headerlink" href="#remote-driver" title="Link to this heading">¶</a></h1>
 <section id="background">
-<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading">¶</a></h2>
 <p>PoCL-Remote is an OpenCL driver which forwards OpenCL commands to
 a remote server over network. The remote OpenCL devices are listed in
 the local OpenCL platform device list and each each remote device can
@@ -88,7 +86,7 @@ PoCL-Remote can take advantage of both in client-server and server-to-server
 communication.</p>
 </section>
 <section id="more-information">
-<h2>More Information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<h2>More Information<a class="headerlink" href="#more-information" title="Link to this heading">¶</a></h2>
 <p>PoCL-Remote has previously been showcased at
 <a class="reference external" href="http://doi.org/10.1145/3388333.3388642">IWOCL ‘20</a>,
 <a class="reference external" href="https://doi.org/10.1007/978-3-031-04580-6_6">SAMOS 2021</a> and
@@ -109,7 +107,7 @@ available in <a class="reference external" href="https://doi.org/10.48550/arXiv.
 </div>
 </section>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <p>A machine with a working OpenCL implementation (can be any proprietary or
 pocl-based) to act as a server, and another machine as a client which runs the
 OpenCL application. Naturally, it’s possible to use the same machine for both
@@ -118,7 +116,7 @@ for testing purposes.</p>
 implementations as well as with PoCL’s CPU backend.</p>
 </section>
 <section id="current-status">
-<h2>Current Status<a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
+<h2>Current Status<a class="headerlink" href="#current-status" title="Link to this heading">¶</a></h2>
 <p>The current version has been tested with various programs, such as:</p>
 <blockquote>
 <div><ul class="simple">
@@ -135,7 +133,7 @@ devices launch kernels with printf() simultaneously, the output order is
 undefined.</p>
 </section>
 <section id="known-bugs-issues-wip">
-<h2>Known Bugs/Issues/WiP<a class="headerlink" href="#known-bugs-issues-wip" title="Permalink to this headline">¶</a></h2>
+<h2>Known Bugs/Issues/WiP<a class="headerlink" href="#known-bugs-issues-wip" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>The “-I” option to clBuildProgram does not work</p></li>
 <li><p>clGetKernelWorkGroupInfo() can return incorrect information</p></li>
@@ -148,7 +146,7 @@ information cannot be retrieved from OpenCL API runtime calls.</p></li>
 </ul>
 </section>
 <section id="known-bugs-issues-in-opencl-implementations">
-<span id="remote-issues-label"></span><h2>Known Bugs/Issues in OpenCL Implementations<a class="headerlink" href="#known-bugs-issues-in-opencl-implementations" title="Permalink to this headline">¶</a></h2>
+<span id="remote-issues-label"></span><h2>Known Bugs/Issues in OpenCL Implementations<a class="headerlink" href="#known-bugs-issues-in-opencl-implementations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Nvidia’s OpenCL implementation has a bug where clCreateKernelsInProgram()
 sometimes fails. This affects pocld since it uses clCreateKernelsInProgram
@@ -169,7 +167,7 @@ it’s impossible to tell if an argument to clSetKernelArg is a pointer or an in
 </ul>
 </section>
 <section id="how-to-build">
-<h2>How to Build<a class="headerlink" href="#how-to-build" title="Permalink to this headline">¶</a></h2>
+<h2>How to Build<a class="headerlink" href="#how-to-build" title="Link to this heading">¶</a></h2>
 <p>First you need to install the build dependencies.
 These are listed in <a class="reference internal" href="install.html#pocl-install"><span class="std std-ref">Installation</span></a> or alternatively you can
 also take a look at the Dockerfiles in <code class="docutils literal notranslate"><span class="pre">tools/docker</span></code>.</p>
@@ -239,11 +237,11 @@ OK
 </pre></div>
 </div>
 <section id="android-build-client-only">
-<h3>Android Build (Client Only)<a class="headerlink" href="#android-build-client-only" title="Permalink to this headline">¶</a></h3>
+<h3>Android Build (Client Only)<a class="headerlink" href="#android-build-client-only" title="Link to this heading">¶</a></h3>
 <p>See <a class="reference internal" href="android.html#android-label"><span class="std std-ref">Using PoCL on Android</span></a> on how to do this.</p>
 </section>
 <section id="windows-build-server-only">
-<h3>Windows build (server only)<a class="headerlink" href="#windows-build-server-only" title="Permalink to this headline">¶</a></h3>
+<h3>Windows build (server only)<a class="headerlink" href="#windows-build-server-only" title="Link to this heading">¶</a></h3>
 <p>Only the remote server can be built on Windows.</p>
 <p>Note that later versions of the Khronos ICD have problems compiling with MSYS’s GCC.
 Git version from before Oct 3 2017 is known to compile. This is because apparently
@@ -293,7 +291,7 @@ if debugging symbols are not needed, <code class="docutils literal notranslate">
 </section>
 </section>
 <section id="event-tracing">
-<h2>Event Tracing<a class="headerlink" href="#event-tracing" title="Permalink to this headline">¶</a></h2>
+<h2>Event Tracing<a class="headerlink" href="#event-tracing" title="Link to this heading">¶</a></h2>
 <p>It’s possible to use LTTNG to trace both the server and the client library.
 To install lttng on Ubuntu, run this as root / sudo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">install</span> <span class="n">lttng</span><span class="o">-</span><span class="n">tools</span> <span class="n">lttng</span><span class="o">-</span><span class="n">modules</span><span class="o">-</span><span class="n">dkms</span> <span class="n">liblttng</span><span class="o">-</span><span class="n">ust</span><span class="o">-</span><span class="n">dev</span> <span class="n">liblttng</span><span class="o">-</span><span class="n">ctl</span><span class="o">-</span><span class="n">dev</span>
@@ -301,7 +299,7 @@ To install lttng on Ubuntu, run this as root / sudo:</p>
 </div>
 <p>You must now run cmake with <code class="docutils literal notranslate"><span class="pre">-DENABLE_LTTNG=YES</span></code> and rebuild pocl.</p>
 <section id="using-lttng">
-<h3>Using LTTNG<a class="headerlink" href="#using-lttng" title="Permalink to this headline">¶</a></h3>
+<h3>Using LTTNG<a class="headerlink" href="#using-lttng" title="Link to this heading">¶</a></h3>
 <p>First, check that lttng-sessiond is running. If it’s not, start it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lttng</span><span class="o">-</span><span class="n">sessiond</span> <span class="o">--</span><span class="n">daemonize</span>
 </pre></div>
@@ -348,7 +346,7 @@ directory. You can view them using “babeltrace” tool, or eclipse-based “tr
 or possibly other tools.</p>
 </section>
 <section id="viewing-traces">
-<h3>Viewing Traces<a class="headerlink" href="#viewing-traces" title="Permalink to this headline">¶</a></h3>
+<h3>Viewing Traces<a class="headerlink" href="#viewing-traces" title="Link to this heading">¶</a></h3>
 <p>For this you’ll need chrome/chromium, python and babeltrace installed.
 START_TIME and END_TIME are optional - they define a time
 slice to pick from the log. If not defined, the entire
@@ -363,7 +361,7 @@ babeltrace --clock-seconds . &gt;/tmp/trace.text
 click Load, and find <code class="docutils literal notranslate"><span class="pre">/tmp/trace.json</span></code>.</p>
 </section>
 <section id="remote-and-local-traces">
-<h3>Remote and Local Traces<a class="headerlink" href="#remote-and-local-traces" title="Permalink to this headline">¶</a></h3>
+<h3>Remote and Local Traces<a class="headerlink" href="#remote-and-local-traces" title="Link to this heading">¶</a></h3>
 <p>It’s possible to combine local and remote tracing outputs to get a full view
 of what’s happening over network. Note that this requires LTTNG installed on
 servers as well, plus it requires very precisely synchronized time between all
@@ -373,7 +371,7 @@ and then setup PTP (Precision time protocol). Note that PTP requires hardware
 support from <em>every</em> network device in path to achieve sub-microsecond precision.</p>
 </section>
 <section id="distributed-sycl-execution-using-pocl-r">
-<h3>Distributed SYCL Execution Using PoCL-R<a class="headerlink" href="#distributed-sycl-execution-using-pocl-r" title="Permalink to this headline">¶</a></h3>
+<h3>Distributed SYCL Execution Using PoCL-R<a class="headerlink" href="#distributed-sycl-execution-using-pocl-r" title="Link to this heading">¶</a></h3>
 <p>oneAPI DPC++ can be used to distribute SYCL applications using PoCL-R. Notably,
 only buffer-based memory management (not USM) works currently. To test it out,
 build DPC++ as instructed in the <a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md">Getting Started with oneAPI DPC++</a> document.</p>
@@ -388,7 +386,7 @@ The results are correct!
 </section>
 </section>
 <section id="implementation-notes">
-<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
+<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">¶</a></h2>
 <p>Although PoCL-R has been in development for several years it has only seen
 limited testing outside the original lab since it has not been publicly available.</p>
 <ul class="simple">
@@ -421,8 +419,9 @@ or buffers larger than 4G.</p></li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Remote Driver</a><ul>
 <li><a class="reference internal" href="#background">Background</a></li>
 <li><a class="reference internal" href="#more-information">More Information</a></li>
@@ -447,12 +446,17 @@ or buffers larger than 4G.</p></li>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="level0.html"
-                        title="previous chapter">Level Zero driver</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="android.html"
-                        title="next chapter">Using PoCL on Android</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="level0.html"
+                          title="previous chapter">Level Zero driver</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="android.html"
+                          title="next chapter">Using PoCL on Android</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -469,7 +473,7 @@ or buffers larger than 4G.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -493,8 +497,8 @@ or buffers larger than 4G.</p></li>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

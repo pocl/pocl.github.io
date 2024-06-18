@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Using PoCL on Android &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,7 +43,7 @@
           <div class="body" role="main">
             
   <section id="using-pocl-on-android">
-<span id="android-label"></span><h1>Using PoCL on Android<a class="headerlink" href="#using-pocl-on-android" title="Permalink to this headline">¶</a></h1>
+<span id="android-label"></span><h1>Using PoCL on Android<a class="headerlink" href="#using-pocl-on-android" title="Link to this heading">¶</a></h1>
 <p>It is possible to build and use PoCL on Android. However, the setup requires a number of options to be set.
 To see an example project, have a look at the <a class="reference external" href="https://github.com/cpc/PoCL-R-Reference-Android-Java-Client">PoCL-R Reference Android Java Client</a> .
 This Reference app uses both the <a class="reference internal" href="proxy.html#proxy-label"><span class="std std-ref">proxy</span></a> and <a class="reference internal" href="remote.html#remote-label"><span class="std std-ref">remote</span></a> device in its example apps. It also builds a custom version of <a class="reference external" href="http://jocl.org/">JOCL</a> so
@@ -55,7 +53,7 @@ assumed that a recent enough version of the NDK and CMake (the one found in the 
 installed via Android Studio. Versions that have been used before include: NDK 25.1.8937393 and 26.0.10792818 and CMake
 3.22.1.</p>
 <section id="cmake-arguments">
-<h2>CMake Arguments<a class="headerlink" href="#cmake-arguments" title="Permalink to this headline">¶</a></h2>
+<h2>CMake Arguments<a class="headerlink" href="#cmake-arguments" title="Link to this heading">¶</a></h2>
 <p>A number of features in PoCL such as CPU devices and the icd loader are not available on Android. Below is a list of
 recommended CMake options:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>-DENABLE_LLVM=0 -DHOST_DEVICE_BUILD_HASH=00000000 -DENABLE_ICD=0 -DENABLE_LOADABLE_DRIVERS=0 -DENABLE_HOST_CPU_DEVICES=0 -DENABLE_HWLOC=0 -DENABLE_POCLCC=0 -DENABLE_TESTS=0 -DENABLE_EXAMPLES=0 -DBUILD_SHARED_LIBS=0 -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK}/build/cmake/android.toolchain.cmake -DANDROID_NDK=${ANDROID_NDK} -DANDROID_PLATFORM=${ANDROID_PLATFORM_LEVEL} -DANDROID_ABI=${ANDROID_ABI} -DANDROID_NATIVE_API_LEVEL=${ANDROID_PLATFORM_LEVEL}
@@ -69,12 +67,12 @@ it is packed into the APK. It is recommended to set <code class="docutils litera
 (libpocl.a) as this is easier to use.</p>
 </section>
 <section id="building-remote-client">
-<h2>Building Remote Client<a class="headerlink" href="#building-remote-client" title="Permalink to this headline">¶</a></h2>
+<h2>Building Remote Client<a class="headerlink" href="#building-remote-client" title="Link to this heading">¶</a></h2>
 <p>If you want to make use of PoCL-R, you can add <code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_CLIENT=YES</span></code> to the cmake options
 and make sure that network access is allowed in the <cite>AndroidManifest.xml</cite>.</p>
 </section>
 <section id="building-proxy-device">
-<h2>Building Proxy Device<a class="headerlink" href="#building-proxy-device" title="Permalink to this headline">¶</a></h2>
+<h2>Building Proxy Device<a class="headerlink" href="#building-proxy-device" title="Link to this heading">¶</a></h2>
 <p>The proxy device allow you make use of any system provided OpenCL implementation as well as any devices provided by PoCL
 at the same time. Combined with the remote device, this allows you for example to easily switch between executing kernels
 locally or remotely or create a pipeline where work is done on both devices at the same time. To make use of the Proxy
@@ -107,11 +105,11 @@ and set <code class="docutils literal notranslate"><span class="pre">-DBUILD_SHA
 See that section for a workaround.</p>
 </section>
 <section id="setting-pocl-environment-variables">
-<h2>Setting PoCL Environment Variables<a class="headerlink" href="#setting-pocl-environment-variables" title="Permalink to this headline">¶</a></h2>
+<h2>Setting PoCL Environment Variables<a class="headerlink" href="#setting-pocl-environment-variables" title="Link to this heading">¶</a></h2>
 <p>The easiest way to set PoCL environment variables is to create a native function that calls stdlib.h’s setenv function.</p>
 </section>
 <section id="using-jocl">
-<h2>Using JOCL<a class="headerlink" href="#using-jocl" title="Permalink to this headline">¶</a></h2>
+<h2>Using JOCL<a class="headerlink" href="#using-jocl" title="Link to this heading">¶</a></h2>
 <p>It is possible to use JOCL on Android. However, by default JOCL does not get built for Android. It also doesn’t look for libpocl.
 See the android reference client readme on how to build JOCL for android and a submodule to our JOCL repo that looks for
 <cite>libpocl.so</cite> on Android.</p>
@@ -125,8 +123,9 @@ See the android reference client readme on how to build JOCL for android and a s
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Using PoCL on Android</a><ul>
 <li><a class="reference internal" href="#cmake-arguments">CMake Arguments</a></li>
 <li><a class="reference internal" href="#building-remote-client">Building Remote Client</a></li>
@@ -137,12 +136,17 @@ See the android reference client readme on how to build JOCL for android and a s
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="remote.html"
-                        title="previous chapter">Remote Driver</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="debug.html"
-                        title="next chapter">Debugging OpenCL applications with PoCL</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="remote.html"
+                          title="previous chapter">Remote Driver</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="debug.html"
+                          title="next chapter">Debugging OpenCL applications with PoCL</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -159,7 +163,7 @@ See the android reference client readme on how to build JOCL for android and a s
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -183,8 +187,8 @@ See the android reference client readme on how to build JOCL for android and a s
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

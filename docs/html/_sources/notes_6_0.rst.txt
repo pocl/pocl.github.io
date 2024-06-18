@@ -77,16 +77,15 @@ single-threaded minimal driver.
 Miscellaneous
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
- * The CPU drivers can be now used for running SYCL programs compiled with the oneAPI binary distributions of DPC++ by adding the following environment settings: `POCL_DRIVER_VERSION_OVERRIDE=2023.16.7.0.21_160000 POCL_CPU_VENDOR_ID_OVERRIDE=32902`.
- * Added support for the `__opencl_c_work_group_collective_functions` feature.
- * Improved SPIR-V support on architectures other than ARM/x86 (like RISC-V).
- * Additional intel_subgroup_shuffle functions (intel_subgroup_block_{read,write}*)
- * Implemented new experimental extensions:
-
-   * cl_pocl_svm_rect: `clEnqueueSVMMemFillRectPOCL` and `clEnqueueSVMMemcpyRectPOCL`. These implement rectangular-region memcpy/memfill with SVM memory.
-   * cl_pocl_command_buffer_svm: additional SVM-related commands for use with command buffers, such as `clCommandSVMMemcpyRectPOCL` and `clCommandSVMMemfillRect`
-   * cl_pocl_command_buffer_host_buffer: cl_mem & host-memory related commands for use with command buffers, such as `clCommandReadBuffer`, `clCommandReadBufferRect` etc
- * `clGetDeviceAndHostTimer()` implemented.
+* The CPU drivers can be now used for running SYCL programs compiled with the oneAPI binary distributions of DPC++ by adding the following environment settings: `POCL_DRIVER_VERSION_OVERRIDE=2023.16.7.0.21_160000 POCL_CPU_VENDOR_ID_OVERRIDE=32902`.
+* Added support for the `__opencl_c_work_group_collective_functions` feature.
+* Improved SPIR-V support on architectures other than ARM/x86 (like RISC-V).
+* Additional intel_subgroup_shuffle functions (intel_subgroup_block_{read,write}*)
+* Implemented new experimental extensions:
+  * cl_pocl_svm_rect: `clEnqueueSVMMemFillRectPOCL` and `clEnqueueSVMMemcpyRectPOCL`. These implement rectangular-region memcpy/memfill with SVM memory.
+  * cl_pocl_command_buffer_svm: additional SVM-related commands for use with command buffers, such as `clCommandSVMMemcpyRectPOCL` and `clCommandSVMMemfillRect`
+  * cl_pocl_command_buffer_host_buffer: cl_mem & host-memory related commands for use with command buffers, such as `clCommandReadBuffer`, `clCommandReadBufferRect` etc
+* `clGetDeviceAndHostTimer()` implemented.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Remote driver
@@ -98,10 +97,10 @@ Basis for the coarse-grain SVM support
 
 The CG SVM support works best if the client manages to mmap() the
 device-side allocated SVM pool to the same address as in the
-server-side. If not, SPIR-V manipulation is done to address for the
-offset for kernel executions. This is a work-in-progress, but is usable
-for testing client apps and libraries that require CG SVM as it seems to
-work often enough.
+server-side. If not, SPIR-V manipulation is done to shift the
+offset of the memory accessess in the execution kernels. This is
+a work-in-progress, but is usable for testing client apps and
+libraries that require CG SVM as it seems to work often enough.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Vsock support
@@ -155,12 +154,21 @@ Various improvements were made:
   not work anymore with files which have different SPIR-V versions.
   spirv-link is not required for building the driver anymore.
 
+* Fix passing sub-buffers as kernel arguments.
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 CUDA driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Various smaller fixes and enhancements, for example:
 
+* Added `sub_group_shuffle` and `sub_group_shuffle_xor` support for
+  the following data types: `char`, `uchar`, `short`, `ushort`, `int`,
+  `uint` and `float`. `cl_khr_subgroup_shuffle` device extension is
+  advertised when device is capable. Note: support for `long`, `ulong`
+  and `double` data types are missing.
+* Fixed kernel compilation for device programs with subgroup ballot
+  and shuffles for recent SM architectures (SM >= 8.0).
 * Fixed clLinkProgram and clCompileProgram to work correctly
 * Fixed memory leaks in clReleaseProgram
 * `CL_DEVICE_MAX_MEM_ALLOC_SIZE` limit increased to free memory reported by `cuMemGetInfo`
@@ -209,5 +217,8 @@ most notable/user facing ones are listed below:
 Deprecation/feature removal notices
 ===================================
 
- * Support for LLVM versions 10 to 13 inclusive has been removed. LLVM 14 to 18 are supported.
- * Support for `cl_khr_spir` (SPIR 1.x/2.0) has been removed. SPIR-V remains supported.
+* Support for LLVM versions 10 to 13 inclusive has been removed. LLVM 14 to 18 are supported.
+* Support for `cl_khr_spir` (SPIR 1.x/2.0) has been removed. SPIR-V remains supported.
+* Support for building with OpenCL headers and ICD which don't support OpenCL 3.0 is deprecated,
+  and will be removed in a future release. libpocl.so might still be loadable by older ICDs, but
+  this configuration will not be tested or supported.

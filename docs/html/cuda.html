@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>NVIDIA GPU support &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,7 +43,7 @@
           <div class="body" role="main">
             
   <section id="nvidia-gpu-support">
-<h1>NVIDIA GPU support<a class="headerlink" href="#nvidia-gpu-support" title="Permalink to this headline">¶</a></h1>
+<h1>NVIDIA GPU support<a class="headerlink" href="#nvidia-gpu-support" title="Link to this heading">¶</a></h1>
 <p>NOTE: Support for NVIDIA GPUs via the CUDA backend is currently experimental
 and many features may be missing or incomplete.</p>
 <p>The experimental CUDA backend provides support for CUDA-capable NVIDIA GPUs
@@ -54,9 +52,9 @@ The goal of this backend is to provide an open-source alternative to the
 proprietary NVIDIA OpenCL implementation.
 This makes use of the NVPTX backend in LLVM and the CUDA driver API.</p>
 <section id="building-pocl-with-cuda-support">
-<h2>Building PoCL with CUDA support<a class="headerlink" href="#building-pocl-with-cuda-support" title="Permalink to this headline">¶</a></h2>
+<h2>Building PoCL with CUDA support<a class="headerlink" href="#building-pocl-with-cuda-support" title="Link to this heading">¶</a></h2>
 <section id="install-prerequisites">
-<h3>1) Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h3>
+<h3>1) Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>Aside from the usual PoCL dependencies, you will also need the CUDA toolkit.
 Currently the backend is only regularly tested against CUDA 11.6, but it should
@@ -69,7 +67,7 @@ your library search path.</p>
 </div></blockquote>
 </section>
 <section id="build-pocl">
-<h3>2) Build PoCL<a class="headerlink" href="#build-pocl" title="Permalink to this headline">¶</a></h3>
+<h3>2) Build PoCL<a class="headerlink" href="#build-pocl" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>To enable the CUDA backend, add <code class="docutils literal notranslate"><span class="pre">-DENABLE_CUDA=ON</span></code> to your CMake
 configuration command line.</p>
@@ -77,7 +75,7 @@ configuration command line.</p>
 </div></blockquote>
 </section>
 <section id="run-tests">
-<h3>3) Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h3>
+<h3>3) Run tests<a class="headerlink" href="#run-tests" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>After building PoCL, you can smoke test the CUDA backend by executing the
 subset of PoCL’s tests that are known to pass on NVIDIA GPUs:</p>
@@ -87,7 +85,7 @@ subset of PoCL’s tests that are known to pass on NVIDIA GPUs:</p>
 </div></blockquote>
 </section>
 <section id="configuration">
-<h3>4) Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<h3>4) Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>Use <code class="docutils literal notranslate"><span class="pre">POCL_DEVICES=CUDA</span></code> to select only CUDA devices. If the system has more
 than one GPU, specify the <code class="docutils literal notranslate"><span class="pre">CUDA</span></code> device multiple times (e.g.
@@ -113,7 +111,7 @@ cause problems if using user events or sharing a context with a non-CUDA device.
 </section>
 </section>
 <section id="cuda-backend-status">
-<h2>CUDA backend status<a class="headerlink" href="#cuda-backend-status" title="Permalink to this headline">¶</a></h2>
+<h2>CUDA backend status<a class="headerlink" href="#cuda-backend-status" title="Link to this heading">¶</a></h2>
 <p>(last updated: 2017-06-02)</p>
 <p>The CUDA backend currently passes 73 tests from PoCL’s internal testsuite, and
 is capable of running various real OpenCL codes.
@@ -124,7 +122,7 @@ Since it uses CUDA under-the-hood, this backend also works with all of the
 NVIDIA CUDA profiling and debugging tools, many of which don’t work with
 NVIDIA’s own OpenCL implementation.</p>
 <section id="conformance-status">
-<h3>Conformance status<a class="headerlink" href="#conformance-status" title="Permalink to this headline">¶</a></h3>
+<h3>Conformance status<a class="headerlink" href="#conformance-status" title="Link to this heading">¶</a></h3>
 <p>The Khronos OpenCL 1.2 conformance tests are
 <a class="reference external" href="https://github.com/KhronosGroup/OpenCL-CTS/tree/cl12_trunk">available here</a>.
 The following test categories are known to pass on at least one NVIDIA GPU using
@@ -145,14 +143,14 @@ PoCL’s CUDA backend:</p>
 </ul>
 </section>
 <section id="tested-platforms">
-<h3>Tested platforms<a class="headerlink" href="#tested-platforms" title="Permalink to this headline">¶</a></h3>
+<h3>Tested platforms<a class="headerlink" href="#tested-platforms" title="Link to this heading">¶</a></h3>
 <p>The CUDA backend has been tested on Linux (CentOS 7.3) with SM_35, SM_52,
 SM_60, and SM_61 capable NVIDIA GPUs.</p>
 <p>The backend is also functional on macOS, with just one additional test failure
 compared to Linux (<code class="docutils literal notranslate"><span class="pre">test_event_cycle</span></code>).</p>
 </section>
 <section id="known-issues">
-<h3>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<h3>Known issues<a class="headerlink" href="#known-issues" title="Link to this heading">¶</a></h3>
 <p>The following is a non-comprehensive list of known issues in the CUDA backend:</p>
 <ul class="simple">
 <li><p>image types and samplers are unimplemented</p></li>
@@ -164,7 +162,7 @@ Once the core functionality is completed, optimization of the code generation
 and runtime can begin.</p>
 </section>
 <section id="support">
-<h3>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h3>
+<h3>Support<a class="headerlink" href="#support" title="Link to this heading">¶</a></h3>
 <p>For bug reports and questions, please use PoCL’s <a class="reference external" href="https://github.com/pocl/pocl/issues">GitHub issue tracker</a>.
 Pull requests and other contributions are also very welcome.</p>
 <p>This work has primarily been done by James Price from the
@@ -180,8 +178,9 @@ Pull requests and other contributions are also very welcome.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">NVIDIA GPU support</a><ul>
 <li><a class="reference internal" href="#building-pocl-with-cuda-support">Building PoCL with CUDA support</a><ul>
 <li><a class="reference internal" href="#install-prerequisites">1) Install prerequisites</a></li>
@@ -201,12 +200,17 @@ Pull requests and other contributions are also very welcome.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="hsa.html"
-                        title="previous chapter">HSA</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="almaif.html"
-                        title="next chapter">Fixed-Function Accelerators</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="hsa.html"
+                          title="previous chapter">HSA</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="almaif.html"
+                          title="next chapter">Fixed-Function Accelerators</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -223,7 +227,7 @@ Pull requests and other contributions are also very welcome.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -247,8 +251,8 @@ Pull requests and other contributions are also very welcome.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

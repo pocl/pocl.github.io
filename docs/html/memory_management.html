@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Memory management in PoCL &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,11 +42,11 @@
           <div class="body" role="main">
             
   <section id="memory-management-in-pocl">
-<h1>Memory management in PoCL<a class="headerlink" href="#memory-management-in-pocl" title="Permalink to this headline">¶</a></h1>
+<h1>Memory management in PoCL<a class="headerlink" href="#memory-management-in-pocl" title="Link to this heading">¶</a></h1>
 <p>This explains how PoCL implements buffers in device memory, and how it deals
 with various other aspects such as SVM and sub-buffers.</p>
 <section id="on-device-memory-svm-subbuffers">
-<h2>On-device memory, SVM, subbuffers<a class="headerlink" href="#on-device-memory-svm-subbuffers" title="Permalink to this headline">¶</a></h2>
+<h2>On-device memory, SVM, subbuffers<a class="headerlink" href="#on-device-memory-svm-subbuffers" title="Link to this heading">¶</a></h2>
 <p>When a buffer is created by clCreateBuffer, by default nothing is allocated
 in device memory. The actual allocation of on-device memory happens when
 the buffer is first used, by enqueueing a command. If the device memory
@@ -106,7 +104,7 @@ feature is not important enough ATM to further complicate the driver
 code.</p>
 </section>
 <section id="bufalloc">
-<h2>Bufalloc<a class="headerlink" href="#bufalloc" title="Permalink to this headline">¶</a></h2>
+<h2>Bufalloc<a class="headerlink" href="#bufalloc" title="Link to this heading">¶</a></h2>
 <p>Device drivers in PoCL need to manage the global memory of devices, by
 allocating and freeing chunks of it for the OpenCL buffers. In some cases
 (like CPU driver), this is simple because the memory management can be
@@ -148,8 +146,9 @@ there is no measurable difference in speed.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Memory management in PoCL</a><ul>
 <li><a class="reference internal" href="#on-device-memory-svm-subbuffers">On-device memory, SVM, subbuffers</a></li>
 <li><a class="reference internal" href="#bufalloc">Bufalloc</a></li>
@@ -157,12 +156,17 @@ there is no measurable difference in speed.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="kernel_compiler.html"
-                        title="previous chapter">Kernel compiler</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pocl_binary.html"
-                        title="next chapter">Binary inputs format</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="kernel_compiler.html"
+                          title="previous chapter">Kernel compiler</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="pocl_binary.html"
+                          title="next chapter">Binary inputs format</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -179,7 +183,7 @@ there is no measurable difference in speed.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -202,8 +206,8 @@ there is no measurable difference in speed.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

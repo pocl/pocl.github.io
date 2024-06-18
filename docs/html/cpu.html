@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>CPU device drivers &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,34 +43,34 @@
           <div class="body" role="main">
             
   <section id="cpu-device-drivers">
-<h1>CPU device drivers<a class="headerlink" href="#cpu-device-drivers" title="Permalink to this headline">¶</a></h1>
+<h1>CPU device drivers<a class="headerlink" href="#cpu-device-drivers" title="Link to this heading">¶</a></h1>
 <section id="cpu-driver">
-<h2>‘cpu’ driver<a class="headerlink" href="#cpu-driver" title="Permalink to this headline">¶</a></h2>
+<h2>‘cpu’ driver<a class="headerlink" href="#cpu-driver" title="Link to this heading">¶</a></h2>
 <p>This is the default CPU driver, using the pthread library for multithreaded execution.
 This driver is the most mature and passes almost entirely the conformance test suite.
 Building of this driver is enabled by default, but can be disabled by -DENABLE_HOST_CPU_DEVICES=0.</p>
 </section>
 <section id="cpu-minimal-driver">
-<h2>‘cpu-minimal’ driver<a class="headerlink" href="#cpu-minimal-driver" title="Permalink to this headline">¶</a></h2>
+<h2>‘cpu-minimal’ driver<a class="headerlink" href="#cpu-minimal-driver" title="Link to this heading">¶</a></h2>
 <p>A minimalistic example CPU device driver for executing kernels on the host CPU. Does not
 support multithreading.</p>
 </section>
 <section id="cpu-tbb-driver">
-<h2>‘cpu-tbb’ driver<a class="headerlink" href="#cpu-tbb-driver" title="Permalink to this headline">¶</a></h2>
+<h2>‘cpu-tbb’ driver<a class="headerlink" href="#cpu-tbb-driver" title="Link to this heading">¶</a></h2>
 <p>This driver uses the Intel Threading Building Blocks (currently named oneTBB) open source library
 for work-group and kernel-level task scheduling.</p>
 <p>The scheduling characteristics can be fine tuned with environment
 variables (see below) to achieve a higher performance.</p>
 <section id="building-pocl-with-tbb">
-<h3>Building PoCL with TBB<a class="headerlink" href="#building-pocl-with-tbb" title="Permalink to this headline">¶</a></h3>
+<h3>Building PoCL with TBB<a class="headerlink" href="#building-pocl-with-tbb" title="Link to this heading">¶</a></h3>
 <section id="install-prerequisites">
-<h4>1) Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h4>
+<h4>1) Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Link to this heading">¶</a></h4>
 <p>The Intel Threading Building Blocks library must be available on your system.
 The location of <code class="docutils literal notranslate"><span class="pre">TBBConfig.cmake</span></code> (shipped with TBB since TBB 2017 U7) is
 available via <code class="docutils literal notranslate"><span class="pre">TBB_DIR</span></code> or <code class="docutils literal notranslate"><span class="pre">CMAKE_PREFIX_PATH</span></code> contains path to TBB root.</p>
 </section>
 <section id="build-pocl">
-<h4>2) Build PoCL<a class="headerlink" href="#build-pocl" title="Permalink to this headline">¶</a></h4>
+<h4>2) Build PoCL<a class="headerlink" href="#build-pocl" title="Link to this heading">¶</a></h4>
 <p>To enable the TBB device, add <code class="docutils literal notranslate"><span class="pre">-DENABLE_TBB_DEVICE=1</span></code> to your CMake
 configuration command line.</p>
 <p>If CMake has trouble locating the TBB library, try specifying the to path to
@@ -84,7 +82,7 @@ Examples:</p>
 </div>
 </section>
 <section id="configuration">
-<h4>3) Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h4>
+<h4>3) Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h4>
 <p>When building the tbb device, it will be set as the default device for PoCL instead of pthread driver.
 It is strongly recommended to <strong>NOT</strong> create more TBB devices as the TBB device
 always uses all cores and has no subdevice support.</p>
@@ -101,8 +99,9 @@ always uses all cores and has no subdevice support.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">CPU device drivers</a><ul>
 <li><a class="reference internal" href="#cpu-driver">‘cpu’ driver</a></li>
 <li><a class="reference internal" href="#cpu-minimal-driver">‘cpu-minimal’ driver</a></li>
@@ -119,12 +118,17 @@ always uses all cores and has no subdevice support.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="drivers.html"
-                        title="previous chapter">Supported device drivers</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="hsa.html"
-                        title="next chapter">HSA</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="drivers.html"
+                          title="previous chapter">Supported device drivers</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="hsa.html"
+                          title="next chapter">HSA</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -141,7 +145,7 @@ always uses all cores and has no subdevice support.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -165,8 +169,8 @@ always uses all cores and has no subdevice support.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

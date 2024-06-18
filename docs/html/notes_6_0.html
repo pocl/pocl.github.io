@@ -1,22 +1,21 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Release Notes for PoCL 6.0 &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Release Notes for PoCL 5.0" href="notes_5_0.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -24,7 +23,11 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="notes_5_0.html" title="Release Notes for PoCL 5.0"
+             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" accesskey="U">Release Notes</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 6.0</a></li> 
       </ul>
     </div>  
@@ -35,15 +38,15 @@
           <div class="body" role="main">
             
   <section id="release-notes-for-pocl-6-0">
-<h1>Release Notes for PoCL 6.0<a class="headerlink" href="#release-notes-for-pocl-6-0" title="Permalink to this headline">¶</a></h1>
+<h1>Release Notes for PoCL 6.0<a class="headerlink" href="#release-notes-for-pocl-6-0" title="Link to this heading">¶</a></h1>
 <section id="new-cpu-driver-which-uses-threading-building-blocks-for-task-scheduling">
-<h2>New CPU driver which uses Threading Building Blocks for task scheduling<a class="headerlink" href="#new-cpu-driver-which-uses-threading-building-blocks-for-task-scheduling" title="Permalink to this headline">¶</a></h2>
+<h2>New CPU driver which uses Threading Building Blocks for task scheduling<a class="headerlink" href="#new-cpu-driver-which-uses-threading-building-blocks-for-task-scheduling" title="Link to this heading">¶</a></h2>
 <p>The ‘cpu-tbb’ device driver uses the Intel oneAPI Threading Building Blocks (oneTBB)
 library for task scheduling. Except for the task scheduler, the driver is identical to
 the old ‘cpu’ driver which uses a custom task scheduler and calls pthreads directly.</p>
 </section>
 <section id="experimental-cl-ext-buffer-device-address-prototype">
-<h2>Experimental cl_ext_buffer_device_address prototype<a class="headerlink" href="#experimental-cl-ext-buffer-device-address-prototype" title="Permalink to this headline">¶</a></h2>
+<h2>Experimental cl_ext_buffer_device_address prototype<a class="headerlink" href="#experimental-cl-ext-buffer-device-address-prototype" title="Link to this heading">¶</a></h2>
 <p>This <a class="reference external" href="https://github.com/KhronosGroup/OpenCL-Docs/pull/1159">new draft extension</a>
 prototype enables allocating <cite>cl_mem</cite> buffers with client-accessible
 physical addresses which is guaranteed to be fixed for the lifetime of the buffer.
@@ -63,7 +66,7 @@ OpenCL device/platform, and the HIP/CUDA application doesn’t require unified
 address space, but explicitly specifies the memory copy directions.</p>
 </section>
 <section id="multi-device-command-buffer-infrastructure">
-<h2>Multi-device command buffer infrastructure<a class="headerlink" href="#multi-device-command-buffer-infrastructure" title="Permalink to this headline">¶</a></h2>
+<h2>Multi-device command buffer infrastructure<a class="headerlink" href="#multi-device-command-buffer-infrastructure" title="Link to this heading">¶</a></h2>
 <p>Initial support for <cite>cl_khr_command_buffer_multi_device</cite> has been added. It
 is now possible to create command buffers associated with multiple command queues
 that are not associated with the same device and to remap command buffers to new
@@ -73,7 +76,7 @@ gains from the current implementation either, as everything happens in the
 runtime layer of the library.</p>
 </section>
 <section id="command-queue-priority-throttle-hints">
-<h2>Command queue priority/throttle hints<a class="headerlink" href="#command-queue-priority-throttle-hints" title="Permalink to this headline">¶</a></h2>
+<h2>Command queue priority/throttle hints<a class="headerlink" href="#command-queue-priority-throttle-hints" title="Link to this heading">¶</a></h2>
 <p>Minimal implementation of <cite>cl_khr_priority_hints</cite> and <cite>cl_khr_throttle_hints</cite> has been
 added. As the extension specification states that these hints provide no guarantees of
 any particular behavior (or lack thereof) they are treated as a no-op. However
@@ -81,55 +84,50 @@ specifying them no longer causes <cite>clCreateCommandQueueWithProperties</cite>
 an error.</p>
 </section>
 <section id="driver-specific-features">
-<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Permalink to this headline">¶</a></h2>
+<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Link to this heading">¶</a></h2>
 <section id="cpu-drivers">
-<h3>CPU drivers<a class="headerlink" href="#cpu-drivers" title="Permalink to this headline">¶</a></h3>
+<h3>CPU drivers<a class="headerlink" href="#cpu-drivers" title="Link to this heading">¶</a></h3>
 <section id="support-for-using-openmp-for-task-scheduling-in-the-cpu-driver">
-<h4>Support for using OpenMP for task scheduling in the ‘cpu’ driver<a class="headerlink" href="#support-for-using-openmp-for-task-scheduling-in-the-cpu-driver" title="Permalink to this headline">¶</a></h4>
+<h4>Support for using OpenMP for task scheduling in the ‘cpu’ driver<a class="headerlink" href="#support-for-using-openmp-for-task-scheduling-in-the-cpu-driver" title="Link to this heading">¶</a></h4>
 <p>OpenMP is disabled by default, but can be enabled with the CMake
 option <cite>ENABLE_HOST_CPU_DEVICES_OPENMP</cite>. The ‘cpu-minimal’
 driver does not support OpenMP since it’s supposed to be a
 single-threaded minimal driver.</p>
 </section>
 <section id="miscellaneous">
-<h4>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h4>
-<blockquote>
-<div><ul class="simple">
+<h4>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">¶</a></h4>
+<ul class="simple">
 <li><p>The CPU drivers can be now used for running SYCL programs compiled with the oneAPI binary distributions of DPC++ by adding the following environment settings: <cite>POCL_DRIVER_VERSION_OVERRIDE=2023.16.7.0.21_160000 POCL_CPU_VENDOR_ID_OVERRIDE=32902</cite>.</p></li>
 <li><p>Added support for the <cite>__opencl_c_work_group_collective_functions</cite> feature.</p></li>
 <li><p>Improved SPIR-V support on architectures other than ARM/x86 (like RISC-V).</p></li>
 <li><p>Additional intel_subgroup_shuffle functions (intel_subgroup_block_{read,write}*)</p></li>
-<li><p>Implemented new experimental extensions:</p>
-<ul>
-<li><p>cl_pocl_svm_rect: <cite>clEnqueueSVMMemFillRectPOCL</cite> and <cite>clEnqueueSVMMemcpyRectPOCL</cite>. These implement rectangular-region memcpy/memfill with SVM memory.</p></li>
-<li><p>cl_pocl_command_buffer_svm: additional SVM-related commands for use with command buffers, such as <cite>clCommandSVMMemcpyRectPOCL</cite> and <cite>clCommandSVMMemfillRect</cite></p></li>
-<li><p>cl_pocl_command_buffer_host_buffer: cl_mem &amp; host-memory related commands for use with command buffers, such as <cite>clCommandReadBuffer</cite>, <cite>clCommandReadBufferRect</cite> etc</p></li>
-</ul>
-</li>
+<li><p>Implemented new experimental extensions:
+* cl_pocl_svm_rect: <cite>clEnqueueSVMMemFillRectPOCL</cite> and <cite>clEnqueueSVMMemcpyRectPOCL</cite>. These implement rectangular-region memcpy/memfill with SVM memory.
+* cl_pocl_command_buffer_svm: additional SVM-related commands for use with command buffers, such as <cite>clCommandSVMMemcpyRectPOCL</cite> and <cite>clCommandSVMMemfillRect</cite>
+* cl_pocl_command_buffer_host_buffer: cl_mem &amp; host-memory related commands for use with command buffers, such as <cite>clCommandReadBuffer</cite>, <cite>clCommandReadBufferRect</cite> etc</p></li>
 <li><p><cite>clGetDeviceAndHostTimer()</cite> implemented.</p></li>
 </ul>
-</div></blockquote>
 </section>
 </section>
 <section id="remote-driver">
-<h3>Remote driver<a class="headerlink" href="#remote-driver" title="Permalink to this headline">¶</a></h3>
+<h3>Remote driver<a class="headerlink" href="#remote-driver" title="Link to this heading">¶</a></h3>
 <section id="basis-for-the-coarse-grain-svm-support">
-<h4>Basis for the coarse-grain SVM support<a class="headerlink" href="#basis-for-the-coarse-grain-svm-support" title="Permalink to this headline">¶</a></h4>
+<h4>Basis for the coarse-grain SVM support<a class="headerlink" href="#basis-for-the-coarse-grain-svm-support" title="Link to this heading">¶</a></h4>
 <p>The CG SVM support works best if the client manages to mmap() the
 device-side allocated SVM pool to the same address as in the
-server-side. If not, SPIR-V manipulation is done to address for the
-offset for kernel executions. This is a work-in-progress, but is usable
-for testing client apps and libraries that require CG SVM as it seems to
-work often enough.</p>
+server-side. If not, SPIR-V manipulation is done to shift the
+offset of the memory accessess in the execution kernels. This is
+a work-in-progress, but is usable for testing client apps and
+libraries that require CG SVM as it seems to work often enough.</p>
 </section>
 <section id="vsock-support">
-<h4>Vsock support<a class="headerlink" href="#vsock-support" title="Permalink to this headline">¶</a></h4>
+<h4>Vsock support<a class="headerlink" href="#vsock-support" title="Link to this heading">¶</a></h4>
 <p>Adds support for vsock communication to PoCL-Remote. Vsock is a
 high-performance, low-latency, secure, and scalable network communication
 protocol that accelerates guest-host communication in virtualized environments.</p>
 </section>
 <section id="clcompileprogram-and-cllinkprogram">
-<h4>clCompileProgram() and clLinkProgram()<a class="headerlink" href="#clcompileprogram-and-cllinkprogram" title="Permalink to this headline">¶</a></h4>
+<h4>clCompileProgram() and clLinkProgram()<a class="headerlink" href="#clcompileprogram-and-cllinkprogram" title="Link to this heading">¶</a></h4>
 <p>Basic compile and link support. Tested with conformance suite’s
 <code class="docutils literal notranslate"><span class="pre">compiler/test_compiler</span></code> test sets <cite>execute_after_simple_compile_and_link</cite>,
 <cite>execute_after_simple_compile_and_link_no_device_info</cite> and <cite>execute_after_two_file_link</cite>
@@ -137,7 +135,7 @@ test cases, as well as <a class="reference external" href="https://github.com/CH
 which uses the API for enhancing SPIR-V portability at runtime.</p>
 </section>
 <section id="usm-indirect-access-kernel-exec-info-support">
-<h4>USM indirect access kernel exec info support<a class="headerlink" href="#usm-indirect-access-kernel-exec-info-support" title="Permalink to this headline">¶</a></h4>
+<h4>USM indirect access kernel exec info support<a class="headerlink" href="#usm-indirect-access-kernel-exec-info-support" title="Link to this heading">¶</a></h4>
 <p>Minimal implementation of the general USM indirect access kernel
 execution info flag. It doesn’t differentiate between the different
 types of USM, but always assumes all USM allocations must be
@@ -149,7 +147,7 @@ synchronized.</p>
 </section>
 </section>
 <section id="level-zero-driver">
-<h3>Level Zero driver<a class="headerlink" href="#level-zero-driver" title="Permalink to this headline">¶</a></h3>
+<h3>Level Zero driver<a class="headerlink" href="#level-zero-driver" title="Link to this heading">¶</a></h3>
 <p>Various improvements were made:</p>
 <ul class="simple">
 <li><p>Optimized the host-device synchronization overhead, this should
@@ -163,19 +161,27 @@ pointer offsets, and selects the correct version before execution.</p></li>
 spirv tools. This is unfortunately necessary because spirv-link does
 not work anymore with files which have different SPIR-V versions.
 spirv-link is not required for building the driver anymore.</p></li>
+<li><p>Fix passing sub-buffers as kernel arguments.</p></li>
 </ul>
 </section>
 <section id="cuda-driver">
-<h3>CUDA driver<a class="headerlink" href="#cuda-driver" title="Permalink to this headline">¶</a></h3>
+<h3>CUDA driver<a class="headerlink" href="#cuda-driver" title="Link to this heading">¶</a></h3>
 <p>Various smaller fixes and enhancements, for example:</p>
 <ul class="simple">
+<li><p>Added <cite>sub_group_shuffle</cite> and <cite>sub_group_shuffle_xor</cite> support for
+the following data types: <cite>char</cite>, <cite>uchar</cite>, <cite>short</cite>, <cite>ushort</cite>, <cite>int</cite>,
+<cite>uint</cite> and <cite>float</cite>. <cite>cl_khr_subgroup_shuffle</cite> device extension is
+advertised when device is capable. Note: support for <cite>long</cite>, <cite>ulong</cite>
+and <cite>double</cite> data types are missing.</p></li>
+<li><p>Fixed kernel compilation for device programs with subgroup ballot
+and shuffles for recent SM architectures (SM &gt;= 8.0).</p></li>
 <li><p>Fixed clLinkProgram and clCompileProgram to work correctly</p></li>
 <li><p>Fixed memory leaks in clReleaseProgram</p></li>
 <li><p><cite>CL_DEVICE_MAX_MEM_ALLOC_SIZE</cite> limit increased to free memory reported by <cite>cuMemGetInfo</cite></p></li>
 </ul>
 </section>
 <section id="almaif-driver-fpga-interfacing">
-<h3>AlmaIF driver (FPGA interfacing)<a class="headerlink" href="#almaif-driver-fpga-interfacing" title="Permalink to this headline">¶</a></h3>
+<h3>AlmaIF driver (FPGA interfacing)<a class="headerlink" href="#almaif-driver-fpga-interfacing" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added experimental OpenCL pipe support</p></li>
 <li><p>Adds some experimental built-in kernels: sobel, gaussian, phase, magnitude, nonmax suppression and Canny</p></li>
@@ -183,7 +189,7 @@ spirv-link is not required for building the driver anymore.</p></li>
 </section>
 </section>
 <section id="notable-fixes">
-<h2>Notable fixes<a class="headerlink" href="#notable-fixes" title="Permalink to this headline">¶</a></h2>
+<h2>Notable fixes<a class="headerlink" href="#notable-fixes" title="Link to this heading">¶</a></h2>
 <p>There were a lot of fixed done over the release cycles. Some of the
 most notable/user facing ones are listed below:</p>
 <ul class="simple">
@@ -207,13 +213,14 @@ the optional OpenCL 3.0 features implemented by PoCL.</p></li>
 </ul>
 </section>
 <section id="deprecation-feature-removal-notices">
-<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
+<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Link to this heading">¶</a></h2>
+<ul class="simple">
 <li><p>Support for LLVM versions 10 to 13 inclusive has been removed. LLVM 14 to 18 are supported.</p></li>
 <li><p>Support for <cite>cl_khr_spir</cite> (SPIR 1.x/2.0) has been removed. SPIR-V remains supported.</p></li>
+<li><p>Support for building with OpenCL headers and ICD which don’t support OpenCL 3.0 is deprecated,
+and will be removed in a future release. libpocl.so might still be loadable by older ICDs, but
+this configuration will not be tested or supported.</p></li>
 </ul>
-</div></blockquote>
 </section>
 </section>
 
@@ -224,8 +231,9 @@ the optional OpenCL 3.0 features implemented by PoCL.</p></li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Release Notes for PoCL 6.0</a><ul>
 <li><a class="reference internal" href="#new-cpu-driver-which-uses-threading-building-blocks-for-task-scheduling">New CPU driver which uses Threading Building Blocks for task scheduling</a></li>
 <li><a class="reference internal" href="#experimental-cl-ext-buffer-device-address-prototype">Experimental cl_ext_buffer_device_address prototype</a></li>
@@ -255,6 +263,12 @@ the optional OpenCL 3.0 features implemented by PoCL.</p></li>
 </li>
 </ul>
 
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="notes_5_0.html"
+                          title="previous chapter">Release Notes for PoCL 5.0</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -271,7 +285,7 @@ the optional OpenCL 3.0 features implemented by PoCL.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -282,13 +296,17 @@ the optional OpenCL 3.0 features implemented by PoCL.</p></li>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="notes_5_0.html" title="Release Notes for PoCL 5.0"
+             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" >Release Notes</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 6.0</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Fixed-Function Accelerators &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,22 +43,18 @@
           <div class="body" role="main">
             
   <section id="fixed-function-accelerators">
-<h1>Fixed-Function Accelerators<a class="headerlink" href="#fixed-function-accelerators" title="Permalink to this headline">¶</a></h1>
+<h1>Fixed-Function Accelerators<a class="headerlink" href="#fixed-function-accelerators" title="Link to this heading">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">almaif</span></code> driver can be used for easy integration of custom fixed-function
 accelerators through a standardized hardware interface and a standardized
 procedure for enqueuing commands. More information about the interface can
 be found from the publications at the end of this page.</p>
 <section id="interface">
-<h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
+<h2>Interface<a class="headerlink" href="#interface" title="Link to this heading">¶</a></h2>
 <p>The control register interface for the fixed-function accelerators is quite
 simple. The address space of the device is split into four regions. The sizes
 and starting addresses of the regions are advertised in the control region
 by the accelerator.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 39%" />
-<col style="width: 61%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>High bits</p></th>
 <th class="head"><p>Address Space</p></th>
@@ -83,11 +77,11 @@ by the accelerator.</p>
 </table>
 <p>The control registers are also used to control the
 execution of the accelerator:</p>
-<table class="colwidths-given docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 25%" />
-<col style="width: 55%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 55.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Offset</p></th>
@@ -205,7 +199,7 @@ completed.</p></li>
 </div></blockquote>
 </section>
 <section id="usage">
-<span id="almaif-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<span id="almaif-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <p>To enable this driver, simply add <code class="docutils literal notranslate"><span class="pre">-DENABLE_ALMAIF_DEVICE=1</span></code> to the cmake
 arguments. On small FPGA SoCs and other relatively low performance hosts, you
 may wish to follow the instructions in <a class="reference internal" href="install.html#pocl-without-llvm"><span class="std std-ref">LLVM-less build</span></a>.
@@ -213,11 +207,11 @@ may wish to follow the instructions in <a class="reference internal" href="insta
 <p>The fixed-function accelerators need to be told what kernel to execute. For
 this, the almaif driver has a list of builtin kernels that can be referred to
 in the <code class="docutils literal notranslate"><span class="pre">clCreateProgramWithBuiltInKernels</span></code> call:</p>
-<table class="colwidths-given docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 60%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Kernel name</p></th>
@@ -296,7 +290,7 @@ use a software emulating function from almaif/EmulationDevice.cc.
 No changes to the source OpenCL host program (e.g. accel_example.cpp)
 when switching between emulation, instruction-set simulation or FPGA execution.</p>
 <section id="standalone-mode">
-<h3>Standalone mode<a class="headerlink" href="#standalone-mode" title="Permalink to this headline">¶</a></h3>
+<h3>Standalone mode<a class="headerlink" href="#standalone-mode" title="Link to this heading">¶</a></h3>
 <p>Almaif driver’s OpenASIP backend supports a standalone mode meant for executing
 kernels without the host runtime. The standalone mode generates a C program
 that contains the input data and pre-initialized command structures to run
@@ -309,7 +303,7 @@ generates standalone tests using both ttasim and RTL simulator (ghdl) to run the
 example0 kernel on various TTA configurations.</p>
 </section>
 <section id="using-a-bitstream-database">
-<h3>Using a bitstream database<a class="headerlink" href="#using-a-bitstream-database" title="Permalink to this headline">¶</a></h3>
+<h3>Using a bitstream database<a class="headerlink" href="#using-a-bitstream-database" title="Link to this heading">¶</a></h3>
 <p>You can use the AlmaIF-driver with the cross-vendor bitstream databases generated
 with the <a class="reference external" href="http://github.com/cpc/AFOCL">AFOCL-project</a>.
 That project generates a directory-based database with a json-based metadata.
@@ -337,7 +331,7 @@ see our <a class="reference internal" href="#publications"><span class="std std-
 </section>
 </section>
 <section id="wrapping-a-new-hardware-component">
-<h2>Wrapping a new hardware component<a class="headerlink" href="#wrapping-a-new-hardware-component" title="Permalink to this headline">¶</a></h2>
+<h2>Wrapping a new hardware component<a class="headerlink" href="#wrapping-a-new-hardware-component" title="Link to this heading">¶</a></h2>
 <p>This section will walk through the addition of new implementation for an existing
 built-in kernel.
 The component can be any hardware component, as long as it supports the AlmaIF
@@ -346,7 +340,7 @@ The following section presents an example method of generating the accelerator
 with HLS. However, other methods of generating the accelerator exists, the only
 requirement is that it implements the AlmaIF specification as described above.</p>
 <section id="high-level-synthesis">
-<h3>High-level synthesis<a class="headerlink" href="#high-level-synthesis" title="Permalink to this headline">¶</a></h3>
+<h3>High-level synthesis<a class="headerlink" href="#high-level-synthesis" title="Link to this heading">¶</a></h3>
 <p>Template for HLS-accelerator is in examples/accel/hls/poclAccel.cpp-file.
 It can be generated with ‘make hls_vecadd_bs’, which generates the biststream
 file to examples/accel/hls/bitstreams/. To enable the target, you need to add
@@ -375,7 +369,7 @@ includes a python library to do it, which can be used with a following one-liner
 </section>
 </section>
 <section id="using-this-work">
-<h2>Using this work<a class="headerlink" href="#using-this-work" title="Permalink to this headline">¶</a></h2>
+<h2>Using this work<a class="headerlink" href="#using-this-work" title="Link to this heading">¶</a></h2>
 <p>If you are utilizing, further developing or comparing to the AlmaIF driver of PoCL
 in your academic work, please cite the following publication:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ARTICLE</span><span class="p">{</span><span class="n">leppanen2023</span><span class="p">,</span>
@@ -431,8 +425,9 @@ in your academic work, please cite the following publication:</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Fixed-Function Accelerators</a><ul>
 <li><a class="reference internal" href="#interface">Interface</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
@@ -449,12 +444,17 @@ in your academic work, please cite the following publication:</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cuda.html"
-                        title="previous chapter">NVIDIA GPU support</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="proxy.html"
-                        title="next chapter">Proxy driver</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="cuda.html"
+                          title="previous chapter">NVIDIA GPU support</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="proxy.html"
+                          title="next chapter">Proxy driver</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -471,7 +471,7 @@ in your academic work, please cite the following publication:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -495,8 +495,8 @@ in your academic work, please cite the following publication:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

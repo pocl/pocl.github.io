@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Debugging OpenCL applications with PoCL &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -43,13 +41,13 @@
           <div class="body" role="main">
             
   <section id="debugging-opencl-applications-with-pocl">
-<h1>Debugging OpenCL applications with PoCL<a class="headerlink" href="#debugging-opencl-applications-with-pocl" title="Permalink to this headline">¶</a></h1>
+<h1>Debugging OpenCL applications with PoCL<a class="headerlink" href="#debugging-opencl-applications-with-pocl" title="Link to this heading">¶</a></h1>
 <p>There are several ways to debug applications with PoCL,
 differing in debugging coverage and impact on speed.</p>
 <p>This document chapter describes means for debugging OpenCL kernel code by using
 the CPU drivers of PoCL.</p>
 <section id="basic-printf-debugging">
-<h2>Basic printf debugging<a class="headerlink" href="#basic-printf-debugging" title="Permalink to this headline">¶</a></h2>
+<h2>Basic printf debugging<a class="headerlink" href="#basic-printf-debugging" title="Link to this heading">¶</a></h2>
 <p>The CPU drivers of PoCL flush the OpenCL 1.2 printf() API output immediately
 at the end of the printf call. This is in contrast to some other drivers which
 flush the output only at the end of the kernel command’s execution, making
@@ -57,7 +55,7 @@ debugging crashing (segfaulting) kernels difficult since they never finish
 the command, thus any debug printouts won’t get printed out.</p>
 </section>
 <section id="kernel-compiler-debugging">
-<h2>Kernel compiler debugging<a class="headerlink" href="#kernel-compiler-debugging" title="Permalink to this headline">¶</a></h2>
+<h2>Kernel compiler debugging<a class="headerlink" href="#kernel-compiler-debugging" title="Link to this heading">¶</a></h2>
 <p>Inspecting the kernel compiler intermediate results can be done by
 setting <code class="docutils literal notranslate"><span class="pre">POCL_LEAVE_KERNEL_COMPILER_TEMP_FILES</span></code> env var to 1.
 This causes the intermediate output files from the kernel
@@ -69,7 +67,7 @@ but it’s also useful for GDB and Valgrind debugging as described
 later.</p>
 </section>
 <section id="simple-debugging-with-pocl-s-debug-log">
-<h2>Simple debugging with PoCL’s debug log<a class="headerlink" href="#simple-debugging-with-pocl-s-debug-log" title="Permalink to this headline">¶</a></h2>
+<h2>Simple debugging with PoCL’s debug log<a class="headerlink" href="#simple-debugging-with-pocl-s-debug-log" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Upsides:</dt><dd><ul class="simple">
 <li><p>doesn’t require recompiling the application or PoCL</p></li>
@@ -114,7 +112,7 @@ and decreases. Might help spot CL object leaks</p></li>
 “Free X” is printed when the refcount becomes 0 and the object is actually freed.</p>
 </section>
 <section id="debugging-with-gdb">
-<h2>Debugging with GDB<a class="headerlink" href="#debugging-with-gdb" title="Permalink to this headline">¶</a></h2>
+<h2>Debugging with GDB<a class="headerlink" href="#debugging-with-gdb" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Upsides:</dt><dd><ul class="simple">
 <li><p>the entire OpenCL application, including the launched kernels can be debugged</p></li>
@@ -236,7 +234,7 @@ $3 = 18298392
 </div>
 </section>
 <section id="debugging-with-valgrind">
-<h2>Debugging with Valgrind<a class="headerlink" href="#debugging-with-valgrind" title="Permalink to this headline">¶</a></h2>
+<h2>Debugging with Valgrind<a class="headerlink" href="#debugging-with-valgrind" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Upsides:</dt><dd><ul class="simple">
 <li><p>The entire application including kernels can be debugged.</p></li>
@@ -304,7 +302,7 @@ This will cause all kernels to compile with debuginfo.</p></li>
 </div>
 </section>
 <section id="debugging-with-thread-address-sanitizers">
-<h2>Debugging with Thread/Address sanitizers<a class="headerlink" href="#debugging-with-thread-address-sanitizers" title="Permalink to this headline">¶</a></h2>
+<h2>Debugging with Thread/Address sanitizers<a class="headerlink" href="#debugging-with-thread-address-sanitizers" title="Link to this heading">¶</a></h2>
 <p>Currently PoCL recognizes four sanitizers:
 Address, Leak, Undefined behaviour and Thread.</p>
 <p>Corresponding PoCL CMake options to enable them are:
@@ -363,7 +361,7 @@ with the correct <code class="docutils literal notranslate"><span class="pre">-f
 </div></blockquote>
 </section>
 <section id="handling-llvm-and-driver-allocated-memory">
-<h2>Handling LLVM and driver-allocated memory<a class="headerlink" href="#handling-llvm-and-driver-allocated-memory" title="Permalink to this headline">¶</a></h2>
+<h2>Handling LLVM and driver-allocated memory<a class="headerlink" href="#handling-llvm-and-driver-allocated-memory" title="Link to this heading">¶</a></h2>
 <p>Both valgrind and sanitizers might report a huge amount of memory leaks
 coming from PoCL; this is caused mainly by two factors;
 LLVM and driver-held static data.</p>
@@ -416,8 +414,9 @@ alive at program exit), ASan will print a lot of memory leaks:</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Debugging OpenCL applications with PoCL</a><ul>
 <li><a class="reference internal" href="#basic-printf-debugging">Basic printf debugging</a></li>
 <li><a class="reference internal" href="#kernel-compiler-debugging">Kernel compiler debugging</a></li>
@@ -430,12 +429,17 @@ alive at program exit), ASan will print a lot of memory leaks:</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="android.html"
-                        title="previous chapter">Using PoCL on Android</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="sycl_with_pocl_arm.html"
-                        title="next chapter">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="android.html"
+                          title="previous chapter">Using PoCL on Android</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="sycl_with_pocl_arm.html"
+                          title="next chapter">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -452,7 +456,7 @@ alive at program exit), ASan will print a lot of memory leaks:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -474,8 +478,8 @@ alive at program exit), ASan will print a lot of memory leaks:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2010-2023 PoCL developers.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    &#169; Copyright 2010-2023 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>
