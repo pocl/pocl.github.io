@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Defined Built-in Kernels &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Debugging OpenCL applications with PoCL" href="debug.html" />
+    <link rel="prev" title="Remote Driver" href="remote.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="debug.html" title="Debugging OpenCL applications with PoCL"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="remote.html" title="Remote Driver"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported OpenCL features, device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Defined Built-in Kernels</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="defined-built-in-kernels">
+<span id="id1"></span><h1>Defined Built-in Kernels<a class="headerlink" href="#defined-built-in-kernels" title="Link to this heading">¶</a></h1>
+<p>Defined Built-in Kernels (DBK) allow for a standardized set of built-in kernels with well-defined semantics that can be
+configured during creation of the OpenCL program. The extension draft goes more into details and can be found on
+<a class="reference external" href="https://github.com/KhronosGroup/OpenCL-Docs/pull/1007">github</a>. Some of these DBKs require PoCL to be built in a
+specific way, therefore please check below for building and usage instructions.</p>
+<section id="jpeg-encode-exp-and-jpeg-decode-exp">
+<h2>jpeg_encode_exp and jpeg_decode_exp<a class="headerlink" href="#jpeg-encode-exp-and-jpeg-decode-exp" title="Link to this heading">¶</a></h2>
+<p>An experimental set of DBKs dedicated to compressing raw RGB images to JPEG and back.</p>
+<section id="building">
+<h3>Building<a class="headerlink" href="#building" title="Link to this heading">¶</a></h3>
+<p>Currently, only the CPU devices support these DBKs.
+The PoCL CPU devices support these DBKs by making use of the <a class="reference external" href="https://libjpeg-turbo.org">libjpeg-turbo</a> library,
+specifically API version 3.0 and above. API version 3.0 might not be available on your distro of choice, in that case
+refer to the <a class="reference external" href="https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/BUILDING.md">build instructions</a>
+on how to build it. After running <cite>make install</cite>, the library will be installed in <cite>/opt</cite> . CMake might have some
+trouble finding this library, therefore add the following line to your CMake arguments when building PoCL:</p>
+<blockquote>
+<div><p>-Dlibjpeg-turbo_DIR=/opt/libjpeg-turbo/lib64/cmake/libjpeg-turbo/</p>
+</div></blockquote>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h3>
+<p>The JPEG DBKs work on buffers of RGB images, similar to other image manipulation frameworks. The characteristics of the
+buffer are as follows: point (0,0) is the top left of the image and each pixel consists of 3 bytes in RGB order without
+padding. So to get a pixel value from a certain row, add an offset of row_index * width * 3 to the index. The fourcc
+code that comes closest to this is the BI_RGB 24bpp format. Check the <cite>include/CL/cl_exp_defined_builtin_kernels.h</cite> for
+info on DBK attributes and <cite>tests/runtime/test_dbk_jpeg.c</cite> for an example program making use of the JPEG DBKs.</p>
+</section>
+</section>
+<section id="exp-onnx-inference">
+<h2>exp_onnx_inference<a class="headerlink" href="#exp-onnx-inference" title="Link to this heading">¶</a></h2>
+<p>This experimental DBK provides the ability to ingest an ONNX file and perform
+inference with the contained network.</p>
+<section id="building-with-onnx-kernel-support">
+<h3>Building with ONNX kernel support<a class="headerlink" href="#building-with-onnx-kernel-support" title="Link to this heading">¶</a></h3>
+<p>In order to support this builtin kernel through the CPU devices, PoCL needs to be built with ONNX Runtime
+support.</p>
+</section>
+<section id="distro-provided-onnx-runtime">
+<h3>Distro-provided ONNX Runtime<a class="headerlink" href="#distro-provided-onnx-runtime" title="Link to this heading">¶</a></h3>
+<p>If you are on a Linux distribution that packages ONNX Runtime, install the
+development package for it and build PoCL normally. The ONNX Runtime should be
+detected automatically if it is a sufficiently recent version that ships with
+CMake configuration files.</p>
+</section>
+<section id="building-with-a-custom-onnx-runtime">
+<h3>Building with a custom ONNX Runtime<a class="headerlink" href="#building-with-a-custom-onnx-runtime" title="Link to this heading">¶</a></h3>
+<p>Some popular Linux distributions don’t provide prebuilt packages of ONNX Runtime
+so you may have to <cite>grab a prebuilt copy from Github
+&lt;https://github.com/microsoft/onnxruntime/releases&gt;</cite> or
+<cite>build your own &lt;https://onnxruntime.ai/docs/build/inferencing.html&gt;</cite> and tell
+CMake where to find it. Steps for building a suitable copy of ONNX Runtime (run
+outside of the PoCL source tree) are as follows:</p>
+<blockquote>
+<div><p>git clone –recursive <a class="reference external" href="https://github.com/microsoft/onnxruntime/">https://github.com/microsoft/onnxruntime/</a>
+cd onnxruntime
+./build.sh –config Release –build_shared_lib –parallel –compile_no_warning_as_error –skip_submodule_sync –skip_tests –cmake_extra_defines CMAKE_INSTALL_PREFIX=${HOME}/onnxruntime-bin
+# wait for a looong time
+make -C build/Linux/Release install # install the built files to the CMAKE_INSTALL_PREFIX specified above</p>
+</div></blockquote>
+<p>Feel free to switch the <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> in the above build command to
+whatever you prefer, just make sure to pass it to cmake when configuring PoCL.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ONNXRuntime generates CMake target definitions when installing, but these
+are specific to the build type specified with the –config flag. If you are
+building PoCL in a different configuration than Release, you may have to
+change the –config flag in the ONNXRuntime to match the configuration of
+your PoCL build.</p>
+</div>
+<p>Now proceed to building PoCL as usual, but tell cmake where to find the
+configuration files of ONNX Runtime:</p>
+<blockquote>
+<div><p>mkdir build
+cd build
+cmake .. -Donnxruntime_DIR=${HOME}/onnxruntime-bin/lib/cmake/onnxruntime
+make -j$(nproc)</p>
+</div></blockquote>
+<p>If you downloaded a prebuilt binary, replace <cite>${HOME}/onnxruntime-bin</cite> in the
+cmake command with the path where you unpacked the bundle to.</p>
+</section>
+</section>
+<section id="img-color-convert-exp">
+<h2>img_color_convert_exp<a class="headerlink" href="#img-color-convert-exp" title="Link to this heading">¶</a></h2>
+<p>An experimental DBK that is similar in concept to OpenVX’s color convert node.
+It is currently limited to nv12 to RGB, but lays down the groundwork for more
+image manipulation DBKs.</p>
+</section>
+<section id="nms-box-exp">
+<h2>nms_box_exp<a class="headerlink" href="#nms-box-exp" title="Link to this heading">¶</a></h2>
+<p>An experimental DBK that performs Non-Maximum Suppression (NMS) on a set of
+bounding boxes. It currently makes use of OpenCV’s dnn utils. The bounding boxes
+are represented as four cl_int variables in the following order:
+(x, y, width, height). The (0,0) coordinates is the top left.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Defined Built-in Kernels</a><ul>
+<li><a class="reference internal" href="#jpeg-encode-exp-and-jpeg-decode-exp">jpeg_encode_exp and jpeg_decode_exp</a><ul>
+<li><a class="reference internal" href="#building">Building</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exp-onnx-inference">exp_onnx_inference</a><ul>
+<li><a class="reference internal" href="#building-with-onnx-kernel-support">Building with ONNX kernel support</a></li>
+<li><a class="reference internal" href="#distro-provided-onnx-runtime">Distro-provided ONNX Runtime</a></li>
+<li><a class="reference internal" href="#building-with-a-custom-onnx-runtime">Building with a custom ONNX Runtime</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#img-color-convert-exp">img_color_convert_exp</a></li>
+<li><a class="reference internal" href="#nms-box-exp">nms_box_exp</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="remote.html"
+                          title="previous chapter">Remote Driver</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="debug.html"
+                          title="next chapter">Debugging OpenCL applications with PoCL</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dbk.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="debug.html" title="Debugging OpenCL applications with PoCL"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="remote.html" title="Remote Driver"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Defined Built-in Kernels</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Fixed-Function Accelerators &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Fixed-Function Accelerators &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="cuda.html" title="NVIDIA GPU support"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Fixed-Function Accelerators</a></li> 
@@ -202,7 +202,7 @@ completed.</p></li>
 <span id="almaif-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <p>To enable this driver, simply add <code class="docutils literal notranslate"><span class="pre">-DENABLE_ALMAIF_DEVICE=1</span></code> to the cmake
 arguments. On small FPGA SoCs and other relatively low performance hosts, you
-may wish to follow the instructions in <a class="reference internal" href="install.html#pocl-without-llvm"><span class="std std-ref">LLVM-less build</span></a>.
+may wish to follow the instructions in <a class="reference internal" href="install.html#pocl-without-llvm"><span class="std std-ref">CMake: LLVM-less build</span></a>.
 (Recommended for Zynq-7020 SoC).</p>
 <p>The fixed-function accelerators need to be told what kernel to execute. For
 this, the almaif driver has a list of builtin kernels that can be referred to
@@ -246,7 +246,7 @@ lib/CL/devices/builtin_kernels.{cc,hh}</p>
 in the CMAKE configuration.
 First, set CMAKE variable VIVADO_PATH to point to the directory with the
 ‘vivado’ executable. (E.g. at Xilinx/Vivado/2021.2/bin/)</p>
-<p>1. If you have the <a class="reference external" href="http://openasip.org/">OpenASIP</a>/TCEMC toolset installed,
+<p>1. If you have the <a class="reference external" href="http://openasip.org/">OpenASIP</a> toolset installed,
 you can set ENABLE_TCE to 1 to enable
 RTL and firmware generation of various OpenASIP TTA cores with different memory configurations.
 Then, you can simulate them with ttasim instruction set simulator by running
@@ -368,6 +368,70 @@ includes a python library to do it, which can be used with a following one-liner
 <p>After that, it’s possible to run the examples/accel/accel_example program.</p>
 </section>
 </section>
+<section id="openasip-and-almaif">
+<h2>OpenASIP and AlmaIF<a class="headerlink" href="#openasip-and-almaif" title="Link to this heading">¶</a></h2>
+<p>This section outlines the use of OpenASIP toolset in AlmaIF-driver.
+The OpenASIP is used for two different roles in AlmaIF-based devices:</p>
+<ol class="arabic simple">
+<li><p>As a command processor to manage the separate accelerator IP components (built-in kernel implementations)</p></li>
+<li><p>As a soft processor that OpenCL C kernels can be compiled for and executed on.</p></li>
+</ol>
+<p>For more details, see <a class="reference external" href="https://doi.org/10.1016/j.micpro.2023.104772">Efficient OpenCL system integration of non-blocking FPGA accelerators</a>.</p>
+<section id="openasip-used-with-built-in-kernels">
+<h3>OpenASIP used with built-in kernels<a class="headerlink" href="#openasip-used-with-built-in-kernels" title="Link to this heading">¶</a></h3>
+<p>In this role, the OpenASIP core is used as a small control processor.
+In principle, any soft processor could be used, but we chose to use OpenASIP for familiarity.
+Replacing this component with a simpler RISC-V processor would be a very reasonable future change.</p>
+<p>The command processor does not execute the kernel computation,
+but just controls external accelerator that perform the kernel’s functionality.
+Since the built-in kernel functionality is fixed, the kernel firmware can also be fixed.
+The firmware configures external accelerators (and DMA units), and then waits for their execution to complete.
+Once done, it will mark the packet as completed.
+In this role, the OpenASIP core is still responsible for managing the computation,
+but due to the specialization afforded to it by only supporting a set of built-in kernels,
+it is free to configure external accelerators to perform the computation.
+For examples of such designs, see the <a class="reference external" href="https://github.com/CPC/AFOCL/">AFOCL repository</a>.</p>
+</section>
+<section id="openasip-used-with-compiled-kernels">
+<h3>OpenASIP used with compiled kernels<a class="headerlink" href="#openasip-used-with-compiled-kernels" title="Link to this heading">¶</a></h3>
+<p>OpenASIP enables the design of specialized processors.
+The instruction-set can be extended and specialized at a very fine granularity,
+which allows the description of highly efficient ASIPs.
+These processors are exposed as OpenCL Compute Devices via the AlmaIF-driver.
+The same AlmaIF interface is used as for the command processor-role,
+the difference to it is that in this mode, the kernel function itself is compiled for the
+instruction set of the ASIP.
+The AlmaIF-driver knows about the compiler support from the magic kernel ID <em>65535</em></p>
+<p>In OpenASIP’s kernel compilation flow, the kernel is first compiled with LLVM’s
+backend-agnostic flow, using the generic <em>pocl_driver_build_source</em>.
+The prebuilt built-in function library is linked in from <em>kernel/tce</em>
+(found via the variable <em>device-&gt;kernellib_name</em>).</p>
+<p>Then, a work-group function is generated that executes a single workgroup.
+Similarly to the CPU target, “work-item loops” are generated that iterate over the work-items of a work-group while respecting the work-group barrier semantics.
+This uses the same function <em>pocl_llvm_generate_workgroup_function</em> as the CPU backend,
+but now just calling it from <em>lib/CL/devices/almaif/openasip/AlmaifCompileOpenasip.cc</em>.
+The kernel arguments are loaded from the argument buffer, meaning that the kernel interface is always the same:
+(pointer_to_argument_buffer, pointer_to_poclContext32b, global_id_x, global_id_y, global_id_z)
+Output of this stage is still LLVM IR.</p>
+<p>Finally, and as the only completely OpenASIP-specific step,
+in the <em>lib/CL/devices/almaif/openasip/AlmaifCompileOpenasip.cc</em>-file,
+the main-file (<em>tta_device_main.c</em>) is compiled by calling OpenASIP compiler <em>oacc</em>’s CLI.
+The workgroup-function is statically linked in, such that the generic workgroup-function call in the main-file
+correctly calls the workgroup function generated by the above steps.
+The main-file is responsible for communicating with the AlmaIF-driver, and iterating over the workgroups
+in the kernel dispatch packet.</p>
+<section id="adding-new-co-processor-types">
+<h4>Adding new co-processor types<a class="headerlink" href="#adding-new-co-processor-types" title="Link to this heading">¶</a></h4>
+<p>The AlmaIF-driver is designed to generalize to different co-processors/accelerators than just those generated with OpenASIP
+(however, no other processor types are yet tested to our knowledge).
+To plug a different processor with different compilation flow to the driver,
+only the compilation calls need to be redirected in the <em>lib/CL/devices/AlmaifCompile.cc</em>,
+and the kernel function library may need to be regenerated in <em>lib/kernel</em>.</p>
+<p>During runtime, the AlmaIF interface abstraction layer hides anything processor-specific,
+as long as the new processor type implements the AlmaIF memory map as described at the start of this document.</p>
+</section>
+</section>
+</section>
 <section id="using-this-work">
 <h2>Using this work<a class="headerlink" href="#using-this-work" title="Link to this heading">¶</a></h2>
 <p>If you are utilizing, further developing or comparing to the AlmaIF driver of PoCL
@@ -385,7 +449,23 @@ in your academic work, please cite the following publication:</p>
 </pre></div>
 </div>
 <p id="publications">The other relevant publications:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ARTICLE</span><span class="p">{</span><span class="n">afocl2023</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@INPROCEEDINGS</span><span class="p">{</span><span class="n">leppanen2024</span><span class="p">,</span>
+  <span class="n">AUTHOR</span><span class="o">=</span><span class="p">{</span><span class="n">Leppänen</span><span class="p">,</span> <span class="n">Topi</span> <span class="ow">and</span> <span class="n">Multanen</span><span class="p">,</span> <span class="n">Joonas</span> <span class="ow">and</span> <span class="n">Leppänen</span><span class="p">,</span> <span class="n">Leevi</span> <span class="ow">and</span> <span class="n">Jääskeläinen</span><span class="p">,</span> <span class="n">Pekka</span><span class="p">},</span>
+  <span class="n">TITLE</span> <span class="o">=</span> <span class="p">{</span><span class="n">Towards</span> <span class="n">Efficient</span> <span class="p">{</span><span class="n">OpenCL</span><span class="p">}</span> <span class="n">Pipe</span> <span class="n">Specification</span> <span class="k">for</span> <span class="n">Hardware</span> <span class="n">Accelerators</span><span class="p">},</span>
+  <span class="n">YEAR</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2024</span><span class="p">},</span>
+  <span class="n">ISBN</span> <span class="o">=</span> <span class="p">{</span><span class="mi">9798400717901</span><span class="p">},</span>
+  <span class="n">PUBLISHED</span> <span class="o">=</span> <span class="p">{</span><span class="n">Association</span> <span class="k">for</span> <span class="n">Computing</span> <span class="n">Machinery</span><span class="p">},</span>
+  <span class="n">ADDRESS</span> <span class="o">=</span> <span class="p">{</span><span class="n">New</span> <span class="n">York</span><span class="p">,</span> <span class="n">NY</span><span class="p">,</span> <span class="n">USA</span><span class="p">},</span>
+  <span class="n">URL</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.1145</span><span class="o">/</span><span class="mf">3648115.3648128</span><span class="p">},</span>
+  <span class="n">DOI</span> <span class="o">=</span> <span class="p">{</span><span class="mf">10.1145</span><span class="o">/</span><span class="mf">3648115.3648128</span><span class="p">},</span>
+  <span class="n">BOOKTITLE</span> <span class="o">=</span> <span class="p">{</span><span class="n">Proceedings</span> <span class="n">of</span> <span class="n">the</span> <span class="mi">12</span><span class="n">th</span> <span class="n">International</span> <span class="n">Workshop</span> <span class="n">on</span> <span class="n">OpenCL</span> <span class="ow">and</span> <span class="n">SYCL</span><span class="p">},</span>
+  <span class="n">ARTICLENO</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">},</span>
+  <span class="n">NUMPAGES</span> <span class="o">=</span> <span class="p">{</span><span class="mi">8</span><span class="p">},</span>
+  <span class="n">LOCATION</span> <span class="o">=</span> <span class="p">{</span><span class="n">Chicago</span><span class="p">,</span> <span class="n">IL</span><span class="p">,</span> <span class="n">USA</span><span class="p">},</span>
+  <span class="n">SERIES</span> <span class="o">=</span> <span class="p">{</span><span class="n">IWOCL</span> <span class="s1">&#39;24}</span>
+<span class="p">}</span>
+
+<span class="nd">@ARTICLE</span><span class="p">{</span><span class="n">afocl2023</span><span class="p">,</span>
   <span class="n">AUTHOR</span><span class="o">=</span><span class="p">{</span><span class="n">Leppänen</span><span class="p">,</span> <span class="n">Topi</span> <span class="ow">and</span> <span class="n">Multanen</span><span class="p">,</span> <span class="n">Joonas</span> <span class="ow">and</span> <span class="n">Leppänen</span><span class="p">,</span> <span class="n">Leevi</span> <span class="ow">and</span> <span class="n">Jääskeläinen</span><span class="p">,</span> <span class="n">Pekka</span><span class="p">},</span>
   <span class="n">TITLE</span><span class="o">=</span><span class="p">{{</span><span class="n">AFOCL</span><span class="p">}:</span> <span class="n">Portable</span> <span class="p">{</span><span class="n">OpenCL</span><span class="p">}</span> <span class="n">Programming</span> <span class="n">of</span> <span class="p">{</span><span class="n">FPGAs</span><span class="p">}</span> <span class="n">via</span> <span class="n">Automated</span> <span class="n">Built</span><span class="o">-</span><span class="ow">in</span> <span class="n">Kernel</span> <span class="n">Management</span><span class="p">},</span>
   <span class="n">BOOKTITLE</span><span class="o">=</span><span class="p">{</span><span class="mi">2023</span> <span class="n">IEEE</span> <span class="n">Nordic</span> <span class="n">Circuits</span> <span class="ow">and</span> <span class="n">Systems</span> <span class="n">Conference</span> <span class="p">({</span><span class="n">NorCAS</span><span class="p">})},</span>
@@ -439,6 +519,14 @@ in your academic work, please cite the following publication:</p>
 <li><a class="reference internal" href="#high-level-synthesis">High-level synthesis</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#openasip-and-almaif">OpenASIP and AlmaIF</a><ul>
+<li><a class="reference internal" href="#openasip-used-with-built-in-kernels">OpenASIP used with built-in kernels</a></li>
+<li><a class="reference internal" href="#openasip-used-with-compiled-kernels">OpenASIP used with compiled kernels</a><ul>
+<li><a class="reference internal" href="#adding-new-co-processor-types">Adding new co-processor types</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#using-this-work">Using this work</a></li>
 </ul>
 </li>
@@ -488,14 +576,14 @@ in your academic work, please cite the following publication:</p>
         <li class="right" >
           <a href="cuda.html" title="NVIDIA GPU support"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Fixed-Function Accelerators</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

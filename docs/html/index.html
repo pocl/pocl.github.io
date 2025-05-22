@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to Portable Computing Language (PoCL)’s documentation! &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Welcome to Portable Computing Language (PoCL)’s documentation! &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to Portable Computing Language (PoCL)’s documentation!</a></li> 
       </ul>
     </div>  
@@ -42,24 +42,25 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-requirements-for-ubuntu">Installing requirements for Ubuntu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#opencl-3-0-support">OpenCL 3.0 support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#clang-llvm-notes">Clang / LLVM Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#install-requirements">Install Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#configure-build">Configure &amp; Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#packaging-pocl">Packaging PoCL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#cross-compile-pocl">Cross-compile PoCL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#known-build-time-issues">Known build-time issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#building-running-in-docker">Building &amp; running in Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#arm-32-64bit-support">ARM 32/64bit support</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#risc-v-support">RISC-V support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#powerpc-support">PowerPC support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#android-support">Android support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#windows-support">Windows support</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="using.html">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="using.html#linking-your-program-with-pocl-through-an-icd-loader">Linking your program with pocl through an icd loader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using.html#installable-client-driver-icd">Installable client driver (ICD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using.html#linking-your-program-directly-with-pocl">Linking your program directly with pocl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="using.html#using-pocl-on-macosx">Using pocl on MacOSX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using.html#tuning-pocl-behavior-with-env-variables">Tuning pocl behavior with ENV variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using.html#setting-up-and-running-pocl-on-macos">Setting up and running PoCL on MacOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using.html#using-pocl-as-the-opencl-backend-for-dpc">Using PoCL as the OpenCL backend for DPC++</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Supported OpenCL features, device drivers</a><ul>
@@ -69,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="conformance.html">OpenCL conformance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions.html">OpenCL Extensions Supported by PoCL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="drivers.html">Supported device drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbk.html">Defined Built-in Kernels</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="debug.html">Debugging OpenCL applications with PoCL</a><ul>
@@ -104,7 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="development.html#ocl-icd">Ocl-icd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#coding-style">Coding Style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#khronos-icd-loader">Khronos ICD Loader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#using-pocl-from-the-build-tree">Using pocl from the Build Tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#using-pocl-from-the-build-tree">Using PoCL from the Build Tree</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#target-and-host-cpu-architectures-for-cpu-devices">Target and Host CPU Architectures for CPU Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#writing-documentation">Writing Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#maintenance-policy">Maintenance Policy</a></li>
@@ -122,6 +124,7 @@
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notes_5_0.html">Release Notes for PoCL 5.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notes_6_0.html">Release Notes for PoCL 6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes_7_0.html">Release Notes for PoCL 7.0</a></li>
 </ul>
 </li>
 </ul>
@@ -187,12 +190,12 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to Portable Computing Language (PoCL)’s documentation!</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

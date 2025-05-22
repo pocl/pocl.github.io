@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OpenCL conformance &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>OpenCL conformance &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="opencl_status.html" title="Supported OpenCL features"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">OpenCL conformance</a></li> 
       </ul>
@@ -49,7 +49,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_CONFORMANCE=ON/OFF</span></code>
 Defaults to OFF. This option by itself does not guarantee OpenCL-conformant build;
 it merely ensures that a build fails if some CMake options which are known to result
-in non-conformant PoCL build are given. Only applies to CPU driver.</p>
+in non-conformant PoCL build are given. Only applies to CPU and LevelZero drivers.</p>
 <p>Changes when ENABLE_CONFORMANCE is ON, the CPU drivers are built
 with the following changes:</p>
 <blockquote>
@@ -111,15 +111,14 @@ This is done by adding <code class="docutils literal notranslate"><span class="p
 to the cmake command line. After this <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">prepare_examples</span></code> fetches and
 prepares the conformance suite for testing. After building pocl with <code class="docutils literal notranslate"><span class="pre">make</span></code>,
 the CTS can be run with <code class="docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-L</span> <span class="pre">&lt;LABEL&gt;</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;LABEL&gt;</span></code> is a CTest label.</p>
-<p>There are three different CTest labels for using CTS, one label covers the full
-set tests in CTS, the other two contain a smaller subset of CTS tests. The fastest
-is <code class="docutils literal notranslate"><span class="pre">conformance_suite_micro_main</span></code> label, which takes approx 10-30 minutes on
-current (desktop) hardware. The medium sized <code class="docutils literal notranslate"><span class="pre">conformance_suite_mini_main</span></code>
-can take 1-2 hours on current hardware. The full sized CTS is available
-with label <code class="docutils literal notranslate"><span class="pre">conformance_suite_full_main</span></code>. This can take 10-30 hrs on current
+<p>There are two different CTest labels for using CTS, one label covers the full
+set tests in CTS, the other contains a much smaller subset of CTS tests. The
+smaller is <code class="docutils literal notranslate"><span class="pre">conformance_suite_micro_main</span></code> label, which takes approx 10 minutes
+on current (PC) hardware. The full sized CTS is available with label
+<code class="docutils literal notranslate"><span class="pre">conformance_suite_full_main</span></code>. This can take 10-30 hrs on current
 hardware.</p>
-<p>If PoCL is compiled with SPIR-V support, three more labels are available, where
-<code class="docutils literal notranslate"><span class="pre">_main</span></code> suffix is replaced by <code class="docutils literal notranslate"><span class="pre">_spirv</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">conformance_suite_mini_spirv</span></code>)
+<p>If PoCL is compiled with SPIR-V support, two more labels are available, where
+<code class="docutils literal notranslate"><span class="pre">_main</span></code> suffix is replaced by <code class="docutils literal notranslate"><span class="pre">_spirv</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">conformance_suite_micro_spirv</span></code>)
 These labels will run the same tests as the _main variant, but use offline
 compilation to produce SPIR-V and use that to create programs,
 instead of default creating from OpenCL C source.</p>
@@ -127,16 +126,10 @@ instead of default creating from OpenCL C source.</p>
 (the online and offline compilation) since the -L option takes a regexp.</p>
 <p>Additionally, there is a new cmake label, <code class="docutils literal notranslate"><span class="pre">conformance_30_only</span></code>
 to run tests which are only relevant to OpenCL 3.0.</p>
-<p>CPU device version 1.2 should also work with CTS 3.0 (tests will be skipped).</p>
 </section>
 <section id="known-issues-related-to-cts">
 <span id="known-issues"></span><h2>Known issues related to CTS<a class="headerlink" href="#known-issues-related-to-cts" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>a few tests from <code class="docutils literal notranslate"><span class="pre">basic/test_basic</span></code> may fail / segfault because they
-request a huge amount of memory for buffers.</p></li>
-<li><p>a few tests may run much faster if you limit the reported Global memory size
-with POCL_MEMORY_LIMIT env var. In particular, “kernel_image_methods” test
-with “max_images” argument.</p></li>
 <li><p>With LLVM 15 and 16, when running CTS with the offline compilation mode
 (= via SPIR-V), Clang + SPIR-V translator produce invalid
 SPIR-V for several tests. PoCL bugreport:
@@ -145,482 +138,22 @@ Related Khronos issues:
 <a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2008">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2008</a>
 <a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2024">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2024</a>
 <a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2025">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2025</a></p></li>
-<li><p>Integer division by zero. OpenCL 1.2 specification requires that division by
-zero on integers results in undefined values, instead of raising exceptions.
-This requires pocl to install a handler of SIGFPE. The handler is per-process,
-but it checks the thread ID, so that it only ignores the error for the CPU
-driver threads, not the user program’s threads. This might not work on every
-system. The handler can be disabled completely by setting the env variable
-POCL_SIGFPE_HANDLER to 0.
-Note that this is currently only relevant for x86(-64) + Linux, on all other
-systems this issue is not handled in any way (thus Pocl is likely
-non-conformant there).</p></li>
-<li><p>Many of <code class="docutils literal notranslate"><span class="pre">native_</span></code> and <code class="docutils literal notranslate"><span class="pre">half_</span></code> variants of kernel library functions are mapped
-to the “full” variants.</p></li>
-<li><p>clSetUserEventStatus() called with negative status. The Spec leaves the behaviour
-in this case as “implementation defined”, and this part of pocl is
-only very lightly tested by the conformance tests. clSetUserEventStatus()
-called with CL_COMPLETE works as expected, and is heavily used by
-the conversions conformance test.</p></li>
 </ul>
 </section>
-<section id="conformance-tests-results-precision-of-builtin-math-library-functions">
-<h2>Conformance tests results (precision of builtin math library functions)<a class="headerlink" href="#conformance-tests-results-precision-of-builtin-math-library-functions" title="Link to this heading">¶</a></h2>
-<p>Note that it’s impossible to test double precision on the entire range,
-therefore the results may vary.</p>
-<section id="x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017">
-<h3>x86-64 CPU with AVX2+FMA, LLVM 4.0, tested on Nov 1, 2017<a class="headerlink" href="#x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017" title="Link to this heading">¶</a></h3>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>NAME</p></th>
-<th class="head"><p>Worst ULP</p></th>
-<th class="head"><p>WHERE</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>add</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>addD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>assignment</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>assignmentD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>cbrt</p></td>
-<td><p>0.50</p></td>
-<td><p>-0x1.5629d2p+116</p></td>
-</tr>
-<tr class="row-odd"><td><p>cbrtD</p></td>
-<td><p>0.59</p></td>
-<td><p>0x1.0000000000136p+1022</p></td>
-</tr>
-<tr class="row-even"><td><p>ceil</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>ceilD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>copysign</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>copysignD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>cos</p></td>
-<td><p>2.37</p></td>
-<td><p>0x1.1338ccp+20</p></td>
-</tr>
-<tr class="row-odd"><td><p>cosD</p></td>
-<td><p>2.27</p></td>
-<td><p>-0x1.d10000000074p+380</p></td>
-</tr>
-<tr class="row-even"><td><p>cosh</p></td>
-<td><p>2.41</p></td>
-<td><p>-0x1.602166p+2</p></td>
-</tr>
-<tr class="row-odd"><td><p>coshD</p></td>
-<td><p>1.43</p></td>
-<td><p>-0x1.98000000003efp+5</p></td>
-</tr>
-<tr class="row-even"><td><p>cospi</p></td>
-<td><p>1.94</p></td>
-<td><p>0x1.d73b56p-2</p></td>
-</tr>
-<tr class="row-odd"><td><p>cospiD</p></td>
-<td><p>2.46</p></td>
-<td><p>-0x1.adffffffffa91p-2</p></td>
-</tr>
-<tr class="row-even"><td><p>divide</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>divideD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>exp</p></td>
-<td><p>0.95</p></td>
-<td><p>-0x1.762532p+2</p></td>
-</tr>
-<tr class="row-odd"><td><p>expD</p></td>
-<td><p>0.94</p></td>
-<td><p>0x1.2f0000000023dp+7</p></td>
-</tr>
-<tr class="row-even"><td><p>exp10</p></td>
-<td><p>0.79</p></td>
-<td><p>-0x1.309022p+5</p></td>
-</tr>
-<tr class="row-odd"><td><p>exp10D</p></td>
-<td><p>0.64</p></td>
-<td><p>-0x1.34ffffffffcc9p+8</p></td>
-</tr>
-<tr class="row-even"><td><p>exp2</p></td>
-<td><p>0.79</p></td>
-<td><p>-0x1.fa3d0ep+6</p></td>
-</tr>
-<tr class="row-odd"><td><p>exp2D</p></td>
-<td><p>0.75</p></td>
-<td><p>-0x1.ff00000000417p+9</p></td>
-</tr>
-<tr class="row-even"><td><p>expm1</p></td>
-<td><p>1.00</p></td>
-<td><p>-0x1.7a0002p-25</p></td>
-</tr>
-<tr class="row-odd"><td><p>expm1D</p></td>
-<td><p>0.99</p></td>
-<td><p>-0x1.26p+5</p></td>
-</tr>
-<tr class="row-even"><td><p>fabs</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>fabsD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>fdim</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fdimD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>floor</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>floorD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>fma</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fmaD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>fmax</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fmaxD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>fmin</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fminD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>fmod</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fmodD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>fract</p></td>
-<td><p>{ 0.00, 0.00}</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>fractD</p></td>
-<td><p>{ 0.00, 0.00}</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>frexp</p></td>
-<td><p>{ 0.00, 0}</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>frexpD</p></td>
-<td><p>{ 0.00, 0}</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>hypot</p></td>
-<td><p>1.93</p></td>
-<td><p>{0x1.17c998p-127, -0x1.5fedb8p-127}</p></td>
-</tr>
-<tr class="row-odd"><td><p>hypotD</p></td>
-<td><p>1.73</p></td>
-<td><p>{0x1.5d2ebeed7663cp-1022, 0x1.67457048a2318p-1022}</p></td>
-</tr>
-<tr class="row-even"><td><p>ldexp</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>ldexpD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0}</p></td>
-</tr>
-<tr class="row-even"><td><p>log10</p></td>
-<td><p>0.50</p></td>
-<td><p>0x1.7fee2ep-1</p></td>
-</tr>
-<tr class="row-odd"><td><p>log10D</p></td>
-<td><p>0.50</p></td>
-<td><p>0x1.9100000000639p+1022</p></td>
-</tr>
-<tr class="row-even"><td><p>log</p></td>
-<td><p>0.63</p></td>
-<td><p>0x1.7fcb3ep-1</p></td>
-</tr>
-<tr class="row-odd"><td><p>logD</p></td>
-<td><p>0.75</p></td>
-<td><p>0x1.7d00000000381p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>log1p</p></td>
-<td><p>1.00</p></td>
-<td><p>-0x1.fa0002p-126</p></td>
-</tr>
-<tr class="row-odd"><td><p>log1pD</p></td>
-<td><p>1.00</p></td>
-<td><p>-0x1.e000000000001p-1022</p></td>
-</tr>
-<tr class="row-even"><td><p>log2</p></td>
-<td><p>0.59</p></td>
-<td><p>0x1.1107a2p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>log2D</p></td>
-<td><p>0.72</p></td>
-<td><p>0x1.120000000063dp+0</p></td>
-</tr>
-<tr class="row-even"><td><p>logb</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>logbD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>mad</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0, 0x0p+0} no ULP check</p></td>
-</tr>
-<tr class="row-odd"><td><p>madD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0, 0x0p+0} no ULP check</p></td>
-</tr>
-<tr class="row-even"><td><p>maxmag</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>maxmagD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>minmag</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>minmagD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>modf</p></td>
-<td><p>{ 0.00, 0.00}</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>modfD</p></td>
-<td><p>{ 0.00, 0.00}</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>multiply</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>multiplyD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>nan</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>nanD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>nextafter</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>nextafterD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>pow</p></td>
-<td><p>0.82</p></td>
-<td><p>{0x1.91237cp-1, 0x1.4da146p+8}</p></td>
-</tr>
-<tr class="row-odd"><td><p>powD</p></td>
-<td><p>0.80</p></td>
-<td><p>{0x1.2bfb4b18164c9p+65, -0x1.b78438ae9c3bdp-8}</p></td>
-</tr>
-<tr class="row-even"><td><p>pown</p></td>
-<td><p>0.65</p></td>
-<td><p>{-0x1.9p+6, -2}</p></td>
-</tr>
-<tr class="row-odd"><td><p>pownD</p></td>
-<td><p>0.62</p></td>
-<td><p>{-0x1.7ffffffffffffp+1, 3}</p></td>
-</tr>
-<tr class="row-even"><td><p>powr</p></td>
-<td><p>0.82</p></td>
-<td><p>{0x1.91237cp-1, 0x1.4da146p+8}</p></td>
-</tr>
-<tr class="row-odd"><td><p>powrD</p></td>
-<td><p>0.80</p></td>
-<td><p>{0x1.2bfb4b18164c9p+65, -0x1.b78438ae9c3bdp-8}</p></td>
-</tr>
-<tr class="row-even"><td><p>remainder</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>remainderD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>remquo</p></td>
-<td><p>{ 0.00, 0}</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>remquoD</p></td>
-<td><p>{ 0.00, 0}</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>rint</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>rintD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>rootn</p></td>
-<td><p>0.69</p></td>
-<td><p>{-0x1.e2fe6ep-74, -141}</p></td>
-</tr>
-<tr class="row-odd"><td><p>rootnD</p></td>
-<td><p>0.68</p></td>
-<td><p>{-0x1.8000000000001p+1, 3}</p></td>
-</tr>
-<tr class="row-even"><td><p>round</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>roundD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>rsqrt</p></td>
-<td><p>1.49</p></td>
-<td><p>0x1.019566p+124</p></td>
-</tr>
-<tr class="row-odd"><td><p>rsqrtD</p></td>
-<td><p>1.49</p></td>
-<td><p>0x1.01ffffffffa39p+1016</p></td>
-</tr>
-<tr class="row-even"><td><p>sin</p></td>
-<td><p>2.48</p></td>
-<td><p>-0x1.09f07ap+21</p></td>
-</tr>
-<tr class="row-odd"><td><p>sinD</p></td>
-<td><p>1.87</p></td>
-<td><p>-0x1.f2fffffffffbap+32</p></td>
-</tr>
-<tr class="row-even"><td><p>sincos</p></td>
-<td><p>{ 2.48, 2.37}</p></td>
-<td><p>{0x1.09f07ap+21, 0x1.1338ccp+20}</p></td>
-</tr>
-<tr class="row-odd"><td><p>sincosD</p></td>
-<td><p>{ 1.87, 2.27}</p></td>
-<td><p>{0x1.f2fffffffffbap+32, 0x1.d10000000074p+380}</p></td>
-</tr>
-<tr class="row-even"><td><p>sinh</p></td>
-<td><p>2.32</p></td>
-<td><p>0x1.e76078p+2</p></td>
-</tr>
-<tr class="row-odd"><td><p>sinhD</p></td>
-<td><p>1.53</p></td>
-<td><p>-0x1.3100000000278p+4</p></td>
-</tr>
-<tr class="row-even"><td><p>sinpi</p></td>
-<td><p>2.13</p></td>
-<td><p>-0x1.45f3ep-9</p></td>
-</tr>
-<tr class="row-odd"><td><p>sinpiD</p></td>
-<td><p>2.50</p></td>
-<td><p>-0x1.46000000000dap-7</p></td>
-</tr>
-<tr class="row-even"><td><p>sqrt</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>sqrtD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-even"><td><p>subtract</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-odd"><td><p>subtractD</p></td>
-<td><p>0.00</p></td>
-<td><p>{0x0p+0, 0x0p+0}</p></td>
-</tr>
-<tr class="row-even"><td><p>tan</p></td>
-<td><p>4.35</p></td>
-<td><p>-0x1.b4eba2p+22</p></td>
-</tr>
-<tr class="row-odd"><td><p>tanD</p></td>
-<td><p>4.00</p></td>
-<td><p>-0x1.2f000000003edp+333</p></td>
-</tr>
-<tr class="row-even"><td><p>tanh</p></td>
-<td><p>1.18</p></td>
-<td><p>-0x1.ca742ap-1</p></td>
-</tr>
-<tr class="row-odd"><td><p>tanhD</p></td>
-<td><p>1.19</p></td>
-<td><p>0x1.f400000000395p-1</p></td>
-</tr>
-<tr class="row-even"><td><p>tanpi</p></td>
-<td><p>4.21</p></td>
-<td><p>-0x1.f99d16p-3</p></td>
-</tr>
-<tr class="row-odd"><td><p>tanpiD</p></td>
-<td><p>4.09</p></td>
-<td><p>0x1.f6000000001d3p-3</p></td>
-</tr>
-<tr class="row-even"><td><p>trunc</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-<tr class="row-odd"><td><p>truncD</p></td>
-<td><p>0.00</p></td>
-<td><p>0x0p+0</p></td>
-</tr>
-</tbody>
-</table>
-</section>
+<section id="conformance-tests-results">
+<h2>Conformance tests results<a class="headerlink" href="#conformance-tests-results" title="Link to this heading">¶</a></h2>
+<p>PoCL has submitted for OpenCL conformance in December 2024, and has been
+accepted as conformant product in January 2025. The submission is here:
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_450">https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_450</a></p>
+<p>For the sumbission, CTS was ran with the following configuration:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>OS: Ubuntu 24.04.1 LTS</p></li>
+<li><p>Hardware: 12th Gen Intel(R) Core(TM) i9-12900 CPU</p></li>
+<li><p>PoCL Commit: bbe47f3d6</p></li>
+<li><p>Conformant devices: X86-64 CPU with SSE2 or later, AVX, AVX2 or AVX512</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 
@@ -639,10 +172,7 @@ therefore the results may vary.</p>
 <li><a class="reference internal" href="#supported-unsupported-optional-opencl-3-0-features">Supported &amp; Unsupported optional OpenCL 3.0 features</a></li>
 <li><a class="reference internal" href="#how-to-run-the-opencl-3-0-conformance-test-suite">How to run the OpenCL 3.0 conformance test suite</a></li>
 <li><a class="reference internal" href="#known-issues-related-to-cts">Known issues related to CTS</a></li>
-<li><a class="reference internal" href="#conformance-tests-results-precision-of-builtin-math-library-functions">Conformance tests results (precision of builtin math library functions)</a><ul>
-<li><a class="reference internal" href="#x86-64-cpu-with-avx2-fma-llvm-4-0-tested-on-nov-1-2017">x86-64 CPU with AVX2+FMA, LLVM 4.0, tested on Nov 1, 2017</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#conformance-tests-results">Conformance tests results</a></li>
 </ul>
 </li>
 </ul>
@@ -691,13 +221,13 @@ therefore the results may vary.</p>
         <li class="right" >
           <a href="opencl_status.html" title="Supported OpenCL features"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">OpenCL conformance</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

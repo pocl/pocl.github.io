@@ -5,17 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using PoCL on Android" href="android.html" />
+    <link rel="next" title="Defined Built-in Kernels" href="dbk.html" />
     <link rel="prev" title="Level Zero driver" href="level0.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -25,12 +25,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="android.html" title="Using PoCL on Android"
+          <a href="dbk.html" title="Defined Built-in Kernels"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 
@@ -121,9 +121,8 @@ implementations as well as with PoCL’s CPU backend.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>the builtin tests of pocl</p></li>
-<li><p>AMD’s Baikal ray-tracing application</p></li>
-<li><p>Luxmark</p></li>
-<li><p>FluidX3D</p></li>
+<li><p><cite>FluidX3D &lt;https://github.com/ProjectPhysX/FluidX3D/&gt;</cite></p></li>
+<li><p><cite>Assorted research demos &lt;https://www.youtube.com/playlist?list=PLS9btrvnAmoKR7D_O6S6zetc7np0wYDAK&gt;</cite></p></li>
 </ul>
 </div></blockquote>
 <p>The image support in particular is quite new and very lightly tested.
@@ -167,7 +166,7 @@ it’s impossible to tell if an argument to clSetKernelArg is a pointer or an in
 </ul>
 </section>
 <section id="how-to-build">
-<h2>How to Build<a class="headerlink" href="#how-to-build" title="Link to this heading">¶</a></h2>
+<span id="remote-how-to-build-label"></span><h2>How to Build<a class="headerlink" href="#how-to-build" title="Link to this heading">¶</a></h2>
 <p>First you need to install the build dependencies.
 These are listed in <a class="reference internal" href="install.html#pocl-install"><span class="std std-ref">Installation</span></a> or alternatively you can
 also take a look at the Dockerfiles in <code class="docutils literal notranslate"><span class="pre">tools/docker</span></code>.</p>
@@ -178,7 +177,7 @@ to control server side devices for which a separate OpenCL driver exists.</p>
 installing some extra packages before building pocl.</p>
 <p>To build the remote <em>client</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir build; cd build;
-cmake -DENABLE_HOST_CPU_DEVICES=0 -DENABLE_LLVM=0 -DENABLE_LOADABLE_DRIVERS=0 -DENABLE_ICD=1 -DENABLE_REMOTE_CLIENT=1 ..
+cmake -DENABLE_HOST_CPU_DEVICES=0 -DENABLE_LLVM=0 -DENABLE_ICD=1 -DENABLE_REMOTE_CLIENT=1 ..
 make -j$(nproc)
 </pre></div>
 </div>
@@ -201,7 +200,8 @@ run the server command:</p>
 <p>Run <code class="docutils literal notranslate"><span class="pre">pocld</span> <span class="pre">--help</span></code> to list all options.
 Note that pocld will listen on three ports, <code class="docutils literal notranslate"><span class="pre">PORT</span></code>, <code class="docutils literal notranslate"><span class="pre">PORT+1</span></code> and <code class="docutils literal notranslate"><span class="pre">PORT+2</span></code>.
 You can tune the amount of messages produced with the environment variable
-“POCLD_LOGLEVEL” before running pocld. The default log level is “err”.
+“POCLD_LOGLEVEL” before running pocld or the <code class="docutils literal notranslate"><span class="pre">--log_filter</span></code> command line option.
+The default log level is “err”.
 Accepted values are: debug, info, warn, err, critical, off.</p>
 <p>On the client, export these environment variables (the first one must be done
 in the pocl remote-client build directory)</p>
@@ -236,9 +236,13 @@ $ ./example1
 OK
 </pre></div>
 </div>
+<p>By default pocld will destroy client contexts when the client connection is lost to avoid
+accumulating stale resources, as there is currently no way for clients to signal a controlled
+shutdown. Setting <code class="docutils literal notranslate"><span class="pre">POCLD_ALLOW_CLIENT_RECONNECT=1</span></code> in pocld’s environment disables this behavior
+and allows clients to reconnect to their existing session.</p>
 <section id="android-build-client-only">
 <h3>Android Build (Client Only)<a class="headerlink" href="#android-build-client-only" title="Link to this heading">¶</a></h3>
-<p>See <a class="reference internal" href="android.html#android-label"><span class="std std-ref">Using PoCL on Android</span></a> on how to do this.</p>
+<p>See <span class="xref std std-ref">android-label</span> on how to do this.</p>
 </section>
 <section id="windows-build-server-only">
 <h3>Windows build (server only)<a class="headerlink" href="#windows-build-server-only" title="Link to this heading">¶</a></h3>
@@ -384,6 +388,148 @@ The results are correct!
 </pre></div>
 </div>
 </section>
+<section id="dynamic-device-management-and-network-discovery">
+<span id="remote-discovery-label"></span><h3>Dynamic Device Management and Network Discovery<a class="headerlink" href="#dynamic-device-management-and-network-discovery" title="Link to this heading">¶</a></h3>
+<p>The Dynamic Device Management and Network Discovery adds the ability to find and
+manage remote servers in both Local Area Networks (LAN) and Wide Area Networks
+(WAN). Through discovery remote servers can be discovered and their OpenCL
+devices can be dynamically added to the platform.</p>
+<p><strong>Network Discovery Mechanisms</strong></p>
+<ul class="simple">
+<li><p>mDNS (Multicast-DNS): Utilizes the Avahi library for local network discovery.</p></li>
+<li><p>Unicast-DNS-SD: For server discovery in specified domains, also using Avahi.</p></li>
+<li><p>DHT (Distributed Hash Table): uses the OpenDHT library to establish or join a
+DHT network, where servers can publish their information and clients can
+listen for server announcements.</p></li>
+</ul>
+<p><strong>Enumerations for Device Info</strong></p>
+<p>The following new enumerations have been added to the clGetDeviceInfo():</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CL_DEVICE_REMOTE_SERVER_IP_POCL</span></code>: Retrieves the IP address of the remote server.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CL_DEVICE_REMOTE_SERVER_PORT_POCL</span></code>: Retrieves the port of the remote server.</p></li>
+</ul>
+<p><strong>Discovery Build and Environment Variables</strong></p>
+<p>To build the remote server or client with discovery follow the steps in
+<span class="xref std std-ref">remote-how-to-build</span>, in addition to those, follow the following build
+options:</p>
+<p>Remote Client:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_DISCOVERY_AVAHI</span></code>: Enable mDNS and unicast-DNS-SD discovery
+via Avahi.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_DISCOVERY_DHT</span></code>: Enable DHT-based discovery.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_DISCOVERY_ANDROID</span></code>: Enables discovery for Android. The helper
+function <code class="docutils literal notranslate"><span class="pre">pocl_remote_discovery_add_server()</span></code> in include/pocl_remote.h can be
+used to dynamically add remote servers and its devices through the remote driver.</p></li>
+</ul>
+<p>Remote Server:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_ADVERTISEMENT_AVAHI</span></code>: Enable mDNS advertisement via Avahi.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_ADVERTISEMENT_DHT</span></code>: Enable DHT-based advertisement.</p></li>
+</ul>
+<p>The following environment variables are introduced to control and customize
+discovery and advertisement:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_DISCOVERY</span></code> (bool): Located in devices.h and utilized in devices.c.
+This variable allows users to enable or disable device discovery entirely.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_SEARCH_DOMAINS</span></code> (string): Introduced in network_discovery.h
+and used in network_discovery.c. This variable specifies DNS domains for
+unicast-DNS-SD queries. If set to <code class="docutils literal notranslate"><span class="pre">NULL</span></code>, discovery is limited to the
+local network. For example, setting
+<code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_SEARCH_DOMAINS=&quot;example.com&quot;</span></code> enables discovery in both the
+LAN and the specified domain.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_DHT_PORT</span></code> (int): Introduced in network_discovery.h and
+dht_advertise.h, and used in network_discovery.c and
+dht_advertise.c. This variable allows users to specify a port on which the
+DHT node will operate. Set to 4222 by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_DHT_BOOTSTRAP</span></code> (string): Introduced in network_discovery.h and
+dht_advertise.h, and utilized in network_discovery.c and
+dht_advertise.c. This variable specifies a bootstrap node to connect to
+an existing DHT network. Set to <code class="docutils literal notranslate"><span class="pre">NULL</span></code> by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_DHT_KEY</span></code> (string): Introduced in network_discovery.h and
+dht_advertise.h, and used in network_discovery.c and
+dht_advertise.c. This variable provides a common key for server and
+client nodes to use when publishing or listening for server details within
+the DHT network. Set to “poclremoteservernetwork” by default.</p></li>
+</ul>
+<p>Run remote client with these environment variables in addition to the ones
+specified in <span class="xref std std-ref">remote-how-to-build</span>.</p>
+<p><strong>Examples</strong></p>
+<p>Discovery in client using mDNS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir build; cd build;
+cmake -DENABLE_HOST_CPU_DEVICES=0 -DENABLE_LLVM=0 -DENABLE_ICD=1 -DENABLE_REMOTE_CLIENT=1 -DENABLE_REMOTE_DISCOVERY_AVAHI=1 ..
+make -j$(nproc)
+</pre></div>
+</div>
+<p>Environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export POCL_DISCOVERY=1
+export OCL_ICD_VENDORS=$PWD/ocl-vendors/pocl-tests.icd
+export POCL_DEVICES=remote
+export POCL_REMOTE0_PARAMETERS=&#39;&lt;IP ADDRESS&gt;:&lt;PORT&gt;/&lt;DEVICE ID&gt;#&lt;PEER ADDRESS&gt;&#39;
+</pre></div>
+</div>
+<p>Discovery in client using unicast-DNS-SD, build is same as mDNS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export POCL_DISCOVERY=1
+export POCL_REMOTE_SEARCH_DOMAINS=&quot;domain_name.com&quot;
+export OCL_ICD_VENDORS=$PWD/ocl-vendors/pocl-tests.icd
+export POCL_DEVICES=remote
+export POCL_REMOTE0_PARAMETERS=&#39;&lt;IP ADDRESS&gt;:&lt;PORT&gt;/&lt;DEVICE ID&gt;#&lt;PEER ADDRESS&gt;&#39;
+</pre></div>
+</div>
+<p>Discovery in client using DHT:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir build; cd build;
+cmake -DENABLE_HOST_CPU_DEVICES=0 -DENABLE_LLVM=0 -DENABLE_ICD=1 -DENABLE_REMOTE_CLIENT=1 -DENABLE_REMOTE_DISCOVERY_DHT=1 ..
+make -j$(nproc)
+</pre></div>
+</div>
+<p>Environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export POCL_DISCOVERY=1
+export POCL_REMOTE_DHT_PORT=&lt;DHT PORT&gt;
+export POCL_REMOTE_DHT_BOOTSTRAP=&lt;BOOTSTRAP IP&gt;
+export POCL_REMOTE_DHT_KEY=&lt;COMMON KEY&gt;
+export OCL_ICD_VENDORS=$PWD/ocl-vendors/pocl-tests.icd
+export POCL_DEVICES=remote
+export POCL_REMOTE0_PARAMETERS=&#39;&lt;IP ADDRESS&gt;:&lt;PORT&gt;/&lt;DEVICE ID&gt;#&lt;PEER ADDRESS&gt;&#39;
+</pre></div>
+</div>
+<p>For remote server advertisement using mDNS use <code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_ADVERTISEMENT_AVAHI=YES</span></code></p>
+<p>To advertise using unicast-DNS-SD, you would need to add DNS records for the
+remote-server in the name server of the domain which you are using. The
+following example shows how that can be done for a domain “example.com”.</p>
+<p>Add PTR records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lb._dns-sd._udp.example.com</span></code> points to <code class="docutils literal notranslate"><span class="pre">example.com</span></code> - This sets legacy
+browse domain to “example.com”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">b._dns-sd._udp.example.com</span></code> points to <code class="docutils literal notranslate"><span class="pre">example.com</span></code> - Sets browse domain
+to “example.com”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_services._dns-sd._udp.example.com</span></code> points to <code class="docutils literal notranslate"><span class="pre">pocl._tcp.example.com</span></code> -
+Adds the service type “pocl” in the seacrh domain.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_pocl._tcp.example.com</span></code> points to <code class="docutils literal notranslate"><span class="pre">unique_32_char_string._pocl._tcp.example.com</span></code>
+- Adds the service instance called “unique_32_char_string” for service type “pocl”.</p></li>
+</ul>
+<p>Add SRV records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unique_32_char_string._pocl._tcp.example.com</span></code> with your choice of priority,
+weight, TTL, port, points to <code class="docutils literal notranslate"><span class="pre">unique_32_char_string.example.com</span></code></p></li>
+</ul>
+<p>Add A/AAAA records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unique_32_char_string.example.com</span></code> points to IP</p></li>
+</ul>
+<p>Add TXT records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unique_32_char_string._pocl._tcp.example.com</span></code> has content “11” (The text
+record is used by the client to determine the type of the device and total
+number of devices. 0 - CPU, 1 - GPU, 2 - Accelerator, 4 - Custom. Hence, “11”
+denotes “gpu gpu”)</p></li>
+</ul>
+<p>For remote server advertisement using DHT use <code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_ADVERTISEMENT_DHT=YES</span></code>
+Environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">POCL_REMOTE_DHT_PORT</span><span class="o">=&lt;</span><span class="n">DHT</span> <span class="n">PORT</span><span class="o">&gt;</span>
+<span class="n">export</span> <span class="n">POCL_REMOTE_DHT_BOOTSTRAP</span><span class="o">=&lt;</span><span class="n">BOOTSTRAP</span> <span class="n">IP</span><span class="o">&gt;</span>
+<span class="n">export</span> <span class="n">POCL_REMOTE_DHT_KEY</span><span class="o">=&lt;</span><span class="n">COMMON</span> <span class="n">KEY</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="implementation-notes">
 <h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">¶</a></h2>
@@ -395,8 +541,6 @@ blocking within a command queue. In other words, multiple CQs progress
 in parallel, but each enqueued command has an implicit clFinish() and
 there is network communication before the next command is launched.
 This is a key bottleneck that will be resolved in a future version.</p></li>
-<li><p>For the time being the client side part of PoCL-Remote must be built with the
-<code class="docutils literal notranslate"><span class="pre">ENABLE_LOADABLE_DRIVERS</span></code> build option set to <code class="docutils literal notranslate"><span class="pre">OFF</span></code>. See <a class="reference external" href="https://github.com/pocl/pocl/issues/1297">issue 1297</a>.</p></li>
 <li><p>The old SPIR 1.2/2.0 are not supported and the respective extension is masked out from
 remote devices’ extension lists by pocld.</p></li>
 <li><p>There is no authentication or encryption whatsoever of network traffic. Don’t
@@ -439,6 +583,7 @@ or buffers larger than 4G.</p></li>
 <li><a class="reference internal" href="#viewing-traces">Viewing Traces</a></li>
 <li><a class="reference internal" href="#remote-and-local-traces">Remote and Local Traces</a></li>
 <li><a class="reference internal" href="#distributed-sycl-execution-using-pocl-r">Distributed SYCL Execution Using PoCL-R</a></li>
+<li><a class="reference internal" href="#dynamic-device-management-and-network-discovery">Dynamic Device Management and Network Discovery</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#implementation-notes">Implementation Notes</a></li>
@@ -454,8 +599,8 @@ or buffers larger than 4G.</p></li>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="android.html"
-                          title="next chapter">Using PoCL on Android</a></p>
+    <p class="topless"><a href="dbk.html"
+                          title="next chapter">Defined Built-in Kernels</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -485,19 +630,19 @@ or buffers larger than 4G.</p></li>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="android.html" title="Using PoCL on Android"
+          <a href="dbk.html" title="Defined Built-in Kernels"
              >next</a> |</li>
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

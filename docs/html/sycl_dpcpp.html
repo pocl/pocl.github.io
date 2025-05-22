@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Using PoCL as the OpenCL backend for DPC++ &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using PoCL as the OpenCL backend for DPC++</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="using-pocl-as-the-opencl-backend-for-dpc">
+<span id="sycl-dpcpp"></span><h1>Using PoCL as the OpenCL backend for DPC++<a class="headerlink" href="#using-pocl-as-the-opencl-backend-for-dpc" title="Link to this heading">¶</a></h1>
+<p>SYCL is a programming model that enables single-source C++ development for
+heterogeneous computing. Compared to OpenCL, SYCL operates at a higher level
+of abstraction, and implementations can use varying backends
+for device offloading (e.g., OpenCL, Level Zero, and CUDA). It is worth noting
+that a SYCL implementation is not required to support OpenCL as a backend.</p>
+<p>DPC++ is Intel’s implementation of SYCL that supports OpenCL. When the OpenCL backend
+is utilized, the DPC++ runtime translates SYCL API calls into corresponding OpenCL
+API calls and forwards them to the OpenCL runtime.</p>
+<p>The toolchain flow, when PoCL is used as the OpenCL backend for DPC++, is as follows:</p>
+<ul class="simple">
+<li><p>The DPC++ Clang++ frontend compiles the SYCL kernel into LLVM IR.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> is used to translate LLVM IR to SPIR-V.</p></li>
+<li><p>SPIR-V is ingested by PoCL, where it is translated back into LLVM IR.</p></li>
+<li><p>PoCL applies additional transformations to the LLVM IR.</p></li>
+<li><p>If using a CPU driver, PoCL leverages <code class="docutils literal notranslate"><span class="pre">llc</span></code> (LLVM backend) to lower the kernel to machine code.</p></li>
+</ul>
+<p>It should be pointed out that there are two versions of DPC++:</p>
+<ul class="simple">
+<li><p>the <strong>Intel(R) oneAPI DPC++/C++ Compiler</strong></p></li>
+<li><p>the <strong>oneAPI DPC++/C++ Compiler</strong>.</p></li>
+</ul>
+<p>The former is proprietary and thus distributed in binary form, whereas the latter is
+open-source.</p>
+<p>This page covers the following steps:</p>
+<ul class="simple">
+<li><p>How to obtain, install, and set up DPC++ (the proprietary or the open-source version)</p></li>
+<li><p>How to build PoCL to support DPC++.</p></li>
+<li><p>Verification with an example program.</p></li>
+</ul>
+<section id="intel-r-oneapi-dpc-c-compiler-installation">
+<h2>Intel(R) oneAPI DPC++/C++ Compiler installation<a class="headerlink" href="#intel-r-oneapi-dpc-c-compiler-installation" title="Link to this heading">¶</a></h2>
+<p>DPC++ is available in various bundles. Installing the oneAPI Base Toolkit is the simplest way to install DPC++ and its dependencies.</p>
+<p>Choose a suitable installer from:</p>
+<p><a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html">https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html</a></p>
+<p>Run the installer. The page above provides corresponding instructions for the selected installer.
+Pay attention to the default installation path and choose a suitable one if necessary.</p>
+<p>The oneAPI Base Toolkit includes various components, some of which are not needed to run SYCL applications with PoCL.</p>
+<p>For a minimal setup, pick:</p>
+<ul class="simple">
+<li><p>Intel oneAPI DPC++ Library</p></li>
+<li><p>Intel oneAPI DPC++/C++ compiler</p></li>
+<li><p>Intel Distribution for GDB (Required by the compiler)</p></li>
+<li><p>Intel oneAPI Threading Building Blocks (Required by the compiler)</p></li>
+<li><p>Intel oneAPI Math Kernel Library (Useful, but not required here)</p></li>
+</ul>
+<p>After installation, run the initialization script to set the environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">oneapi</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="n">setvars</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code class="docutils literal notranslate"><span class="pre">setvars.sh</span></code> must be run in every new shell session unless added to <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> (or an equivalent).</p>
+</div>
+<p>Now, DPC++ should be set up. This can be verified by checking the available SYCL backends (In this example, Intel OpenCL was detected).:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sycl-ls
+[opencl:cpu][opencl:0] Intel(R) OpenCL, AMD Ryzen Threadripper 2990WX 32-Core Processor OpenCL 3.0 (Build 0) [2024.18.12.0.05_160000]
+[opencl:gpu][opencl:1] Intel(R) OpenCL Graphics, Intel(R) Arc(TM) A770 Graphics OpenCL 3.0 NEO  [23.43.027642]
+</pre></div>
+</div>
+<p>The initialization script also adds the compiler to the <code class="docutils literal notranslate"><span class="pre">PATH</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>icpx --version
+Intel(R) oneAPI DPC++/C++ Compiler 2025.0.4 (2025.0.4.20241205)
+</pre></div>
+</div>
+</section>
+<section id="oneapi-dpc-c-compiler-installation">
+<h2>oneAPI DPC++/C++ Compiler installation<a class="headerlink" href="#oneapi-dpc-c-compiler-installation" title="Link to this heading">¶</a></h2>
+<p>The sources for the open-source DPC++ compiler can be obtained from the <a class="reference external" href="https://github.com/intel/llvm">DPC++ repository</a>.</p>
+<p>Official detailed instructions can be found <a class="reference external" href="https://intel.github.io/llvm-docs/GetStartedGuide.html#build-dpc-toolchain">here</a>.
+The build process is managed using two Python scripts: <code class="docutils literal notranslate"><span class="pre">configure.py</span></code> and <code class="docutils literal notranslate"><span class="pre">compile.py</span></code>, which handle most of the heavy lifting.
+The <code class="docutils literal notranslate"><span class="pre">configure.py</span></code> is essentially a wrapper for <strong>CMake</strong>, so checking its contents can provide further details.</p>
+<p>For a basic setup, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">intel</span><span class="o">/</span><span class="n">llvm</span>
+<span class="n">cd</span> <span class="n">llvm</span>
+<span class="n">python3</span> <span class="o">./</span><span class="n">buildbot</span><span class="o">/</span><span class="n">configure</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dpcpp</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;</span>
+<span class="n">python3</span> <span class="o">./</span><span class="n">buildbot</span><span class="o">/</span><span class="nb">compile</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dpcpp</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">j</span> <span class="o">&lt;</span><span class="n">number</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">threads</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>After building, export the compiler and SYCL runtime library paths:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=&lt;path-to-dpcpp-installation&gt;/bin:$PATH
+export LD_LIBRARY_PATH=&lt;path-to-dpcpp-installation&gt;/lib:$LD_LIBRARY_PATH
+</pre></div>
+</div>
+<p><strong>Note:</strong> The open-source DPC++ compiler driver is <code class="docutils literal notranslate"><span class="pre">clang++</span></code>, not <code class="docutils literal notranslate"><span class="pre">icpx</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">which</span> <span class="n">clang</span><span class="o">++</span>
+<span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">dpcpp</span><span class="o">-</span><span class="n">installation</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">clang</span><span class="o">++</span>
+</pre></div>
+</div>
+</section>
+<section id="building-pocl-for-dpc">
+<h2>Building PoCL for DPC++<a class="headerlink" href="#building-pocl-for-dpc" title="Link to this heading">¶</a></h2>
+<p>PoCL doesn’t normally require <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code>, but in this case, it is a strict
+dependency because PoCL needs to convert the SPIR-V produced by DPC++ back to LLVM IR.</p>
+<p>You must check out and build a version of <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> that corresponds to the LLVM
+version PoCL uses as its kernel compiler. For example, if the PoCL kernel compiler uses
+<strong>LLVM 18</strong>, then <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> should be checked out from the <code class="docutils literal notranslate"><span class="pre">llvm_release_180</span></code> branch.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DPC++ ships with its own <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code>, which is typically based on the latest release.
+However, this version is intended for internal usage by DPC++ and cannot be used by PoCL.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Although the versions of <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> used by DPC++ and PoCL do not have to be an exact
+match, it is recommended to use versions that are reasonably close to each other.</p>
+</div>
+<p>Example PoCL build:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:pocl/pocl.git
+cd pocl
+mkdir build &amp;&amp; cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=&lt;path-to-installation-directory&gt; -DLLVM_SPIRV=&lt;path-to-llvm-spirv&gt; -DWITH_LLVM_CONFIG=&lt;path-to-llvm-config&gt;
+ninja install
+</pre></div>
+</div>
+<p>To make PoCL visible to the ICD loader, either register the PoCL ICD (<a class="reference external" href="https://github.com/KhronosGroup/OpenCL-ICD-Loader#registering-icds">https://github.com/KhronosGroup/OpenCL-ICD-Loader#registering-icds</a>)
+or set the <code class="docutils literal notranslate"><span class="pre">OCL_ICD_FILENAMES</span></code> or <code class="docutils literal notranslate"><span class="pre">OCL_ICD_VENDORS</span></code> environment variables. <code class="docutils literal notranslate"><span class="pre">OCL_ICD_VENDORS</span></code> only works on Linux/Android,
+whereas <code class="docutils literal notranslate"><span class="pre">OCL_ICD_FILENAMES</span></code> works on all platforms (see <a class="reference external" href="https://github.com/KhronosGroup/OpenCL-ICD-Loader#table-of-debug-environment-variables">https://github.com/KhronosGroup/OpenCL-ICD-Loader#table-of-debug-environment-variables</a>
+for more information).</p>
+<p>On Linux:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export OCL_ICD_VENDORS=&lt;path-to-pocl-installation&gt;/etc/OpenCL/vendors
+</pre></div>
+</div>
+</section>
+<section id="compiling-with-dpc-using-pocl-as-the-backend">
+<h2>Compiling with DPC++ using PoCL as the backend<a class="headerlink" href="#compiling-with-dpc-using-pocl-as-the-backend" title="Link to this heading">¶</a></h2>
+<p>If using proprietary DPC++, there is one additional step.
+By default PoCL is blocked by the DPC++ runtime. To enable PoCL, we need to set the <code class="docutils literal notranslate"><span class="pre">SYCL_DEVICE_ALLOWLIST</span></code>
+environment variable. This variable is a comma-separated list of parameters that the DPC++ runtime uses to select allowed devices.
+It can be used quite flexibly. For example, to select only CPU devices:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;DeviceType:cpu&quot;
+</pre></div>
+</div>
+<p>To allow all available devices, use:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;&quot;
+</pre></div>
+</div>
+<p>To select only PoCL, you can use the PoCL vendor ID:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;DeviceVendorId:0x10006&quot;
+</pre></div>
+</div>
+<p>For more information about how to use the DPC++ environment variables, see:</p>
+<p><a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md">https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md</a></p>
+<p>Now that everything is set up, verify that PoCL is detected:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sycl-ls
+[opencl:cpu][opencl:0] Portable Computing Language, cpu-znver1-AMD Ryzen Threadripper 2990WX 32-Core Processor OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-znver1
+</pre></div>
+</div>
+<p>Below is a simple SYCL program to test the setup. It selects the device automatically, so this will drop the possible GPUs out of the list:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export ONEAPI_DEVICE_SELECTOR=opencl:cpu
+</pre></div>
+</div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// hello_nd_range.cpp</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sycl/sycl.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#define SUB_GROUP_SIZE 2</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">sycl</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">global_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">local_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">queue</span><span class="w"> </span><span class="n">q</span><span class="p">;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">q</span><span class="p">.</span><span class="n">submit</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">handler</span><span class="w"> </span><span class="o">&amp;</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;One dimensional nd_range with global_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">global_size</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, local_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">local_size</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, sg_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">SUB_GROUP_SIZE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">            </span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">global</span><span class="p">(</span><span class="n">global_size</span><span class="p">);</span>
+<span class="w">            </span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local</span><span class="p">(</span><span class="n">local_size</span><span class="p">);</span>
+<span class="w">            </span><span class="n">nd_range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="n">global</span><span class="p">,</span><span class="w"> </span><span class="n">local</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">h</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="n">nd_item</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">[[</span><span class="n">sycl</span><span class="o">::</span><span class="n">reqd_sub_group_size</span><span class="p">(</span><span class="n">SUB_GROUP_SIZE</span><span class="p">)]]</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">workgroup_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_group</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">global_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">local_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">sg_local_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_sub_group</span><span class="p">().</span><span class="n">get_local_id</span><span class="p">();</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">sg_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_sub_group</span><span class="p">().</span><span class="n">get_group_id</span><span class="p">();</span>
+<span class="w">                </span><span class="n">sycl</span><span class="o">::</span><span class="n">ext</span><span class="o">::</span><span class="n">oneapi</span><span class="o">::</span><span class="n">experimental</span><span class="o">::</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello from: (global_id %d) (local_id: %d) (wg_id: %d) (sg_id: %d) (sg_local id: %d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">global_id_x</span><span class="p">,</span><span class="w"> </span><span class="n">local_id_x</span><span class="p">,</span><span class="n">workgroup_id_x</span><span class="p">,</span><span class="w"> </span><span class="n">sg_id</span><span class="p">,</span><span class="w"> </span><span class="n">sg_local_id</span><span class="p">);</span>
+<span class="w">            </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}).</span><span class="n">wait</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Compile and run (use <code class="docutils literal notranslate"><span class="pre">icpx</span></code> for proprietary version, and <code class="docutils literal notranslate"><span class="pre">clang++</span></code> for open-source version):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clang</span><span class="o">++</span> <span class="n">hello_nd_range</span><span class="o">.</span><span class="n">cpp</span> <span class="o">-</span><span class="n">fsycl</span> <span class="o">-</span><span class="n">o</span> <span class="n">hello</span>
+<span class="o">./</span><span class="n">hello</span>
+
+<span class="n">One</span> <span class="n">dimensional</span> <span class="n">nd_range</span> <span class="k">with</span> <span class="n">global_size</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="n">local_size</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="n">sg_size</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">4</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">5</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">6</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">hello</span> <span class="n">from</span><span class="p">:</span> <span class="p">(</span><span class="n">global_id</span> <span class="mi">7</span><span class="p">)</span> <span class="p">(</span><span class="n">local_id</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="n">wg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">sg_local</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Using PoCL as the OpenCL backend for DPC++</a><ul>
+<li><a class="reference internal" href="#intel-r-oneapi-dpc-c-compiler-installation">Intel(R) oneAPI DPC++/C++ Compiler installation</a></li>
+<li><a class="reference internal" href="#oneapi-dpc-c-compiler-installation">oneAPI DPC++/C++ Compiler installation</a></li>
+<li><a class="reference internal" href="#building-pocl-for-dpc">Building PoCL for DPC++</a></li>
+<li><a class="reference internal" href="#compiling-with-dpc-using-pocl-as-the-backend">Compiling with DPC++ using PoCL as the backend</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/sycl_dpcpp.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using PoCL as the OpenCL backend for DPC++</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

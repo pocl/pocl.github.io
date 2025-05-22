@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Supported device drivers &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Supported device drivers &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="extensions.html" title="OpenCL Extensions Supported by PoCL"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Supported device drivers</a></li> 
       </ul>
@@ -67,6 +67,7 @@
 <li class="toctree-l2"><a class="reference internal" href="almaif.html#interface">Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="almaif.html#usage">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="almaif.html#wrapping-a-new-hardware-component">Wrapping a new hardware component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="almaif.html#openasip-and-almaif">OpenASIP and AlmaIF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="almaif.html#using-this-work">Using this work</a></li>
 </ul>
 </li>
@@ -86,11 +87,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="level0.html">Level Zero driver</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="level0.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="level0.html#what-s-implemented-some-were-not-tested">What’s implemented (some were not tested)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="level0.html#unfinished-non-optimal">Unfinished / non-optimal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="level0.html#doesnt-work-missing">Doesnt work / missing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="level0.html#known-issues-broken-features">Known issues / broken features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="level0.html#extra-features-tunables">Extra features / tunables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="level0.html#known-bugs">Known Bugs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="level0.html#testing">Testing</a></li>
 </ul>
 </li>
@@ -104,14 +102,6 @@
 <li class="toctree-l2"><a class="reference internal" href="remote.html#how-to-build">How to Build</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remote.html#event-tracing">Event Tracing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remote.html#implementation-notes">Implementation Notes</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="android.html">Using PoCL on Android</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="android.html#cmake-arguments">CMake Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="android.html#building-remote-client">Building Remote Client</a></li>
-<li class="toctree-l2"><a class="reference internal" href="android.html#building-proxy-device">Building Proxy Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="android.html#setting-pocl-environment-variables">Setting PoCL Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="android.html#using-jocl">Using JOCL</a></li>
 </ul>
 </li>
 </ul>
@@ -168,13 +158,13 @@
         <li class="right" >
           <a href="extensions.html" title="OpenCL Extensions Supported by PoCL"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Supported device drivers</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

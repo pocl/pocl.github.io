@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Installation &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
@@ -42,8 +42,8 @@
             
   <section id="installation">
 <span id="pocl-install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
+<section id="install-requirements">
+<h2>Install Requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h2>
 <p>In order to build pocl, you need the following support libraries and
 tools:</p>
 <blockquote>
@@ -57,73 +57,73 @@ tools:</p>
 <li><p>pthread (should be installed by default)</p></li>
 <li><p>hwloc v1.0 or newer (e.g. libhwloc-dev) - optional</p></li>
 <li><p>python3 (for support of LLVM bitcode with SPIR target; optional but enabled by default)</p></li>
-<li><p>python3, llvm-spirv (version-compatible with LLVM) and spirv-tools (optional;
+<li><p>llvm-spirv (version-compatible with LLVM) and spirv-tools (optional;
 required for SPIR-V support in CPU / CUDA; Vulkan driver supports SPIR-V through clspv)</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="installing-requirements-for-ubuntu">
-<h2>Installing requirements for Ubuntu<a class="headerlink" href="#installing-requirements-for-ubuntu" title="Link to this heading">¶</a></h2>
-<p>Note: The binary packages from <a class="reference external" href="https://apt.llvm.org/">https://apt.llvm.org/</a> are recommended
-(and tested for each release) instead of the binary tar balls or
-the packages included in the distribution. The following assumes
-apt.llvm.org is added to your apt repos:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>apt install -y python3-dev libpython3-dev build-essential ocl-icd-libopencl1 cmake git pkg-config libclang-${LLVM_VERSION}-dev clang-${LLVM_VERSION} llvm-${LLVM_VERSION} make ninja-build ocl-icd-libopencl1 ocl-icd-dev ocl-icd-opencl-dev libhwloc-dev zlib1g zlib1g-dev clinfo dialog apt-utils libxml2-dev libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} llvm-${LLVM_VERSION}-dev
+<section id="install-requirements-on-linux">
+<h3>Install requirements on Linux<a class="headerlink" href="#install-requirements-on-linux" title="Link to this heading">¶</a></h3>
+<p>Note: For Ubuntu/Debian, PoCL supports the binary packages
+from <a class="reference external" href="https://apt.llvm.org/">https://apt.llvm.org/</a> - these usually support more
+(and newer) LLVM versions than Ubuntu/Debian.</p>
+<p>Install requirements (e.g with LLVM 19) for Ubuntu/Debian:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LLVM_VERSION</span><span class="o">=</span><span class="m">19</span>
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3-dev<span class="w"> </span>libpython3-dev<span class="w"> </span>build-essential<span class="w"> </span>ocl-icd-libopencl1<span class="w"> </span><span class="se">\</span>
+cmake<span class="w"> </span>git<span class="w"> </span>pkg-config<span class="w"> </span>libclang-<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span>-dev<span class="w"> </span>clang-<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+llvm-<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span><span class="w"> </span>make<span class="w"> </span>ninja-build<span class="w"> </span>ocl-icd-libopencl1<span class="w"> </span>ocl-icd-dev<span class="w"> </span><span class="se">\</span>
+ocl-icd-opencl-dev<span class="w"> </span>libhwloc-dev<span class="w"> </span>zlib1g<span class="w"> </span>zlib1g-dev<span class="w"> </span>clinfo<span class="w"> </span>dialog<span class="w"> </span>apt-utils<span class="w"> </span><span class="se">\</span>
+libxml2-dev<span class="w"> </span>libclang-cpp<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span>-dev<span class="w"> </span>libclang-cpp<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+llvm-<span class="si">${</span><span class="nv">LLVM_VERSION</span><span class="si">}</span>-dev
 </pre></div>
 </div>
-<p>Installing requirements for Arch Linux:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pacman</span> <span class="o">-</span><span class="n">S</span> <span class="n">gcc</span> <span class="n">patch</span> <span class="n">hwloc</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">pkg</span><span class="o">-</span><span class="n">config</span> <span class="n">make</span> <span class="n">ninja</span> <span class="n">ocl</span><span class="o">-</span><span class="n">icd</span> <span class="n">clang</span> <span class="n">llvm</span> <span class="n">llvm</span><span class="o">-</span><span class="n">libs</span> <span class="n">clinfo</span> <span class="n">opencl</span><span class="o">-</span><span class="n">headers</span>
+<p>If LLVM is linked to PoCL statically (-DSTATIC_LLVM=ON cmake option, default OFF),
+then the <cite>libpolly-${LLVM_VERSION}-dev libzstd-dev</cite> packages might be also needed
+(at least on Ubuntu 22.04 with packages from apt.llvm.org).</p>
+<p>Install requirements for Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pacman<span class="w"> </span>-S<span class="w"> </span>gcc<span class="w"> </span>patch<span class="w"> </span>hwloc<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>pkg-config<span class="w"> </span>make<span class="w"> </span>ninja<span class="w"> </span>ocl-icd<span class="w"> </span>clang<span class="w"> </span>llvm<span class="w"> </span>llvm-libs<span class="w"> </span>clinfo<span class="w"> </span>opencl-headers
 </pre></div>
 </div>
-<p>Installing requirements for Fedora:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">gcc</span> <span class="n">gcc</span><span class="o">-</span><span class="n">c</span><span class="o">++</span> <span class="n">clinfo</span> <span class="n">hwloc</span><span class="o">-</span><span class="n">devel</span> <span class="n">hwloc</span><span class="o">-</span><span class="n">libs</span> <span class="n">cmake</span> <span class="n">git</span><span class="o">-</span><span class="n">core</span> <span class="n">pkgconfig</span> <span class="n">make</span> <span class="n">ninja</span><span class="o">-</span><span class="n">build</span> <span class="n">ocl</span><span class="o">-</span><span class="n">icd</span> <span class="n">ocl</span><span class="o">-</span><span class="n">icd</span><span class="o">-</span><span class="n">devel</span> <span class="n">clang</span> <span class="n">clang</span><span class="o">-</span><span class="n">devel</span> <span class="n">clang</span><span class="o">-</span><span class="n">libs</span> <span class="n">llvm</span> <span class="n">llvm</span><span class="o">-</span><span class="n">devel</span> <span class="n">llvm</span><span class="o">-</span><span class="n">libs</span> <span class="n">patch</span> <span class="n">redhat</span><span class="o">-</span><span class="n">rpm</span><span class="o">-</span><span class="n">config</span> <span class="n">findutils</span>
+<p>Install requirements for Fedora:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>gcc-c++<span class="w"> </span>clinfo<span class="w"> </span>hwloc-devel<span class="w"> </span>hwloc-libs<span class="w"> </span>cmake<span class="w"> </span>git-core<span class="w"> </span>pkgconfig<span class="w"> </span>make<span class="w"> </span>ninja-build<span class="w"> </span>ocl-icd<span class="w"> </span>ocl-icd-devel<span class="w"> </span>clang<span class="w"> </span>clang-devel<span class="w"> </span>clang-libs<span class="w"> </span>llvm<span class="w"> </span>llvm-devel<span class="w"> </span>llvm-libs<span class="w"> </span>patch<span class="w"> </span>redhat-rpm-config<span class="w"> </span>findutils
 </pre></div>
 </div>
 <p>There are also Dockerfiles available for a few most common linux
 distributions in <code class="docutils literal notranslate"><span class="pre">tools/docker</span></code>, looking into them might be helpful.</p>
 </section>
-<section id="opencl-3-0-support">
-<h2>OpenCL 3.0 support<a class="headerlink" href="#opencl-3-0-support" title="Link to this heading">¶</a></h2>
-<p>If you want PoCL built with ICD and OpenCL 3.0 support at platform level, you will
-need sufficiently new ocl-icd (2.3.x). For Ubuntu, it can be installed from
+<section id="icd-opencl-3-0-support">
+<h3>ICD / OpenCL 3.0 support<a class="headerlink" href="#icd-opencl-3-0-support" title="Link to this heading">¶</a></h3>
+<p>PoCL’s build by default builds the runtime library, tests and examples.
+The tests and examples cannot be built against ICD loader which doesn’t
+support OpenCL 3.0. In other words, they can only be built with disabled
+ICD (linking directly to PoCL) or with ICD supporting OpenCL 3.0.</p>
+<p>The loader in Ubuntu (ocl-icd) supports OpenCL 3.0 since version 2.3.0;
+for Ubuntu earlier than 24.04, it can be installed from
 this PPA: <a class="reference external" href="https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa">https://launchpad.net/~ocl-icd/+archive/ubuntu/ppa</a></p>
-<p>Note: PoCL assumes that the OpenCL development headers and the ICD loader
-(if present on your system) are version compatible.</p>
-</section>
-<section id="clang-llvm-notes">
-<h2>Clang / LLVM Notes<a class="headerlink" href="#clang-llvm-notes" title="Link to this heading">¶</a></h2>
-<p><strong>IMPORTANT NOTE!</strong> Some targets (TCE and possibly HSA) require that
-you compile &amp; build LLVM with RTTI on. It can be enabled on cmake command
-line, as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="p">[</span><span class="n">other</span> <span class="n">CMake</span> <span class="n">options</span><span class="p">]</span> <span class="o">-</span><span class="n">DLLVM_ENABLE_RTTI</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DLLVM_ENABLE_EH</span><span class="o">=</span><span class="n">ON</span> <span class="o">&lt;</span><span class="n">llvm</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<section id="supported-llvm-versions">
-<h3>Supported LLVM versions<a class="headerlink" href="#supported-llvm-versions" title="Link to this heading">¶</a></h3>
+<p>If you don’t have a sufficiently new ICD, and you want the tests/examples,
+then either:</p>
 <blockquote>
-<div><p>Note that pocl aims to support <strong>the latest LLVM version</strong> at the time
-of pocl release, <strong>plus the previous</strong> LLVM version. All older LLVM
-versions are supported with “best effort” basis; there might not be
-CI continuously testing the code base nor anyone fixing their
-possible breakage.</p>
+<div><ul class="simple">
+<li><p>disable building with ICD (-DENABLE_ICD=0)</p></li>
+<li><p>disable the tests &amp; examples (-DENABLE_TESTS=0 -DENABLE_EXAMPLES=0)</p></li>
+</ul>
 </div></blockquote>
 </section>
 </section>
 <section id="configure-build">
 <h2>Configure &amp; Build<a class="headerlink" href="#configure-build" title="Link to this heading">¶</a></h2>
-<p>CMake version 3.12 or higher is required.</p>
+<p>CMake version 3.15 or higher is required.</p>
 <p>The build+install is the usual CMake way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">directory</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">pocl</span><span class="o">-</span><span class="n">sources</span><span class="o">&gt;</span>
-<span class="n">mkdir</span> <span class="n">build</span>
-<span class="n">cd</span> <span class="n">build</span>
-<span class="n">cmake</span> <span class="p">[</span><span class="o">-</span><span class="n">D</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;=&lt;</span><span class="n">value</span><span class="o">&gt;</span> <span class="o">...</span><span class="p">]</span> <span class="o">..</span>
-<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">install</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;directory-with-pocl-sources&gt;
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span><span class="o">[</span>-D&lt;option&gt;<span class="o">=</span>&lt;value&gt;<span class="w"> </span>...<span class="o">]</span><span class="w"> </span>..
+make<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 <p>To see the default detected values, run <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">..</span></code> without any options,
 it will produce a summary.</p>
-<section id="cmake-variables">
-<h3>CMake variables<a class="headerlink" href="#cmake-variables" title="Link to this heading">¶</a></h3>
+<section id="compiler-support">
+<h3>Compiler support<a class="headerlink" href="#compiler-support" title="Link to this heading">¶</a></h3>
 <p>Since pocl includes a compiler for the kernels, it both compiles (producing
 code) and is compiled (it consists of code). This distinction typically called
 “host” and “target”: The host is where pocl is running, the target is
@@ -135,42 +135,16 @@ For host compiler, you should use the one which your LLVM was compiled
 with (because the LLVM-related parts of pocl take LLVM’s CXXFLAGS from
 llvm-config and pass them to the host compiler).</p>
 </section>
-<section id="cmake-host-flags">
-<h3>CMake host flags<a class="headerlink" href="#cmake-host-flags" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>Compile C:</dt><dd><p>CMAKE_C_FLAGS
-CMAKE_C_FLAGS_&lt;build-type&gt;</p>
-</dd>
-<dt>Compile C++:</dt><dd><p>CMAKE_CXX_FLAGS
-CMAKE_CXX_FLAGS_&lt;build-type&gt;</p>
-</dd>
-</dl>
+<section id="clang-llvm-target-compiler-supported-versions">
+<h3>Clang / LLVM: target compiler supported versions<a class="headerlink" href="#clang-llvm-target-compiler-supported-versions" title="Link to this heading">¶</a></h3>
+<p>Note that pocl aims to support <strong>the latest LLVM version</strong> at the time
+of pocl release, <strong>plus the previous</strong> LLVM version. All older LLVM
+versions are supported with “best effort” basis; there might not be
+CI continuously testing the code base nor anyone fixing their
+possible breakage.</p>
 </section>
-<section id="building-kernels-and-the-kernel-library-i-e-target-flags">
-<h3>Building kernels and the kernel library, i.e. target flags<a class="headerlink" href="#building-kernels-and-the-kernel-library-i-e-target-flags" title="Link to this heading">¶</a></h3>
-<p>All of these empty by default. There are hardcoded defaults which may
-be overridden by setting these variables (rarely needed).</p>
-<dl class="simple">
-<dt>Extra parameters to llc</dt><dd><p>EXTRA_HOST_LLC_FLAGS</p>
-</dd>
-<dt>Extra parameters to clang</dt><dd><p>EXTRA_HOST_CLANG_FLAGS</p>
-</dd>
-</dl>
-<p>Extra parameters to linker (links kernel to shared library
-which is then dlopened):</p>
-<p>EXTRA_HOST_LD_FLAGS</p>
-<dl class="simple">
-<dt>EXTRA_KERNEL_FLAGS</dt><dd><p>is applied to all kernel library compilation commands, IOW it’s for
-language-independent options</p>
-</dd>
-<dt>EXTRA_KERNEL_{C,CL,CXX}_FLAGS</dt><dd><p>cmake variables for per-language options for kernel library compilation</p>
-</dd>
-</dl>
-</section>
-<section id="cmake-other-options-features">
-<span id="pocl-cmake-variables"></span><h3>CMake: other options &amp; features<a class="headerlink" href="#cmake-other-options-features" title="Link to this heading">¶</a></h3>
-<p>Note that there are a few more packaging-related options described
-in <code class="docutils literal notranslate"><span class="pre">README.packaging</span></code>.</p>
+<section id="cmake-options">
+<span id="pocl-cmake-variables"></span><h3>CMake options<a class="headerlink" href="#cmake-options" title="Link to this heading">¶</a></h3>
 <p>For multiple-item options like KERNELLIB_HOST_CPU_VARIANTS,
 use “;” as separator (you’ll have to escape it for bash).</p>
 <ul>
@@ -182,6 +156,12 @@ llvm-config in PATH env var (usually means your system LLVM).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DSTATIC_LLVM</span></code> pocl uses <code class="docutils literal notranslate"><span class="pre">llvm-config</span> <span class="pre">--libs</span></code> to get list of LLVM libraries
 it should link to. With this flag enabled, it additionally passes <code class="docutils literal notranslate"><span class="pre">--link-static</span></code>
 to <code class="docutils literal notranslate"><span class="pre">llvm-config</span></code>; otherwise it passes <code class="docutils literal notranslate"><span class="pre">--link-shared</span></code>. Default is OFF (=shared).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DLLVM_SPIRV</span></code> Path to a llvm-spirv binary of SPIRV-LLVM-Translator. Note that
+only the builds of open-source Khronos Translator are supported, and the binary
+must be built for the same LLVM version as PoCL is being built against. If not
+given, PoCL will try to autodetect a llvm-spirv binary with suitable version.
+Note that PoCL will also try to detect LLVMSPIRVLib library, and if found, it
+will take precedence over llvm-spirv binary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_ICD</span></code> By default pocl’s buildsystem will try to find an ICD
 and build pocl as a dynamic library named “libpocl”. This option is useful
 if you want to avoid ICD and build pocl directly as libOpenCL library.
@@ -216,9 +196,9 @@ to build for multiple CPUs. Defaults to “native” which is
 automagically replaced by LLC_HOST_CPU.
 Available CPUs are listed by <code class="docutils literal notranslate"><span class="pre">llc</span> <span class="pre">-mcpu=help</span></code>. See above for
 runtime CPU detection rules.</p>
-<p>Note that there’s another valid value on x86(64) platforms.
-If set to <code class="docutils literal notranslate"><span class="pre">distro</span></code>, the KERNELLIB_HOST_CPU_VARIANTS variable will be
-set up with a few preselected sse/avx variants covering 99.99% of x86
+<p>Note that there’s another available value on certain (x86, ppc) platforms.
+If set to <code class="docutils literal notranslate"><span class="pre">distro</span></code>, on x86, the KERNELLIB_HOST_CPU_VARIANTS variable will
+be set up with a few preselected sse/avx variants covering 99.99% of x86
 processors, and the runtime CPU detection is slightly altered: pocl
 will find the suitable compiled library based on detected CPU features,
 so it cannot fail (at worst it’ll degrade to SSE2 library).</p>
@@ -241,6 +221,10 @@ place the <code class="docutils literal notranslate"><span class="pre">AMD-APP-S
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_EXAMPLES=ON/OFF</span></code> enable/disable compilation of all examples.
 Disabling this makes ENABLE_TESTSUITES option unavailable.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_POCLCC=ON/OFF</span></code> enable/disable compilation of poclcc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_POCL_BUILDING=OFF</span></code>
+When OFF, POCL_BUILDING option (which causes pocl to look for required
+files in build / source directories) will be ignored
+and pocl will always look in installed paths only.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_CONFORMANCE=ON/OFF</span></code>
 Ensures that certain build options which would result in non-conformant pocl
 build stay disabled. Defaults to OFF. Note that this does not quarantee a
@@ -258,28 +242,52 @@ debug messages (POCL_DEBUG env var) support.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DEXAMPLES_USE_GIT_MASTER=ON</span></code> - when enabled, examples (external
 programs in <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory) are built from their git branches
 (if available), as opposed to default: building from release tars.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_POCL_FLOAT_CONVERSION=ON/OFF</span></code>
-When enabled, OpenCL printf() call’s f/e/g formatters are handled by pocl.
-When disabled (default), these are handled by system C library.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DINTEL_SDE_AVX512=&lt;PATH&gt;</span></code>
 Path to Intel® Software Development Emulator. When this option is given,
 the LLVM host CPU is forcibly set to ‘skylake-avx512’, and the internal
 tests are run through the Emulator. Mostly useful to test AVX512.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DPOCL_ICD_ABSOLUTE_PATH=OFF</span></code>
+The pocl.icd file (which the ICD loader uses to load the pocl lib)
+by default has a full path to the installed libpocl.so file.
+Set this option to OFF and pocl will only put the dynamic library
+name into pocl.icd.</p></li>
 </ul>
 </section>
-<section id="llvm-less-build">
-<span id="pocl-without-llvm"></span><h3>LLVM-less build<a class="headerlink" href="#llvm-less-build" title="Link to this heading">¶</a></h3>
-<p>You can build a runtime-only pocl to run prebuilt pocl binaries on a device.
-To do this</p>
+<section id="advanced-cmake-options-using-extra-flags-for-the-builtin-library">
+<h3>Advanced CMake options: using extra flags for the builtin library<a class="headerlink" href="#advanced-cmake-options-using-extra-flags-for-the-builtin-library" title="Link to this heading">¶</a></h3>
+<p>All of these empty by default. There are hardcoded defaults which may
+be overridden by setting these variables (rarely needed).</p>
+<dl class="simple">
+<dt>Extra parameters to llc</dt><dd><p>EXTRA_HOST_LLC_FLAGS</p>
+</dd>
+<dt>Extra parameters to clang</dt><dd><p>EXTRA_HOST_CLANG_FLAGS</p>
+</dd>
+</dl>
+<p>Extra parameters to linker (links kernel to shared library
+which is then dlopened):</p>
+<p>EXTRA_HOST_LD_FLAGS</p>
+<dl class="simple">
+<dt>EXTRA_KERNEL_FLAGS</dt><dd><p>is applied to all kernel library compilation commands, IOW it’s for
+language-independent options</p>
+</dd>
+<dt>EXTRA_KERNEL_{C,CL,CXX}_FLAGS</dt><dd><p>cmake variables for per-language options for kernel library compilation</p>
+</dd>
+</dl>
+</section>
+<section id="cmake-llvm-less-build">
+<span id="pocl-without-llvm"></span><h3>CMake: LLVM-less build<a class="headerlink" href="#cmake-llvm-less-build" title="Link to this heading">¶</a></h3>
+<p>You can build a runtime-only pocl to run prebuilt pocl binaries on a CPU driver,
+or if you intend to only use PoCL with a driver that does not depend on LLVM.</p>
+<p>When building a LLVM-less build with a CPU driver:</p>
 <ul>
-<li><p>First, build a pocl with LLVM somewhere.</p></li>
+<li><p>First, build PoCL with LLVM somewhere.</p></li>
 <li><p>on that machine, set up env vars required for your device (if any), then
 run <code class="docutils literal notranslate"><span class="pre">bin/poclcc</span> <span class="pre">-l</span></code>. That should print something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LIST</span> <span class="n">OF</span> <span class="n">DEVICES</span><span class="p">:</span>
-<span class="mi">0</span><span class="p">:</span>
- <span class="n">Vendor</span><span class="p">:</span>   <span class="n">AuthenticAMD</span>
-   <span class="n">Name</span><span class="p">:</span>   <span class="n">pthread</span><span class="o">-</span><span class="n">AMD</span> <span class="n">A10</span><span class="o">-</span><span class="mi">7800</span> <span class="n">Radeon</span> <span class="n">R7</span><span class="p">,</span> <span class="mi">12</span> <span class="n">Compute</span> <span class="n">Cores</span> <span class="mi">4</span><span class="n">C</span><span class="o">+</span><span class="mi">8</span><span class="n">G</span>
-<span class="n">Version</span><span class="p">:</span>   <span class="n">OpenCL</span> <span class="mf">2.0</span> <span class="n">pocl</span> <span class="n">HSTR</span><span class="p">:</span> <span class="n">pthread</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">unknown</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">-</span><span class="n">bdver3</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>LIST<span class="w"> </span>OF<span class="w"> </span>DEVICES:
+<span class="m">0</span>:
+<span class="w"> </span>Vendor:<span class="w">   </span>AuthenticAMD
+<span class="w">   </span>Name:<span class="w">   </span>pthread-AMD<span class="w"> </span>A10-7800<span class="w"> </span>Radeon<span class="w"> </span>R7,<span class="w"> </span><span class="m">12</span><span class="w"> </span>Compute<span class="w"> </span>Cores<span class="w"> </span>4C+8G
+Version:<span class="w">   </span>OpenCL<span class="w"> </span><span class="m">2</span>.0<span class="w"> </span>pocl<span class="w"> </span>HSTR:<span class="w"> </span>pthread-x86_64-unknown-linux-gnu-bdver3
 </pre></div>
 </div>
 </li>
@@ -298,21 +306,30 @@ pocl needs to know which binaries it can load.</p>
 accelerators don’t require compiling OpenCL kernels, therefore, no hash will ever be matched.</p>
 </section>
 </section>
+<section id="packaging-pocl">
+<h2>Packaging PoCL<a class="headerlink" href="#packaging-pocl" title="Link to this heading">¶</a></h2>
+<p>PoCL supports CPACK. Additionally, these CMake options are of interest:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-DKERNELLIB_HOST_CPU_VARIANTS=distro</span></code>
+to enable support for most multiple CPU families with runtime detection (cpu driver)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DPOCL_ICD_ABSOLUTE_PATH=OFF</span></code>
+to not put absolute path into pocl.icd</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DENABLE_POCL_BUILDING=OFF</span></code>
+to disable embedding the build path into libpocl</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DSTATIC_LLVM</span></code>
+to link against Clang &amp; LLVM static component libraries. This may help avoid
+symbol clashes with other LLVM libraries linked in the same executable.</p></li>
+</ul>
+</section>
 <section id="cross-compile-pocl">
 <h2>Cross-compile PoCL<a class="headerlink" href="#cross-compile-pocl" title="Link to this heading">¶</a></h2>
 <p>It’s now possible to cross-compile pocl on x86-64 to run on ARM/MIPS/etc,
 There is a ToolchainExample.cmake file;
 copy it under different name, then follow the instructions in the file.</p>
 </section>
-<section id="known-build-time-issues">
-<h2>Known build-time issues<a class="headerlink" href="#known-build-time-issues" title="Link to this heading">¶</a></h2>
-<p>There are unsolved issues and bugs in pocl. See the bug listing
-for a complete listing at <a class="reference external" href="https://github.com/pocl/pocl/issues">https://github.com/pocl/pocl/issues</a></p>
-</section>
 <section id="building-running-in-docker">
 <h2>Building &amp; running in Docker<a class="headerlink" href="#building-running-in-docker" title="Link to this heading">¶</a></h2>
-<p>Make sure you have enough space (default location is usually <code class="docutils literal notranslate"><span class="pre">/var/lib/docker</span></code>,
-required storage for standard pocl build is about 1.5 GB per container)</p>
+<p>Required storage for standard pocl build is about 1.5 GB per container)</p>
 <section id="build-start-pocl-container">
 <h3>Build &amp; start Pocl container<a class="headerlink" href="#build-start-pocl-container" title="Link to this heading">¶</a></h3>
 <ul class="simple">
@@ -327,8 +344,6 @@ run docker build with <code class="docutils literal notranslate"><span class="pr
 </section>
 <section id="dockerfiles">
 <h3>Dockerfiles<a class="headerlink" href="#dockerfiles" title="Link to this heading">¶</a></h3>
-<p>Note that some images (e.g. RHEL and PHSA) may be impossible to build,
-due to not having a sufficiently new version of LLVM available.</p>
 <p>Dockerfiles are named according to what they build, or the release they’re based on:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -390,6 +405,268 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
 </li>
 </ul>
 </section>
+<section id="powerpc-support">
+<h2>PowerPC support<a class="headerlink" href="#powerpc-support" title="Link to this heading">¶</a></h2>
+<p>PoCL is used to provide OpenCL on IBM AC922 computers
+featuring IBM Power9 processors and Nvidia Tesla V100 GPU
+interconnected with NVlink v2 (up to 72 GByte/s).
+This has been tested under debian_11 and Ubuntu_20.04.</p>
+<p>Officially, Nvidia does not support OpenCL on this platform
+and the driver they are shipping is lacking the compiler part.</p>
+<p>## Building tricks (as of 04/2023):</p>
+<p>The PPC64le features 128-bit vector unit (Altivec/VSX) which
+are easily confused by the C++ compiler with the C++ vector
+instruction when using the compile option <cite>-std=c++XX</cite>.
+The corresponding code usually fails compiling.
+The trick is to pass the option <cite>-std=gnu++XX</cite>.</p>
+<p>For example, when configuring pocl:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">cmake</span> <span class="pre">..</span> <span class="pre">-DLLVM_CXXFLAGS=&quot;-std=gnu++14</span> <span class="pre">...&quot;</span> <span class="pre">-DENABLE_CUDA=ON</span>
+<span class="pre">`</span></code></p>
+<p>The full list of  options for the CXXFLAGS is obtained with:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">llvm-config</span> <span class="pre">--cxxflags|sed</span> <span class="pre">-e</span> <span class="pre">&quot;s/std=c/std=gnu/&quot;</span>
+<span class="pre">`</span></code>
+Later on, the build continues with <cite>make</cite> …</p>
+<p>Note the CUDA option to enable the GPU support on those computers.</p>
+</section>
+<section id="android-support">
+<h2>Android support<a class="headerlink" href="#android-support" title="Link to this heading">¶</a></h2>
+<p>It is possible to build and use PoCL on Android. However, the setup requires a number of options to be set.
+To see an example project, have a look at the <a class="reference external" href="https://github.com/cpc/PoCL-R-Reference-Android-Java-Client">PoCL-R Reference Android Java Client</a> .
+This Reference app uses both the <a class="reference internal" href="proxy.html#proxy-label"><span class="std std-ref">proxy</span></a> and <a class="reference internal" href="remote.html#remote-label"><span class="std std-ref">remote</span></a> device in its example apps. It also builds a custom version of <a class="reference external" href="http://jocl.org/">JOCL</a> so
+that PoCL can be used in Java instead of calling C code using the Java Native Interface (jni). These guidelines assume
+that Android studio is used as an IDE, but it should be possible to do something similar with a different IDE. It is also
+assumed that a recent enough version of the NDK and CMake (the one found in the SDK tools of Android Studio) have been
+installed via Android Studio. Versions that have been used before include: NDK 25.1.8937393 and 26.0.10792818 and CMake
+3.22.1.</p>
+<section id="cmake-arguments">
+<h3>CMake Arguments<a class="headerlink" href="#cmake-arguments" title="Link to this heading">¶</a></h3>
+<p>A number of features in PoCL such as CPU devices and the icd loader are not available on Android. Below is a list of
+recommended CMake options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DENABLE_LLVM<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DHOST_DEVICE_BUILD_HASH<span class="o">=</span><span class="m">00000000</span><span class="w"> </span>-DENABLE_ICD<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_LOADABLE_DRIVERS<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_HOST_CPU_DEVICES<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_HWLOC<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_POCLCC<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_TESTS<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_EXAMPLES<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DBUILD_SHARED_LIBS<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DCMAKE_TOOLCHAIN_FILE<span class="o">=</span><span class="si">${</span><span class="nv">ANDROID_NDK</span><span class="si">}</span>/build/cmake/android.toolchain.cmake<span class="w"> </span>-DANDROID_NDK<span class="o">=</span><span class="si">${</span><span class="nv">ANDROID_NDK</span><span class="si">}</span><span class="w"> </span>-DANDROID_PLATFORM<span class="o">=</span><span class="si">${</span><span class="nv">ANDROID_PLATFORM_LEVEL</span><span class="si">}</span><span class="w"> </span>-DANDROID_ABI<span class="o">=</span><span class="si">${</span><span class="nv">ANDROID_ABI</span><span class="si">}</span><span class="w"> </span>-DANDROID_NATIVE_API_LEVEL<span class="o">=</span><span class="si">${</span><span class="nv">ANDROID_PLATFORM_LEVEL</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>It is recommended to Build PoCL as an external project in the CMakeLists.txt that belongs to the native code of the
+Android project. This will set the <code class="docutils literal notranslate"><span class="pre">ANDROID_NDK,</span> <span class="pre">ANDROID_PLATFORM_LEVEL</span></code> and <code class="docutils literal notranslate"><span class="pre">ANDROID_ABI</span></code> to what you are building the
+project for. By default, Android Studio will build native code for multiple architectures (ARM 32/64 and x86), so the
+<code class="docutils literal notranslate"><span class="pre">ANDROID_ABI</span></code> will change for each architecture. Adding pocl as a library dependency to your native code will ensure that
+it is packed into the APK. It is recommended to set <code class="docutils literal notranslate"><span class="pre">-DBUILD_SHARED_LIBS=0</span></code> so that PoCL gets built as a static library
+(libpocl.a) as this is easier to use.</p>
+</section>
+<section id="building-remote-client">
+<h3>Building Remote Client<a class="headerlink" href="#building-remote-client" title="Link to this heading">¶</a></h3>
+<p>If you want to make use of PoCL-R, you can add <code class="docutils literal notranslate"><span class="pre">-DENABLE_REMOTE_CLIENT=YES</span></code> to the cmake options
+and make sure that network access is allowed in the <cite>AndroidManifest.xml</cite>.</p>
+</section>
+<section id="building-proxy-device">
+<h3>Building Proxy Device<a class="headerlink" href="#building-proxy-device" title="Link to this heading">¶</a></h3>
+<p>The proxy device allow you make use of any system provided OpenCL implementation as well as any devices provided by PoCL
+at the same time. Combined with the remote device, this allows you for example to easily switch between executing kernels
+locally or remotely or create a pipeline where work is done on both devices at the same time. To make use of the Proxy
+device on Android, You first need to make sure that the phone comes with an OpenCL library and that is whitelisted by
+the vendor. Starting with API level 24, vendors need whitelist libraries that are allowed to be dlopened. To check that
+OpenCL is whitelisted do this:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>adb into the phone</p></li>
+<li><p>run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/vendor/etc/public.libraries.txt
+</pre></div>
+</div>
+</li>
+<li><p>check that <cite>libOpenCL.so</cite> is there</p></li>
+</ol>
+</div></blockquote>
+<p>For newer Android versions (Android 12 and up), you also need to add:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;uses-native-library
+<span class="w">    </span>android:name<span class="o">=</span><span class="s2">&quot;libOpenCL.so&quot;</span>
+<span class="w">    </span>android:required<span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="w"> </span>/&gt;
+</pre></div>
+</div>
+<p>to the <code class="docutils literal notranslate"><span class="pre">&lt;applications&gt;</span></code> element of the <cite>AndroidManifest.xml</cite></p>
+<p>Once you know that your phone comes with an OpenCL library, it’s possible to use the proxy device. To build the proxy device add the
+following CMake options to the ones mentioned before: <code class="docutils literal notranslate"><span class="pre">-DENABLE_PROXY_DEVICE=YES</span> <span class="pre">-DVISIBILITY_HIDDEN=NO</span></code>. This will build
+the proxy device and pocl as a static library. If you want to use JOCL, you need to also add <code class="docutils literal notranslate"><span class="pre">-DPROXY_USE_LIBOPENCL_STUB=YES</span></code>
+and set <code class="docutils literal notranslate"><span class="pre">-DBUILD_SHARED_LIBS=YES</span></code>. This will build a dynamic library of pocl.</p>
+<p><em>NOTE:</em> The proxy driver suffers from the same issues the remote driver has with <a class="reference internal" href="remote.html#remote-issues-label"><span class="std std-ref">Mali GPUs</span></a>.
+See that section for a workaround.</p>
+</section>
+<section id="setting-pocl-environment-variables">
+<h3>Setting PoCL Environment Variables<a class="headerlink" href="#setting-pocl-environment-variables" title="Link to this heading">¶</a></h3>
+<p>The easiest way to set PoCL environment variables is to create a native function that calls stdlib.h’s setenv function.</p>
+</section>
+<section id="using-jocl">
+<h3>Using JOCL<a class="headerlink" href="#using-jocl" title="Link to this heading">¶</a></h3>
+<p>It is possible to use JOCL on Android. However, by default JOCL does not get built for Android. It also doesn’t look for libpocl.
+See the android reference client readme on how to build JOCL for android and a submodule to our JOCL repo that looks for
+<cite>libpocl.so</cite> on Android.</p>
+</section>
+</section>
+<section id="windows-support">
+<h2>Windows support<a class="headerlink" href="#windows-support" title="Link to this heading">¶</a></h2>
+<p>It is possible to build &amp; use PoCL on Windows using MinGW and
+Microsoft Visual Studio (MSVC). Building PoCL on MSVC is recommended
+and easiest route. The MinGW route takes more steps in building which
+involves and currently requires cross-compilation in a linux machine.</p>
+<section id="prerequisites-for-msvc-route">
+<h3>Prerequisites for MSVC Route<a class="headerlink" href="#prerequisites-for-msvc-route" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Microsoft Visual Studio Community or Professional edition, at least
+version 2019.</p></li>
+<li><p>Optional: <a class="reference external" href="https://ninja-build.org/">Ninja</a>.</p></li>
+</ul>
+</section>
+<section id="building-llvm-using-msvc">
+<h3>Building LLVM using MSVC<a class="headerlink" href="#building-llvm-using-msvc" title="Link to this heading">¶</a></h3>
+<p>Open Windows PowerShell and choose a directory as workspace for building LLVM
+and PoCL and then:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/llvm/llvm-project.git
+<span class="nb">cd</span><span class="w"> </span>llvm-project
+git<span class="w"> </span>checkout<span class="w"> </span>release/&lt;llvm-version&gt;.x
+<span class="nb">cd</span><span class="w"> </span>..
+cmake<span class="w"> </span>-S<span class="w"> </span>llvm-project<span class="se">\l</span>lvm<span class="w"> </span>-B<span class="w"> </span>build-llvm<span class="w"> </span>-DLLVM_ENABLE_PROJECTS<span class="o">=</span>clang<span class="w"> </span>-DLLVM_TARGETS_TO_BUILD<span class="o">=</span>X86<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;llvm-install-path&gt;<span class="se">\i</span>nstall-llvm
+cmake<span class="w"> </span>--build<span class="w"> </span>build-llvm<span class="w"> </span>--config<span class="w"> </span>Release
+cmake<span class="w"> </span>--install<span class="w"> </span>install-llvm<span class="w"> </span>--config<span class="w"> </span>Release
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;llvm-version&gt;</span></code> is LLVM major version to be built - e.g. <code class="docutils literal notranslate"><span class="pre">19</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;llvm-install-path&gt;</span></code> is a directory to install the LLVM into and
+used in the PoCL building section ahead.</p></li>
+</ul>
+<p>This should build 64-bit static libraries.</p>
+</section>
+<section id="building-pocl-using-msvc">
+<h3>Building PoCL Using MSVC<a class="headerlink" href="#building-pocl-using-msvc" title="Link to this heading">¶</a></h3>
+<p>Source MSVC SDK environment using the command in the PowerShell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;&amp; C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1 -Arch amd64 -HostArch amd64&#39;</span>
+</pre></div>
+</div>
+<p>If you have professional edition installed instead, replace <code class="docutils literal notranslate"><span class="pre">Community</span></code> with
+<code class="docutils literal notranslate"><span class="pre">Professional</span></code> in the above command.</p>
+<p>Configure and build PoCL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/pocl/pocl.git
+cmake<span class="w"> </span>-S<span class="w"> </span>pocl<span class="w"> </span>-B<span class="w"> </span>build-pocl<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;pocl-install&gt;<span class="se">\i</span>nstall-pocl<span class="w"> </span>-DENABLE_ICD<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_LLVM<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DWITH_LLVM_CONFIG<span class="o">=</span>&lt;llvm-install-path&gt;<span class="se">\b</span>in<span class="se">\l</span>lvm-config.exe<span class="w"> </span>-DENABLE_LOADABLE_DRIVERS<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DSTATIC_LLVM<span class="o">=</span>ON<span class="w"> </span>-DCMAKE_MSVC_RUNTIME_LIBRARY<span class="o">=</span>MultiThreadedDLL<span class="w"> </span>-G<span class="w"> </span><span class="s2">&quot;Ninja&quot;</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>build-pocl
+cmake<span class="w"> </span>--install<span class="w"> </span>build-pocl
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;llvm-install-path&gt;</span></code> is the directory where the LLVM is
+installed in the previous section. <code class="docutils literal notranslate"><span class="pre">-G</span> <span class="pre">Ninja</span></code> can be replaced with
+<code class="docutils literal notranslate"><span class="pre">-G</span> <span class="pre">NMake</span> <span class="pre">Makefiles</span></code> but the building will be very slow.</p>
+</section>
+<section id="running-tests-from-the-build-directory-msvc">
+<h3>Running tests from the build directory (MSVC)<a class="headerlink" href="#running-tests-from-the-build-directory-msvc" title="Link to this heading">¶</a></h3>
+<p>To run PoCL’s internal tests delve into the build directory and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$env</span>:POCL_BUILDING<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1&#39;</span>
+ctest<span class="w"> </span>-j&lt;N&gt;
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is a number of tests to be run in parallel.</p>
+</section>
+<section id="building-pocl-with-level-zero-support">
+<h3>Building PoCL with Level Zero support<a class="headerlink" href="#building-pocl-with-level-zero-support" title="Link to this heading">¶</a></h3>
+<p>For building PoCL with Level Zero support, following additional
+dependencies are needed:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> and <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> tools, which can be installed
+through <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> tool (<a class="reference external" href="https://conda-forge.org/download/">https://conda-forge.org/download/</a>)
+with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">pkg-config</span> <span class="pre">llvm-spirv-19</span></code>, for example. The
+llvm-spirv version must match to the LLVM library used by the PoCL.</p></li>
+<li><p>Level Zero SDK. Windows binaries are available at
+<a class="reference external" href="https://github.com/oneapi-src/level-zero/releases/">https://github.com/oneapi-src/level-zero/releases/</a>. Download
+<code class="docutils literal notranslate"><span class="pre">level-zero-win-sdk-v#.##.#.zip</span></code> and extract it somewhere.</p></li>
+<li><p>Intel Graphics drivers
+(<a class="reference external" href="https://www.intel.com/content/www/us/en/download/785597/intel-arc-iris-xe-graphics-windows.html">https://www.intel.com/content/www/us/en/download/785597/intel-arc-iris-xe-graphics-windows.html</a>)
+for running OpenCL applications on integrated and discrete Intel GPUs.</p></li>
+</ul>
+<p>Once installed, PoCL needs to be configured with additional
+options. The following assumes that the <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> is installed
+at its default location and the Level Zero SDK is extracted under
+<code class="docutils literal notranslate"><span class="pre">C:\level-zero-sdk</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-DCMAKE_PREFIX_PATH<span class="o">=</span><span class="s2">&quot;C:\level-zero-sdk;C\Users\&lt;username&gt;\AppData\Local\miniforge3\Library&quot;</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">&lt;username&gt;</span></code> changed to your Windows login name.</p>
+<p>To make Level Zero to appear for OpenCL applications, set the
+following environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$env</span>:POCL_DEVICES<span class="o">=</span><span class="s2">&quot;level0&quot;</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$env</span>:POCL_DEVICES<span class="o">=</span><span class="s2">&quot;level0 cpu&quot;</span>
+</pre></div>
+</div>
+<p>For having both the Level Zero devices and the host CPU available.</p>
+</section>
+<section id="prerequisites-for-mingw-route">
+<h3>Prerequisites for MinGW Route<a class="headerlink" href="#prerequisites-for-mingw-route" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>a Linux machine with enough memory &amp; space to cross-compile LLVM, and an environment for building containers (docker/podman)</p></li>
+<li><p>a Windows machine with UCRT runtime (this comes built-in since Windows 10, available as separate download for earlier versions)</p></li>
+</ul>
+</section>
+<section id="building-llvm-mingw">
+<h3>Building LLVM-MinGW<a class="headerlink" href="#building-llvm-mingw" title="Link to this heading">¶</a></h3>
+<p>On the Linux machine, install docker/podman, then execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/franz/llvm-mingw.git
+<span class="nb">cd</span><span class="w"> </span>llvm-mingw
+./release.sh
+</pre></div>
+</div>
+<p>This will produce a file named <cite>llvm-mingw-&lt;TAG&gt;-ucrt-x86_64.zip</cite>, this should contain the required full installation of LLVM 19 + MinGW.
+Copy the file to the Windows machine.</p>
+</section>
+<section id="building-pocl-using-mingw">
+<h3>Building PoCL using MinGW<a class="headerlink" href="#building-pocl-using-mingw" title="Link to this heading">¶</a></h3>
+<p>On the Windows machine, follow these steps:</p>
+<ul class="simple">
+<li><p>create a directory where the work will happen, e.g. C:Workspace</p></li>
+<li><p>unzip the <cite>llvm-mingw-&lt;TAG&gt;-ucrt-x86_64.zip</cite> in the workspace directory,
+this should create a directory C:Workspacellvm-mingw-&lt;TAG&gt;-ucrt-x86_64,
+rename this to <cite>llvm</cite> for convenience</p></li>
+<li><p>download the zip version of CMake for Windows (look for ‘Windows x64 ZIP’ on <a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>),
+unzip it in the C:Workspace, rename it to <cite>cmake</cite></p></li>
+<li><p>download ninja build tool (look for <cite>ninja-win.zip</cite> on <a class="reference external" href="https://github.com/ninja-build/ninja/releases">https://github.com/ninja-build/ninja/releases</a>),
+unzip it into the CMake’s bin directory</p></li>
+<li><p>download the portable zip version of Git SCM from <cite>https://git-scm.com/downloads/win</cite>,
+then unpack it into C:Workspace, rename to <cite>git</cite></p></li>
+<li><p>optionally, download hwloc release binary from <a class="reference external" href="https://www.open-mpi.org/projects/hwloc/">https://www.open-mpi.org/projects/hwloc/</a>,
+unzip and rename to ‘hwloc’</p></li>
+</ul>
+<p>From <cite>C:Workspacegit</cite>, run <cite>git-bash.exe</cite>. In this shell execute the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/c/Workspace/cmake:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span>/c/Workspace/hwloc
+
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/pocl/pocl.git
+<span class="nb">cd</span><span class="w"> </span>pocl
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DENABLE_HWLOC<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DENABLE_ICD<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DENABLE_LLVM<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DSTATIC_LLVM<span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-DWITH_LLVM_CONFIG<span class="o">=</span>/c/Workspace/llvm/bin/llvm-config.exe<span class="w"> </span><span class="se">\</span>
+-DCMAKE_C_COMPILER<span class="o">=</span>/c/Workspace/llvm/bin/clang.exe<span class="w"> </span>-DCMAKE_CXX_COMPILER<span class="o">=</span>/c/Workspace/llvm/bin/clang++.exe<span class="w"> </span><span class="se">\</span>
+-DCMAKE_VERBOSE_MAKEFILE<span class="o">=</span>ON<span class="w"> </span>-DENABLE_LOADABLE_DRIVERS<span class="o">=</span><span class="m">0</span><span class="w"> </span>..
+ninja<span class="w"> </span>-j4
+</pre></div>
+</div>
+</section>
+<section id="running-tests-from-the-build-directory-mingw">
+<h3>Running tests from the build directory (MinGW)<a class="headerlink" href="#running-tests-from-the-build-directory-mingw" title="Link to this heading">¶</a></h3>
+<p>On Windows, RPATH is not embedded into binaries. You must set the PATH environment variable to contain
+paths of all required DLL libraries; with the packages you’ve installed in previous step, the DLLs are
+placed in the same directory as the binaries. You can use these paths:</p>
+<ul class="simple">
+<li><p>/c/Workspace/pocl/build/lib/CL</p></li>
+<li><p>/c/Workspace/hwloc/bin</p></li>
+<li><p>/c/Workspace/llvm/bin</p></li>
+</ul>
+<p>Note for debugging: gdb is not installed but lldb.exe is available. The debugged process runs in its
+own window and sometimes it exits so quickly there’s no time to see the output; in that case, it’s
+useful to set a breakpoint on exit: “b NtTerminateProcess”</p>
+</section>
+</section>
 </section>
 
 
@@ -403,23 +680,21 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#installing-requirements-for-ubuntu">Installing requirements for Ubuntu</a></li>
-<li><a class="reference internal" href="#opencl-3-0-support">OpenCL 3.0 support</a></li>
-<li><a class="reference internal" href="#clang-llvm-notes">Clang / LLVM Notes</a><ul>
-<li><a class="reference internal" href="#supported-llvm-versions">Supported LLVM versions</a></li>
+<li><a class="reference internal" href="#install-requirements">Install Requirements</a><ul>
+<li><a class="reference internal" href="#install-requirements-on-linux">Install requirements on Linux</a></li>
+<li><a class="reference internal" href="#icd-opencl-3-0-support">ICD / OpenCL 3.0 support</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#configure-build">Configure &amp; Build</a><ul>
-<li><a class="reference internal" href="#cmake-variables">CMake variables</a></li>
-<li><a class="reference internal" href="#cmake-host-flags">CMake host flags</a></li>
-<li><a class="reference internal" href="#building-kernels-and-the-kernel-library-i-e-target-flags">Building kernels and the kernel library, i.e. target flags</a></li>
-<li><a class="reference internal" href="#cmake-other-options-features">CMake: other options &amp; features</a></li>
-<li><a class="reference internal" href="#llvm-less-build">LLVM-less build</a></li>
+<li><a class="reference internal" href="#compiler-support">Compiler support</a></li>
+<li><a class="reference internal" href="#clang-llvm-target-compiler-supported-versions">Clang / LLVM: target compiler supported versions</a></li>
+<li><a class="reference internal" href="#cmake-options">CMake options</a></li>
+<li><a class="reference internal" href="#advanced-cmake-options-using-extra-flags-for-the-builtin-library">Advanced CMake options: using extra flags for the builtin library</a></li>
+<li><a class="reference internal" href="#cmake-llvm-less-build">CMake: LLVM-less build</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#packaging-pocl">Packaging PoCL</a></li>
 <li><a class="reference internal" href="#cross-compile-pocl">Cross-compile PoCL</a></li>
-<li><a class="reference internal" href="#known-build-time-issues">Known build-time issues</a></li>
 <li><a class="reference internal" href="#building-running-in-docker">Building &amp; running in Docker</a><ul>
 <li><a class="reference internal" href="#build-start-pocl-container">Build &amp; start Pocl container</a></li>
 <li><a class="reference internal" href="#dockerfiles">Dockerfiles</a></li>
@@ -427,6 +702,27 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
 </li>
 <li><a class="reference internal" href="#arm-32-64bit-support">ARM 32/64bit support</a></li>
 <li><a class="reference internal" href="#risc-v-support">RISC-V support</a></li>
+<li><a class="reference internal" href="#powerpc-support">PowerPC support</a></li>
+<li><a class="reference internal" href="#android-support">Android support</a><ul>
+<li><a class="reference internal" href="#cmake-arguments">CMake Arguments</a></li>
+<li><a class="reference internal" href="#building-remote-client">Building Remote Client</a></li>
+<li><a class="reference internal" href="#building-proxy-device">Building Proxy Device</a></li>
+<li><a class="reference internal" href="#setting-pocl-environment-variables">Setting PoCL Environment Variables</a></li>
+<li><a class="reference internal" href="#using-jocl">Using JOCL</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#windows-support">Windows support</a><ul>
+<li><a class="reference internal" href="#prerequisites-for-msvc-route">Prerequisites for MSVC Route</a></li>
+<li><a class="reference internal" href="#building-llvm-using-msvc">Building LLVM using MSVC</a></li>
+<li><a class="reference internal" href="#building-pocl-using-msvc">Building PoCL Using MSVC</a></li>
+<li><a class="reference internal" href="#running-tests-from-the-build-directory-msvc">Running tests from the build directory (MSVC)</a></li>
+<li><a class="reference internal" href="#building-pocl-with-level-zero-support">Building PoCL with Level Zero support</a></li>
+<li><a class="reference internal" href="#prerequisites-for-mingw-route">Prerequisites for MinGW Route</a></li>
+<li><a class="reference internal" href="#building-llvm-mingw">Building LLVM-MinGW</a></li>
+<li><a class="reference internal" href="#building-pocl-using-mingw">Building PoCL using MinGW</a></li>
+<li><a class="reference internal" href="#running-tests-from-the-build-directory-mingw">Running tests from the build directory (MinGW)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -475,12 +771,12 @@ specify the ABI to use with the HOST_CPU_TARGET_ABI CMake option.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

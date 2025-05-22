@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Usage &#8212; Portable Computing Language (PoCL) 6.0 documentation</title>
+    <title>Usage &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
       </ul>
     </div>  
@@ -93,15 +93,6 @@ the pkg-config:</p>
 </div>
 <p>In this link mode, your program will always require the pocl OpenCL library. It
 wont be able to run with another OpenCL implementation without recompilation.</p>
-</section>
-<section id="using-pocl-on-macosx">
-<h2>Using pocl on MacOSX<a class="headerlink" href="#using-pocl-on-macosx" title="Link to this heading">¶</a></h2>
-<p>On MacOSX, you can either link your program directly with pocl or link through the
-ICD loader by KhronosGroup.</p>
-<p>Even if you use an ICD loader, the Apple OpenCL implementation will still be invisible,
-unless you use a wrapper library to expose the Apple OpenCL implementation as an ICD.</p>
-<p>When ENABLE_ICD is turned off and an application links directly with PoCL, the only
-platform that is visible to the application will be PoCL.</p>
 </section>
 <section id="tuning-pocl-behavior-with-env-variables">
 <span id="pocl-env-variables"></span><h2>Tuning pocl behavior with ENV variables<a class="headerlink" href="#tuning-pocl-behavior-with-env-variables" title="Link to this heading">¶</a></h2>
@@ -190,7 +181,7 @@ hardware threads available in the CPU.</p>
 <blockquote>
 <div><p>Overrides the vendor id reported by PoCL for the CPU drivers.
 For example, setting the vendor id to be 32902 (0x8086) and setting the driver
-version using <strong>POCL_DRIVER_VER_OVERRIDE</strong> to “2023.16.7.0.21_160000” (or such) can
+version using <strong>POCL_DRIVER_VERSION_OVERRIDE</strong> to “2023.16.7.0.21_160000” (or such) can
 be used to convince binary-distributed DPC++ compilers to compile and run SYCL
 programs on the PoCL-CPU driver.</p>
 </div></blockquote>
@@ -272,6 +263,13 @@ the architecture description file of the tta to simulate as a parameter.
 POCL_TTASIM0_PARAMETERS will be passed to the first ttasim driver instantiated
 and POCL_TTASIM1_PARAMETERS to the second one.</p>
 </div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_DISCOVERY</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Used to enable or disable device discovery. See <a class="reference internal" href="remote.html#remote-discovery-label"><span class="std std-ref">Dynamic Device Management and Network Discovery</span></a>
+for details on discovery.</p>
+</div></blockquote>
 <ul>
 <li><p><strong>POCL_DRIVER_VERSION_OVERRIDE</strong></p>
 <p>Can be used to override the driver version reported by PoCL.
@@ -323,6 +321,13 @@ Accepted values: {0,1,auto}</p>
 <li><p>auto (default) = guess based on program’s kernel count &amp; SPIR-V size.</p></li>
 </ul>
 </div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_LEVEL0_LINK_OPT</strong></p></li>
+</ul>
+<blockquote>
+<div><p>If non-empty string, runs llvm-opt with this option after the linking step,
+before converting to SPIRV and handing over to L0 driver. Default: empty.</p>
+</div></blockquote>
 <ul>
 <li><p><strong>POCL_LLVM_VERIFY</strong></p>
 <p>if enabled, some drivers (CUDA, CPU, Level0) use an extra step of
@@ -336,6 +341,15 @@ Defaults to 0 if CMAKE_BUILD_TYPE=Debug and 1 otherwise.</p>
 <div><p>Forces the maximum WG size returned by the device or kernel work group queries
 to be at most this number. For certain devices, this is can only be lower than
 their hardware limits.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_MAX_COMPUTE_UNITS</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Limits the maximum number of Compute Units for drivers which support limiting
+the CU count. The default is for each driver to determine the CU count based
+on hardware properties. If both this and driver specific env var are specified,
+the driver specific variable takes precedence.</p>
 </div></blockquote>
 <ul class="simple">
 <li><p><strong>POCL_MEMORY_LIMIT</strong></p></li>
@@ -355,11 +369,80 @@ good for creating pocl binaries. Requires those drivers to be compiled with supp
 for compilation for those devices.</p>
 </div></blockquote>
 <ul class="simple">
-<li><p><strong>POCL_SIGFPE_HANDLER</strong></p></li>
+<li><p><strong>POCL_PATH_XXX</strong></p></li>
 </ul>
 <blockquote>
-<div><p>Defaults to 1. If set to 0, pocl will not install the SIGFPE handler.
-See <a class="reference internal" href="conformance.html#known-issues"><span class="std std-ref">Known issues related to CTS</span></a></p>
+<div><p>String. These variables can be used to override the path to executables that
+pocl uses during compilation, linking, etc. By default, they are set to the
+paths configured during the build.</p>
+<p>The following variables are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>POCL_PATH_CLANG</strong> – Path to the clang executable.</p></li>
+<li><p><strong>POCL_PATH_LLVM_LINK</strong> – Path to the llvm-link executable.</p></li>
+<li><p><strong>POCL_PATH_LLVM_OPT</strong> – Path to the llvm-opt executable.</p></li>
+<li><p><strong>POCL_PATH_LLVM_LLC</strong> – Path to the llc executable.</p></li>
+<li><p><strong>POCL_PATH_LLVM_SPIRV</strong> – Path to the llvm-spirv executable.</p></li>
+<li><p><strong>POCL_PATH_SPIRV_LINK</strong> – Path to the spirv-link executable.</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_ARGS_XXX</strong></p></li>
+</ul>
+<blockquote>
+<div><p>String. These variables can be used to pass additional arguments to executables
+that pocl invokes during compilation, linking, etc. Multiple arguments can be
+passed by separating them with a semicolon.</p>
+<p>The following variables are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>POCL_ARGS_CLANG</strong> – Additional arguments to pass to clang.</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_PLATFORM_NAME_OVERRIDE</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Overrides the platform name reported by PoCL. For example, setting the platform
+“PoCL (Intel OpenCL compat)” will allow running OneDNN applications, which will
+fail to create a device if ‘Intel’ and ‘OpenCL’ are not in the platform string.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_PREGION_VALUE_REMAT</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Controls the CPU kernel compiler’s value rematerialization, an optimization
+where the value is recompute in the using parallel region instead of storing
+it to the work-item context. Enabled by default.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_REMOTE_XXX</strong></p></li>
+</ul>
+<blockquote>
+<div><p>These variables are used to configure different aspects of the remote driver
+and daemon. See <span class="xref std std-ref">remote_label</span> for details.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><strong>POCL_REMOTE_SEARCH_DOMAINS</strong> – To specify DNS domains for unicast-DNS-SD</dt><dd><p>based discovery queries.</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>POCL_REMOTE_DHT_PORT</strong> – To specify a port for the DHT node to operate.</p></li>
+<li><dl class="simple">
+<dt><strong>POCL_REMOTE_DHT_BOOTSTRAP</strong> – To specify a bootstrap node to connect to</dt><dd><p>an existing DHT network.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>POCL_REMOTE_DHT_KEY</strong> – To specify the common key for server and client</dt><dd><p>nodes to use when publishing or listening.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </div></blockquote>
 <ul class="simple">
 <li><p><strong>POCL_SIGUSR2_HANDLER</strong></p></li>
@@ -435,6 +518,38 @@ The following tracepoints are available:</p>
 during kernel compilation.</p>
 </div></blockquote>
 <ul class="simple">
+<li><p><strong>POCL_VECTORIZER_FORCE_VECTOR_WIDTH</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Forces the LLVM loop vectorizer to use the specified vector width (expressed
+as a number of <strong>loop iterations</strong>), overriding the default value determined
+by the vectorizer’s cost model.
+The same vector width will be used by all loops in all kernels.
+Setting the vector width to 1 disables vectorization.
+If the requested vector width is higher than the machine’s native vector
+width, the vectorizer will also unroll the loop.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>POCL_VECTORIZER_PREFER_VECTOR_WIDTH</strong></p></li>
+</ul>
+<blockquote>
+<div><p>Override the preferred vector width (expressed as a number of <strong>bits</strong>) for
+x86 targets.
+When set, the LLVM loop vectorizer will generate code using vector
+instructions with the specified number of bits.
+When not set, the LLVM loop vectorizer may limit itself to using 256-bit
+vector instructions on some targets to avoid frequency penalties.</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>POCL_VECTORIZER_FORCE_VECTOR_WIDTH and POCL_VECTORIZER_PREFER_VECTOR_WIDTH
+can be used together. For example, setting
+POCL_VECTORIZER_FORCE_VECTOR_WIDTH=16
+POCL_VECTORIZER_PREFER_VECTOR_WIDTH=512
+will force the LLVM loop vectorizer to use a vector width of 16 and
+generate 512-bit vector instructions.</p>
+</div>
+<ul class="simple">
 <li><p><strong>POCL_VULKAN_VALIDATE</strong></p></li>
 </ul>
 <blockquote>
@@ -450,36 +565,8 @@ or POCL_DEBUG=all to see the output printed.</p>
 multiple work items. Legal values:</p>
 <ul>
 <li><dl class="simple">
-<dt><strong>auto</strong>   – Choose the best available method depending on the</dt><dd><p>kernel and the work group size. Use
-POCL_FULL_REPLICATION_THRESHOLD=N to set the
-maximum local size for a work group to be
-replicated fully with ‘repl’. Otherwise,
-‘loops’ is used.</p>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt><strong>loops</strong>  – Create for-loops that execute the work items</dt><dd><p>(under stabilization). The drawback is the
-need to save the thread contexts in arrays.</p>
-<p>The loops will be unrolled a certain number of
-times of which maximum can be controlled with
-POCL_WILOOPS_MAX_UNROLL_COUNT=N environment
-variable (default is to not perform unrolling).</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong>loopvec</strong> – Create work-item for-loops (see ‘loops’) and execute</dt><dd><p>the LLVM LoopVectorizer. The loops are not unrolled
-but the unrolling decision is left to the generic
-LLVM passes (the default).</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong>repl</strong>   – Replicate and chain all work items. This results</dt><dd><p>in more easily scalarizable private variables, thus
-might avoid storing work-item context to memory.
-However, the code bloat is increased with larger
-WG sizes.</p>
+<dt><strong>auto</strong>   – Choose the best available method depending on the</dt><dd><p>kernel and the work group size. Currently always defaults
+to <strong>loopvec</strong>.</p>
 </dd>
 </dl>
 </li>
@@ -491,6 +578,20 @@ Also enables the LLVM LoopVectorizer.</p>
 <p>An in-depth explanation of the implementation of CBS and how it
 compares to the other approaches can be found in
 [this thesis](<a class="reference external" href="https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf">https://joameyer.de/hipsycl/Thesis_JoachimMeyer.pdf</a>).</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>loops</strong>  – Create parallel for-loops that execute the work items.</p>
+<blockquote>
+<div><p>The loops will be unrolled a certain number of
+times of which maximum can be controlled with
+POCL_WILOOPS_MAX_UNROLL_COUNT=N environment
+variable (default is to not perform unrolling).</p>
+</div></blockquote>
+</li>
+<li><dl class="simple">
+<dt><strong>loopvec</strong> – Create parallel work-item for-loops (see ‘loops’) and execute</dt><dd><p>the standard LLVM vectorizers. LLVM loop unrolling is disabled and
+the unrolling decisions are left to the generic loop vectorizer.</p>
 </dd>
 </dl>
 </li>
@@ -506,6 +607,339 @@ the local size, global offset zero or non-zero and maximum grid size.
 The specialization can be disabled by setting this environment variable to 0.</p>
 </li>
 </ul>
+</section>
+<section id="setting-up-and-running-pocl-on-macos">
+<span id="pocl-macos-setup"></span><h2>Setting up and running PoCL on MacOS<a class="headerlink" href="#setting-up-and-running-pocl-on-macos" title="Link to this heading">¶</a></h2>
+<section id="note-about-the-kernel-compiler">
+<h3>Note about the kernel compiler<a class="headerlink" href="#note-about-the-kernel-compiler" title="Link to this heading">¶</a></h3>
+<p>Clang/LLVM is included with Xcode, but at least the default
+installation lacks development headers/libraries and llvm-config.
+As a result, this version cannot be used as a kernel compiler for PoCL.</p>
+<p>The simplest way to install llvm is through Homebrew:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>llvm
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/opt/homebrew/opt/llvm/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Then, ensure that LLVM is correctly set up for PoCL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>clang
+/opt/homebrew/opt/llvm/bin/clang
+llvm-config<span class="w"> </span>--version
+<span class="m">19</span>.1.7
+</pre></div>
+</div>
+<p>Alternatively, you can compile LLVM from source (Example is for an ARM Mac):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/llvm/llvm-project
+<span class="nb">cd</span><span class="w"> </span>llvm-project
+mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>RelWithDebInfo<span class="w"> </span>-DLLVM_ENABLE_PROJECTS<span class="o">=</span><span class="s2">&quot;clang;llvm&quot;</span>
+-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;path-to-installation-directory&gt;<span class="w"> </span>-DLLVM_TARGETS_TO_BUILD<span class="o">=</span><span class="s2">&quot;AArch64&quot;</span><span class="w"> </span>../llvm
+
+ninja<span class="w"> </span>install
+</pre></div>
+</div>
+</section>
+<section id="installing-pocl-on-macos-using-pre-built-binaries">
+<h3>Installing PoCL on MacOS using pre-built binaries<a class="headerlink" href="#installing-pocl-on-macos-using-pre-built-binaries" title="Link to this heading">¶</a></h3>
+<p><strong>Homebrew</strong></p>
+<p>PoCL with the CPU driver supports Intel and Apple Silicon chips can be found on
+homebrew and can be installed with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>pocl
+</pre></div>
+</div>
+<p>Note that this installs an ICD loader from KhronoGroup and the built-in OpenCL
+implementation will be invisible when your application is linked to this loader.</p>
+<p><strong>Conda</strong></p>
+<p>PoCL with the CPU driver supports Intel and Apple Silicon chips can be found on
+conda-forge distribution and can be installed with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-L<span class="w"> </span>-O<span class="w"> </span><span class="s2">&quot;https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-</span><span class="k">$(</span>uname<span class="k">)</span><span class="s2">-</span><span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span><span class="s2">.sh&quot;</span>
+bash<span class="w"> </span>Mambaforge-<span class="k">$(</span>uname<span class="k">)</span>-<span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span>.sh
+</pre></div>
+</div>
+<p>To install the CPU driver:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>install<span class="w"> </span>pocl
+</pre></div>
+</div>
+<p>Note that this installs an ICD loader from KhronosGroup and the builtin OpenCL implementation will be invisible when your application is linked to this loader. To make both pocl and the builtin OpenCL implementaiton visible, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>install<span class="w"> </span>pocl<span class="w"> </span>ocl_icd_wrapper_apple
+</pre></div>
+</div>
+</section>
+<section id="building-pocl-from-source-on-macos">
+<h3>Building PoCL from source on MacOS<a class="headerlink" href="#building-pocl-from-source-on-macos" title="Link to this heading">¶</a></h3>
+<p>Ensure that all required dependencies are installed.
+Clang/LLVM must be properly set up (see above).</p>
+<p>Get the sources:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:pocl/pocl.git
+<span class="nb">cd</span><span class="w"> </span>pocl
+mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+</pre></div>
+</div>
+<section id="for-a-standard-build-without-the-icd-loader">
+<h4>For a standard build without the ICD loader<a class="headerlink" href="#for-a-standard-build-without-the-icd-loader" title="Link to this heading">¶</a></h4>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DENABLE_ICD<span class="o">=</span>OFF<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;path-to-installation-directory&gt;
+ninja<span class="w"> </span>install
+</pre></div>
+</div>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">libOpenCL.dylib</span></code> to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;path-to-installation-directory&gt;/lib
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<p>To override the MacOS OpenCL framework:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LIBRARY_PATH</span><span class="o">=</span>&lt;path-to-installation-directory&gt;/lib:<span class="nv">$LIBRARY_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DYLD_LIBRARY_PATH</span><span class="o">=</span>&lt;path-to-installation-directory&gt;/lib:<span class="nv">$DYLD_LIBRARY_PATH</span>
+clang<span class="w"> </span>&lt;program-source&gt;.c<span class="w"> </span>-lOpenCL
+
+//<span class="w"> </span>Use<span class="w"> </span>PoCL<span class="err">&#39;</span>s<span class="w"> </span>debugging<span class="w"> </span>functionality<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>it<span class="w"> </span>runs<span class="w"> </span>through<span class="w"> </span>PoCL.
+<span class="nv">POCL_DEBUG</span><span class="o">=</span>all<span class="w"> </span>./a.out
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="for-a-build-with-the-icd-loader">
+<h4>For a build with the ICD loader<a class="headerlink" href="#for-a-build-with-the-icd-loader" title="Link to this heading">¶</a></h4>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>//<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>installed:
+brew<span class="w"> </span>install<span class="w"> </span>ocl-icd
+brew<span class="w"> </span>install<span class="w"> </span>opencl-headers
+
+//<span class="w"> </span>These<span class="w"> </span>should<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>PoCL<span class="w"> </span>to<span class="w"> </span>automatically<span class="w"> </span>detect<span class="w"> </span>the<span class="w"> </span>ICD<span class="w"> </span>loader.
+<span class="nb">export</span><span class="w"> </span><span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/opt/opencl-headers/share/pkgconfig&quot;</span>:<span class="nv">$PKG_CONFIG_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/homebrew/opt/ocl-icd/lib/pkgconfig&quot;</span>:<span class="nv">$PKG_CONFIG_PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CPATH</span><span class="o">=</span>/opt/homebrew/opt/ocl-icd/include:<span class="nv">$CPATH</span>
+
+cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;path-to-installation-directory&gt;
+ninja<span class="w"> </span>install
+</pre></div>
+</div>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">libpocl.dylib</span></code> to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;path-to-installation-directory&gt;/lib
+</pre></div>
+</div>
+<p>Make it visible to the ICD loader by setting:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OCL_ICD_VENDORS</span><span class="o">=</span>&lt;path-to-installation-directory&gt;/etc/OpenCL/vendors
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<p>To override the MacOS OpenCL framework:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LIBRARY_PATH</span><span class="o">=</span>/opt/homebrew/opt/ocl-icd/lib:<span class="nv">$LIBRARY_PATH</span>
+clang<span class="w"> </span>&lt;program-source&gt;.c<span class="w"> </span>-lOpenCL
+
+//<span class="w"> </span>Use<span class="w"> </span>PoCL<span class="err">&#39;</span>s<span class="w"> </span>debugging<span class="w"> </span>functionality<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>it<span class="w"> </span>runs<span class="w"> </span>through<span class="w"> </span>PoCL.
+<span class="nv">POCL_DEBUG</span><span class="o">=</span>all<span class="w"> </span>./a.out
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+</section>
+<section id="using-pocl-as-the-opencl-backend-for-dpc">
+<span id="sycl-dpcpp"></span><h2>Using PoCL as the OpenCL backend for DPC++<a class="headerlink" href="#using-pocl-as-the-opencl-backend-for-dpc" title="Link to this heading">¶</a></h2>
+<p>SYCL is a programming model that enables single-source C++ development for
+heterogeneous computing. Compared to OpenCL, SYCL operates at a higher level
+of abstraction, and implementations can use varying backends
+for device offloading (e.g., OpenCL, Level Zero, and CUDA). It is worth noting
+that a SYCL implementation is not required to support OpenCL as a backend.</p>
+<p>DPC++ is Intel’s implementation of SYCL that supports OpenCL. When the OpenCL backend
+is utilized, the DPC++ runtime translates SYCL API calls into corresponding OpenCL
+API calls and forwards them to the OpenCL runtime.</p>
+<p>The toolchain flow, when PoCL is used as the OpenCL backend for DPC++, is as follows:</p>
+<ul class="simple">
+<li><p>The DPC++ Clang++ frontend compiles the SYCL kernel into LLVM IR.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> is used to translate LLVM IR to SPIR-V.</p></li>
+<li><p>SPIR-V is ingested by PoCL, where it is translated back into LLVM IR.</p></li>
+<li><p>PoCL applies additional transformations to the LLVM IR.</p></li>
+<li><p>If using a CPU driver, PoCL leverages <code class="docutils literal notranslate"><span class="pre">llc</span></code> (LLVM backend) to lower the kernel to machine code.</p></li>
+</ul>
+<p>It should be pointed out that there are two versions of DPC++:</p>
+<ul class="simple">
+<li><p>the <strong>Intel(R) oneAPI DPC++/C++ Compiler</strong></p></li>
+<li><p>the <strong>oneAPI DPC++/C++ Compiler</strong>.</p></li>
+</ul>
+<p>The former is proprietary and thus distributed in binary form, whereas the latter is
+open-source.</p>
+<p>This page covers the following steps:</p>
+<ul class="simple">
+<li><p>How to obtain, install, and set up DPC++ (the proprietary or the open-source version)</p></li>
+<li><p>How to build PoCL to support DPC++.</p></li>
+<li><p>Verification with an example program.</p></li>
+</ul>
+<section id="intel-r-oneapi-dpc-c-compiler-installation">
+<h3>Intel(R) oneAPI DPC++/C++ Compiler installation<a class="headerlink" href="#intel-r-oneapi-dpc-c-compiler-installation" title="Link to this heading">¶</a></h3>
+<p>DPC++ is available in various bundles. Installing the oneAPI Base Toolkit is the simplest way to install DPC++ and its dependencies.</p>
+<p>Choose a suitable installer from:</p>
+<p><a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html">https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html</a></p>
+<p>Run the installer. The page above provides corresponding instructions for the selected installer.
+Pay attention to the default installation path and choose a suitable one if necessary.</p>
+<p>The oneAPI Base Toolkit includes various components, some of which are not needed to run SYCL applications with PoCL.</p>
+<p>For a minimal setup, pick:</p>
+<ul class="simple">
+<li><p>Intel oneAPI DPC++ Library</p></li>
+<li><p>Intel oneAPI DPC++/C++ compiler</p></li>
+<li><p>Intel Distribution for GDB (Required by the compiler)</p></li>
+<li><p>Intel oneAPI Threading Building Blocks (Required by the compiler)</p></li>
+<li><p>Intel oneAPI Math Kernel Library (Useful, but not required here)</p></li>
+</ul>
+<p>After installation, run the initialization script to set the environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>&lt;path-to-oneapi-installation&gt;/setvars.sh
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code class="docutils literal notranslate"><span class="pre">setvars.sh</span></code> must be run in every new shell session unless added to <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> (or an equivalent).</p>
+</div>
+<p>Now, DPC++ should be set up. This can be verified by checking the available SYCL backends (In this example, Intel OpenCL was detected).:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sycl-ls
+[opencl:cpu][opencl:0] Intel(R) OpenCL, AMD Ryzen Threadripper 2990WX 32-Core Processor OpenCL 3.0 (Build 0) [2024.18.12.0.05_160000]
+[opencl:gpu][opencl:1] Intel(R) OpenCL Graphics, Intel(R) Arc(TM) A770 Graphics OpenCL 3.0 NEO  [23.43.027642]
+</pre></div>
+</div>
+<p>The initialization script also adds the compiler to the <code class="docutils literal notranslate"><span class="pre">PATH</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>icpx --version
+Intel(R) oneAPI DPC++/C++ Compiler 2025.0.4 (2025.0.4.20241205)
+</pre></div>
+</div>
+</section>
+<section id="oneapi-dpc-c-compiler-installation">
+<h3>oneAPI DPC++/C++ Compiler installation<a class="headerlink" href="#oneapi-dpc-c-compiler-installation" title="Link to this heading">¶</a></h3>
+<p>The sources for the open-source DPC++ compiler can be obtained from the <a class="reference external" href="https://github.com/intel/llvm">DPC++ repository</a>.</p>
+<p>Official detailed instructions can be found <a class="reference external" href="https://intel.github.io/llvm-docs/GetStartedGuide.html#build-dpc-toolchain">here</a>.
+The build process is managed using two Python scripts: <code class="docutils literal notranslate"><span class="pre">configure.py</span></code> and <code class="docutils literal notranslate"><span class="pre">compile.py</span></code>, which handle most of the heavy lifting.
+The <code class="docutils literal notranslate"><span class="pre">configure.py</span></code> is essentially a wrapper for <strong>CMake</strong>, so checking its contents can provide further details.</p>
+<p>For a basic setup, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:intel/llvm
+<span class="nb">cd</span><span class="w"> </span>llvm
+python3<span class="w"> </span>./buildbot/configure.py<span class="w"> </span>-o<span class="w"> </span>&lt;path-to-dpcpp-installation&gt;
+python3<span class="w"> </span>./buildbot/compile.py<span class="w"> </span>-o<span class="w"> </span>&lt;path-to-dpcpp-installation&gt;<span class="w"> </span>-j<span class="w"> </span>&lt;number-of-threads&gt;
+</pre></div>
+</div>
+<p>After building, export the compiler and SYCL runtime library paths:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>&lt;path-to-dpcpp-installation&gt;/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>&lt;path-to-dpcpp-installation&gt;/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> The open-source DPC++ compiler driver is <code class="docutils literal notranslate"><span class="pre">clang++</span></code>, not <code class="docutils literal notranslate"><span class="pre">icpx</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>clang++
+&lt;path-to-dpcpp-installation&gt;/bin/clang++
+</pre></div>
+</div>
+</section>
+<section id="building-pocl-for-dpc">
+<h3>Building PoCL for DPC++<a class="headerlink" href="#building-pocl-for-dpc" title="Link to this heading">¶</a></h3>
+<p>PoCL doesn’t normally require <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code>, but in this case, it is a strict
+dependency because PoCL needs to convert the SPIR-V produced by DPC++ back to LLVM IR.</p>
+<p>You must check out and build a version of <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> that corresponds to the LLVM
+version PoCL uses as its kernel compiler. For example, if the PoCL kernel compiler uses
+<strong>LLVM 18</strong>, then <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> should be checked out from the <code class="docutils literal notranslate"><span class="pre">llvm_release_180</span></code> branch.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DPC++ ships with its own <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code>, which is typically based on the latest release.
+However, this version is intended for internal usage by DPC++ and cannot be used by PoCL.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Although the versions of <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> used by DPC++ and PoCL do not have to be an exact
+match, it is recommended to use versions that are reasonably close to each other.</p>
+</div>
+<p>Example PoCL build:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:pocl/pocl.git
+cd pocl
+mkdir build &amp;&amp; cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=&lt;path-to-installation-directory&gt; -DLLVM_SPIRV=&lt;path-to-llvm-spirv&gt; -DWITH_LLVM_CONFIG=&lt;path-to-llvm-config&gt;
+ninja install
+</pre></div>
+</div>
+<p>To make PoCL visible to the ICD loader, either register the PoCL ICD (<a class="reference external" href="https://github.com/KhronosGroup/OpenCL-ICD-Loader#registering-icds">https://github.com/KhronosGroup/OpenCL-ICD-Loader#registering-icds</a>)
+or set the <code class="docutils literal notranslate"><span class="pre">OCL_ICD_FILENAMES</span></code> or <code class="docutils literal notranslate"><span class="pre">OCL_ICD_VENDORS</span></code> environment variables. <code class="docutils literal notranslate"><span class="pre">OCL_ICD_VENDORS</span></code> only works on Linux/Android,
+whereas <code class="docutils literal notranslate"><span class="pre">OCL_ICD_FILENAMES</span></code> works on all platforms (see <a class="reference external" href="https://github.com/KhronosGroup/OpenCL-ICD-Loader#table-of-debug-environment-variables">https://github.com/KhronosGroup/OpenCL-ICD-Loader#table-of-debug-environment-variables</a>
+for more information).</p>
+<p>On Linux:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export OCL_ICD_VENDORS=&lt;path-to-pocl-installation&gt;/etc/OpenCL/vendors
+</pre></div>
+</div>
+</section>
+<section id="compiling-with-dpc-using-pocl-as-the-backend">
+<h3>Compiling with DPC++ using PoCL as the backend<a class="headerlink" href="#compiling-with-dpc-using-pocl-as-the-backend" title="Link to this heading">¶</a></h3>
+<p>If using proprietary DPC++, there is one additional step.
+By default PoCL is blocked by the DPC++ runtime. To enable PoCL, we need to set the <code class="docutils literal notranslate"><span class="pre">SYCL_DEVICE_ALLOWLIST</span></code>
+environment variable. This variable is a comma-separated list of parameters that the DPC++ runtime uses to select allowed devices.
+It can be used quite flexibly. For example, to select only CPU devices:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;DeviceType:cpu&quot;
+</pre></div>
+</div>
+<p>To allow all available devices, use:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;&quot;
+</pre></div>
+</div>
+<p>To select only PoCL, you can use the PoCL vendor ID:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export SYCL_DEVICE_ALLOWLIST=&quot;DeviceVendorId:0x10006&quot;
+</pre></div>
+</div>
+<p>For more information about how to use the DPC++ environment variables, see:</p>
+<p><a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md">https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md</a></p>
+<p>Now that everything is set up, verify that PoCL is detected:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sycl-ls
+[opencl:cpu][opencl:0] Portable Computing Language, cpu-znver1-AMD Ryzen Threadripper 2990WX 32-Core Processor OpenCL 3.0 PoCL HSTR: cpu-x86_64-pc-linux-gnu-znver1
+</pre></div>
+</div>
+<p>Below is a simple SYCL program to test the setup. It selects the device automatically, so this will drop the possible GPUs out of the list:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export ONEAPI_DEVICE_SELECTOR=opencl:cpu
+</pre></div>
+</div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// hello_nd_range.cpp</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sycl/sycl.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="cp">#define SUB_GROUP_SIZE 2</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">sycl</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">global_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">local_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">queue</span><span class="w"> </span><span class="n">q</span><span class="p">;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">q</span><span class="p">.</span><span class="n">submit</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">handler</span><span class="w"> </span><span class="o">&amp;</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;One dimensional nd_range with global_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">global_size</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, local_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">local_size</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, sg_size: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">SUB_GROUP_SIZE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">            </span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">global</span><span class="p">(</span><span class="n">global_size</span><span class="p">);</span>
+<span class="w">            </span><span class="n">range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local</span><span class="p">(</span><span class="n">local_size</span><span class="p">);</span>
+<span class="w">            </span><span class="n">nd_range</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="n">global</span><span class="p">,</span><span class="w"> </span><span class="n">local</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">h</span><span class="p">.</span><span class="n">parallel_for</span><span class="p">(</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">=</span><span class="p">](</span><span class="n">nd_item</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">[[</span><span class="n">sycl</span><span class="o">::</span><span class="n">reqd_sub_group_size</span><span class="p">(</span><span class="n">SUB_GROUP_SIZE</span><span class="p">)]]</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">workgroup_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_group</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">global_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">local_id_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">sg_local_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_sub_group</span><span class="p">().</span><span class="n">get_local_id</span><span class="p">();</span>
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">sg_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span><span class="p">.</span><span class="n">get_sub_group</span><span class="p">().</span><span class="n">get_group_id</span><span class="p">();</span>
+<span class="w">                </span><span class="n">sycl</span><span class="o">::</span><span class="n">ext</span><span class="o">::</span><span class="n">oneapi</span><span class="o">::</span><span class="n">experimental</span><span class="o">::</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello from: (global_id %d) (local_id: %d) (wg_id: %d) (sg_id: %d) (sg_local id: %d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">global_id_x</span><span class="p">,</span><span class="w"> </span><span class="n">local_id_x</span><span class="p">,</span><span class="n">workgroup_id_x</span><span class="p">,</span><span class="w"> </span><span class="n">sg_id</span><span class="p">,</span><span class="w"> </span><span class="n">sg_local_id</span><span class="p">);</span>
+<span class="w">            </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}).</span><span class="n">wait</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Compile and run (use <code class="docutils literal notranslate"><span class="pre">icpx</span></code> for proprietary version, and <code class="docutils literal notranslate"><span class="pre">clang++</span></code> for open-source version):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clang++<span class="w"> </span>hello_nd_range.cpp<span class="w"> </span>-fsycl<span class="w"> </span>-o<span class="w"> </span>hello
+./hello
+
+One<span class="w"> </span>dimensional<span class="w"> </span>nd_range<span class="w"> </span>with<span class="w"> </span>global_size:<span class="w"> </span><span class="m">8</span>,<span class="w"> </span>local_size:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span>sg_size:<span class="w"> </span><span class="m">2</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">4</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">5</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">0</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">6</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">2</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">0</span><span class="o">)</span>
+hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</span>global_id<span class="w"> </span><span class="m">7</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>local_id:<span class="w"> </span><span class="m">3</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>wg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_id:<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="o">(</span>sg_local<span class="w"> </span>id:<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
@@ -523,8 +957,24 @@ The specialization can be disabled by setting this environment variable to 0.</p
 <li><a class="reference internal" href="#linking-your-program-with-pocl-through-an-icd-loader">Linking your program with pocl through an icd loader</a></li>
 <li><a class="reference internal" href="#installable-client-driver-icd">Installable client driver (ICD)</a></li>
 <li><a class="reference internal" href="#linking-your-program-directly-with-pocl">Linking your program directly with pocl</a></li>
-<li><a class="reference internal" href="#using-pocl-on-macosx">Using pocl on MacOSX</a></li>
 <li><a class="reference internal" href="#tuning-pocl-behavior-with-env-variables">Tuning pocl behavior with ENV variables</a></li>
+<li><a class="reference internal" href="#setting-up-and-running-pocl-on-macos">Setting up and running PoCL on MacOS</a><ul>
+<li><a class="reference internal" href="#note-about-the-kernel-compiler">Note about the kernel compiler</a></li>
+<li><a class="reference internal" href="#installing-pocl-on-macos-using-pre-built-binaries">Installing PoCL on MacOS using pre-built binaries</a></li>
+<li><a class="reference internal" href="#building-pocl-from-source-on-macos">Building PoCL from source on MacOS</a><ul>
+<li><a class="reference internal" href="#for-a-standard-build-without-the-icd-loader">For a standard build without the ICD loader</a></li>
+<li><a class="reference internal" href="#for-a-build-with-the-icd-loader">For a build with the ICD loader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-pocl-as-the-opencl-backend-for-dpc">Using PoCL as the OpenCL backend for DPC++</a><ul>
+<li><a class="reference internal" href="#intel-r-oneapi-dpc-c-compiler-installation">Intel(R) oneAPI DPC++/C++ Compiler installation</a></li>
+<li><a class="reference internal" href="#oneapi-dpc-c-compiler-installation">oneAPI DPC++/C++ Compiler installation</a></li>
+<li><a class="reference internal" href="#building-pocl-for-dpc">Building PoCL for DPC++</a></li>
+<li><a class="reference internal" href="#compiling-with-dpc-using-pocl-as-the-backend">Compiling with DPC++ using PoCL as the backend</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -573,12 +1023,12 @@ The specialization can be disabled by setting this environment variable to 0.</p
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2010-2023 PoCL developers.
+    &#169; Copyright 2010-2025 PoCL developers.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

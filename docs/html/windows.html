@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Windows support &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows support</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="windows-support">
+<h1>Windows support<a class="headerlink" href="#windows-support" title="Link to this heading">¶</a></h1>
+<p>It is possible to build &amp; use PoCL on Windows using MinGW and
+Microsoft Visual Studio (MSVC). Building PoCL on MSVC is recommended
+and easiest route. The MinGW route takes more steps in building which
+involves and currently requires cross-compilation in a linux machine.</p>
+<section id="prerequisites-for-msvc-route">
+<h2>Prerequisites for MSVC Route<a class="headerlink" href="#prerequisites-for-msvc-route" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Microsoft Visual Studio Community or Professional edition, at least
+version 2019.</p></li>
+<li><p>Optional: <a class="reference external" href="https://ninja-build.org/">Ninja</a>.</p></li>
+</ul>
+</section>
+<section id="building-llvm-using-msvc">
+<h2>Building LLVM using MSVC<a class="headerlink" href="#building-llvm-using-msvc" title="Link to this heading">¶</a></h2>
+<p>Open Windows PowerShell and choose a directory as workspace for building LLVM
+and PoCL and then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">llvm</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">project</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">llvm</span><span class="o">-</span><span class="n">project</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">release</span><span class="o">/&lt;</span><span class="n">llvm</span><span class="o">-</span><span class="n">version</span><span class="o">&gt;.</span><span class="n">x</span>
+<span class="n">cd</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">S</span> <span class="n">llvm</span><span class="o">-</span><span class="n">project</span>\<span class="n">llvm</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span><span class="o">-</span><span class="n">llvm</span> <span class="o">-</span><span class="n">DLLVM_ENABLE_PROJECTS</span><span class="o">=</span><span class="n">clang</span> <span class="o">-</span><span class="n">DLLVM_TARGETS_TO_BUILD</span><span class="o">=</span><span class="n">X86</span> <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=&lt;</span><span class="n">llvm</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;</span>\<span class="n">install</span><span class="o">-</span><span class="n">llvm</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="n">build</span><span class="o">-</span><span class="n">llvm</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">install</span> <span class="n">install</span><span class="o">-</span><span class="n">llvm</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;llvm-version&gt;</span></code> is LLVM major version to be built - e.g. <code class="docutils literal notranslate"><span class="pre">19</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;llvm-install-path&gt;</span></code> is a directory to install the LLVM into and
+used in the PoCL building section ahead.</p></li>
+</ul>
+<p>This should build 64-bit static libraries.</p>
+</section>
+<section id="building-pocl-using-msvc">
+<h2>Building PoCL Using MSVC<a class="headerlink" href="#building-pocl-using-msvc" title="Link to this heading">¶</a></h2>
+<p>Source MSVC SDK environment using the command in the PowerShell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;&amp; C:\Program Files\Microsoft Visual Studio</span><span class="se">\202</span><span class="s1">2\Community\Common7\Tools\Launch-VsDevShell.ps1 -Arch amd64 -HostArch amd64&#39;</span>
+</pre></div>
+</div>
+<p>If you have professional edition installed instead, replace <code class="docutils literal notranslate"><span class="pre">Community</span></code> with
+<code class="docutils literal notranslate"><span class="pre">Professional</span></code> in the above command.</p>
+<p>Configure and build PoCL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pocl</span><span class="o">/</span><span class="n">pocl</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">S</span> <span class="n">pocl</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span><span class="o">-</span><span class="n">pocl</span> <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=&lt;</span><span class="n">pocl</span><span class="o">-</span><span class="n">install</span><span class="o">&gt;</span>\<span class="n">install</span><span class="o">-</span><span class="n">pocl</span> <span class="o">-</span><span class="n">DENABLE_ICD</span><span class="o">=</span><span class="mi">0</span> <span class="o">-</span><span class="n">DENABLE_LLVM</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DWITH_LLVM_CONFIG</span><span class="o">=&lt;</span><span class="n">llvm</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">path</span><span class="o">&gt;</span>\<span class="nb">bin</span>\<span class="n">llvm</span><span class="o">-</span><span class="n">config</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">DENABLE_LOADABLE_DRIVERS</span><span class="o">=</span><span class="mi">0</span> <span class="o">-</span><span class="n">DSTATIC_LLVM</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DCMAKE_MSVC_RUNTIME_LIBRARY</span><span class="o">=</span><span class="n">MultiThreadedDLL</span> <span class="o">-</span><span class="n">G</span> <span class="s2">&quot;Ninja&quot;</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="n">build</span><span class="o">-</span><span class="n">pocl</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">pocl</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;llvm-install-path&gt;</span></code> is the directory where the LLVM is
+installed in the previous section. <code class="docutils literal notranslate"><span class="pre">-G</span> <span class="pre">Ninja</span></code> can be replaced with
+<code class="docutils literal notranslate"><span class="pre">-G</span> <span class="pre">NMake</span> <span class="pre">Makefiles</span></code> but the building will be very slow.</p>
+</section>
+<section id="running-tests-from-the-build-directory-msvc">
+<h2>Running tests from the build directory (MSVC)<a class="headerlink" href="#running-tests-from-the-build-directory-msvc" title="Link to this heading">¶</a></h2>
+<p>To run PoCL’s internal tests delve into the build directory and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$env:POCL_BUILDING = &#39;1&#39;
+ctest -j&lt;N&gt;
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is a number of tests to be run in parallel.</p>
+</section>
+<section id="building-pocl-with-level-zero-support">
+<h2>Building PoCL with Level Zero support<a class="headerlink" href="#building-pocl-with-level-zero-support" title="Link to this heading">¶</a></h2>
+<p>For building PoCL with Level Zero support, following additional
+dependencies are needed:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> and <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> tools, which can be installed
+through <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> tool (<a class="reference external" href="https://conda-forge.org/download/">https://conda-forge.org/download/</a>)
+with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">pkg-config</span> <span class="pre">llvm-spirv-19</span></code>, for example. The
+llvm-spirv version must match to the LLVM library used by the PoCL.</p></li>
+<li><p>Level Zero SDK. Windows binaries are available at
+<a class="reference external" href="https://github.com/oneapi-src/level-zero/releases/">https://github.com/oneapi-src/level-zero/releases/</a>. Download
+<code class="docutils literal notranslate"><span class="pre">level-zero-win-sdk-v#.##.#.zip</span></code> and extract it somewhere.</p></li>
+<li><p>Intel Graphics drivers
+(<a class="reference external" href="https://www.intel.com/content/www/us/en/download/785597/intel-arc-iris-xe-graphics-windows.html">https://www.intel.com/content/www/us/en/download/785597/intel-arc-iris-xe-graphics-windows.html</a>)
+for running OpenCL applications on integrated and discrete Intel GPUs.</p></li>
+</ul>
+<p>Once installed, PoCL needs to be configured with additional
+options. The following assumes that the <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> is installed
+at its default location and the Level Zero SDK is extracted under
+<code class="docutils literal notranslate"><span class="pre">C:\level-zero-sdk</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DCMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;C:\level-zero-sdk;C\Users\&lt;username&gt;\AppData\Local\miniforge3\Library&quot;</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">&lt;username&gt;</span></code> changed to your Windows login name.</p>
+<p>To make Level Zero to appear for OpenCL applications, set the
+following environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$env:POCL_DEVICES=&quot;level0&quot;
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$env:POCL_DEVICES=&quot;level0 cpu&quot;
+</pre></div>
+</div>
+<p>For having both the Level Zero devices and the host CPU available.</p>
+</section>
+<section id="prerequisites-for-mingw-route">
+<h2>Prerequisites for MinGW Route<a class="headerlink" href="#prerequisites-for-mingw-route" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>a Linux machine with enough memory &amp; space to cross-compile LLVM, and an environment for building containers (docker/podman)</p></li>
+<li><p>a Windows machine with UCRT runtime (this comes built-in since Windows 10, available as separate download for earlier versions)</p></li>
+</ul>
+</section>
+<section id="building-llvm-mingw">
+<h2>Building LLVM-MinGW<a class="headerlink" href="#building-llvm-mingw" title="Link to this heading">¶</a></h2>
+<p>On the Linux machine, install docker/podman, then execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">franz</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">mingw</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">llvm</span><span class="o">-</span><span class="n">mingw</span>
+<span class="o">./</span><span class="n">release</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This will produce a file named <cite>llvm-mingw-&lt;TAG&gt;-ucrt-x86_64.zip</cite>, this should contain the required full installation of LLVM 19 + MinGW.
+Copy the file to the Windows machine.</p>
+</section>
+<section id="building-pocl-using-mingw">
+<h2>Building PoCL using MinGW<a class="headerlink" href="#building-pocl-using-mingw" title="Link to this heading">¶</a></h2>
+<p>On the Windows machine, follow these steps:</p>
+<ul class="simple">
+<li><p>create a directory where the work will happen, e.g. C:Workspace</p></li>
+<li><p>unzip the <cite>llvm-mingw-&lt;TAG&gt;-ucrt-x86_64.zip</cite> in the workspace directory,
+this should create a directory C:Workspacellvm-mingw-&lt;TAG&gt;-ucrt-x86_64,
+rename this to <cite>llvm</cite> for convenience</p></li>
+<li><p>download the zip version of CMake for Windows (look for ‘Windows x64 ZIP’ on <a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>),
+unzip it in the C:Workspace, rename it to <cite>cmake</cite></p></li>
+<li><p>download ninja build tool (look for <cite>ninja-win.zip</cite> on <a class="reference external" href="https://github.com/ninja-build/ninja/releases">https://github.com/ninja-build/ninja/releases</a>),
+unzip it into the CMake’s bin directory</p></li>
+<li><p>download the portable zip version of Git SCM from <cite>https://git-scm.com/downloads/win</cite>,
+then unpack it into C:Workspace, rename to <cite>git</cite></p></li>
+<li><p>optionally, download hwloc release binary from <a class="reference external" href="https://www.open-mpi.org/projects/hwloc/">https://www.open-mpi.org/projects/hwloc/</a>,
+unzip and rename to ‘hwloc’</p></li>
+</ul>
+<p>From <cite>C:Workspacegit</cite>, run <cite>git-bash.exe</cite>. In this shell execute the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=/c/Workspace/cmake:$PATH
+export CMAKE_PREFIX_PATH=/c/Workspace/hwloc
+
+git clone https://github.com/pocl/pocl.git
+cd pocl
+mkdir build
+cd build
+cmake -G Ninja -DENABLE_HWLOC=1 -DENABLE_ICD=0 -DENABLE_LLVM=1 -DSTATIC_LLVM=1 \
+   -DWITH_LLVM_CONFIG=/c/Workspace/llvm/bin/llvm-config.exe \
+-DCMAKE_C_COMPILER=/c/Workspace/llvm/bin/clang.exe -DCMAKE_CXX_COMPILER=/c/Workspace/llvm/bin/clang++.exe \
+-DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_LOADABLE_DRIVERS=0 ..
+ninja -j4
+</pre></div>
+</div>
+</section>
+<section id="running-tests-from-the-build-directory-mingw">
+<h2>Running tests from the build directory (MinGW)<a class="headerlink" href="#running-tests-from-the-build-directory-mingw" title="Link to this heading">¶</a></h2>
+<p>On Windows, RPATH is not embedded into binaries. You must set the PATH environment variable to contain
+paths of all required DLL libraries; with the packages you’ve installed in previous step, the DLLs are
+placed in the same directory as the binaries. You can use these paths:</p>
+<ul class="simple">
+<li><p>/c/Workspace/pocl/build/lib/CL</p></li>
+<li><p>/c/Workspace/hwloc/bin</p></li>
+<li><p>/c/Workspace/llvm/bin</p></li>
+</ul>
+<p>Note for debugging: gdb is not installed but lldb.exe is available. The debugged process runs in its
+own window and sometimes it exits so quickly there’s no time to see the output; in that case, it’s
+useful to set a breakpoint on exit: “b NtTerminateProcess”</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Windows support</a><ul>
+<li><a class="reference internal" href="#prerequisites-for-msvc-route">Prerequisites for MSVC Route</a></li>
+<li><a class="reference internal" href="#building-llvm-using-msvc">Building LLVM using MSVC</a></li>
+<li><a class="reference internal" href="#building-pocl-using-msvc">Building PoCL Using MSVC</a></li>
+<li><a class="reference internal" href="#running-tests-from-the-build-directory-msvc">Running tests from the build directory (MSVC)</a></li>
+<li><a class="reference internal" href="#building-pocl-with-level-zero-support">Building PoCL with Level Zero support</a></li>
+<li><a class="reference internal" href="#prerequisites-for-mingw-route">Prerequisites for MinGW Route</a></li>
+<li><a class="reference internal" href="#building-llvm-mingw">Building LLVM-MinGW</a></li>
+<li><a class="reference internal" href="#building-pocl-using-mingw">Building PoCL using MinGW</a></li>
+<li><a class="reference internal" href="#running-tests-from-the-build-directory-mingw">Running tests from the build directory (MinGW)</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/windows.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows support</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

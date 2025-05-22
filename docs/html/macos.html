@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Setting up and running PoCL on MacOS &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setting up and running PoCL on MacOS</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="setting-up-and-running-pocl-on-macos">
+<span id="pocl-macos-setup"></span><h1>Setting up and running PoCL on MacOS<a class="headerlink" href="#setting-up-and-running-pocl-on-macos" title="Link to this heading">¶</a></h1>
+<section id="note-about-the-kernel-compiler">
+<h2>Note about the kernel compiler<a class="headerlink" href="#note-about-the-kernel-compiler" title="Link to this heading">¶</a></h2>
+<p>Clang/LLVM is included with Xcode, but at least the default
+installation lacks development headers/libraries and llvm-config.
+As a result, this version cannot be used as a kernel compiler for PoCL.</p>
+<p>The simplest way to install llvm is through Homebrew:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brew install llvm
+export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+</pre></div>
+</div>
+<p>Then, ensure that LLVM is correctly set up for PoCL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">which</span> <span class="n">clang</span>
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">homebrew</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">llvm</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">clang</span>
+<span class="n">llvm</span><span class="o">-</span><span class="n">config</span> <span class="o">--</span><span class="n">version</span>
+<span class="mf">19.1.7</span>
+</pre></div>
+</div>
+<p>Alternatively, you can compile LLVM from source (Example is for an ARM Mac):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">llvm</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">project</span>
+<span class="n">cd</span> <span class="n">llvm</span><span class="o">-</span><span class="n">project</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="n">Ninja</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">RelWithDebInfo</span> <span class="o">-</span><span class="n">DLLVM_ENABLE_PROJECTS</span><span class="o">=</span><span class="s2">&quot;clang;llvm&quot;</span>
+<span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">installation</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">DLLVM_TARGETS_TO_BUILD</span><span class="o">=</span><span class="s2">&quot;AArch64&quot;</span> <span class="o">../</span><span class="n">llvm</span>
+
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+</section>
+<section id="installing-pocl-on-macos-using-pre-built-binaries">
+<h2>Installing PoCL on MacOS using pre-built binaries<a class="headerlink" href="#installing-pocl-on-macos-using-pre-built-binaries" title="Link to this heading">¶</a></h2>
+<p><strong>Homebrew</strong></p>
+<p>PoCL with the CPU driver supports Intel and Apple Silicon chips can be found on
+homebrew and can be installed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">pocl</span>
+</pre></div>
+</div>
+<p>Note that this installs an ICD loader from KhronoGroup and the built-in OpenCL
+implementation will be invisible when your application is linked to this loader.</p>
+<p><strong>Conda</strong></p>
+<p>PoCL with the CPU driver supports Intel and Apple Silicon chips can be found on
+conda-forge distribution and can be installed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>curl -L -O &quot;https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh&quot;
+bash Mambaforge-$(uname)-$(uname -m).sh
+</pre></div>
+</div>
+<p>To install the CPU driver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="n">pocl</span>
+</pre></div>
+</div>
+<p>Note that this installs an ICD loader from KhronosGroup and the builtin OpenCL implementation will be invisible when your application is linked to this loader. To make both pocl and the builtin OpenCL implementaiton visible, do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mamba</span> <span class="n">install</span> <span class="n">pocl</span> <span class="n">ocl_icd_wrapper_apple</span>
+</pre></div>
+</div>
+</section>
+<section id="building-pocl-from-source-on-macos">
+<h2>Building PoCL from source on MacOS<a class="headerlink" href="#building-pocl-from-source-on-macos" title="Link to this heading">¶</a></h2>
+<p>Ensure that all required dependencies are installed.
+Clang/LLVM must be properly set up (see above).</p>
+<p>Get the sources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">pocl</span><span class="o">/</span><span class="n">pocl</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">pocl</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">build</span>
+</pre></div>
+</div>
+<section id="for-a-standard-build-without-the-icd-loader">
+<h3>For a standard build without the ICD loader<a class="headerlink" href="#for-a-standard-build-without-the-icd-loader" title="Link to this heading">¶</a></h3>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">..</span> <span class="o">-</span><span class="n">G</span> <span class="n">Ninja</span> <span class="o">-</span><span class="n">DENABLE_ICD</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">installation</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;</span>
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">libOpenCL.dylib</span></code> to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">installation</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;/</span><span class="n">lib</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<p>To override the MacOS OpenCL framework:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export LIBRARY_PATH=&lt;path-to-installation-directory&gt;/lib:$LIBRARY_PATH
+export DYLD_LIBRARY_PATH=&lt;path-to-installation-directory&gt;/lib:$DYLD_LIBRARY_PATH
+clang &lt;program-source&gt;.c -lOpenCL
+
+// Use PoCL&#39;s debugging functionality to ensure it runs through PoCL.
+POCL_DEBUG=all ./a.out
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="for-a-build-with-the-icd-loader">
+<h3>For a build with the ICD loader<a class="headerlink" href="#for-a-build-with-the-icd-loader" title="Link to this heading">¶</a></h3>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// If not installed:
+brew install ocl-icd
+brew install opencl-headers
+
+// These should enable PoCL to automatically detect the ICD loader.
+export PKG_CONFIG_PATH=&quot;/opt/homebrew/opt/opencl-headers/share/pkgconfig&quot;:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=&quot;/opt/homebrew/opt/ocl-icd/lib/pkgconfig&quot;:$PKG_CONFIG_PATH
+export CPATH=/opt/homebrew/opt/ocl-icd/include:$CPATH
+
+cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=&lt;path-to-installation-directory&gt;
+ninja install
+</pre></div>
+</div>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">libpocl.dylib</span></code> to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">installation</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;/</span><span class="n">lib</span>
+</pre></div>
+</div>
+<p>Make it visible to the ICD loader by setting:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OCL_ICD_VENDORS</span><span class="o">=&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">installation</span><span class="o">-</span><span class="n">directory</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">OpenCL</span><span class="o">/</span><span class="n">vendors</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<p>To override the MacOS OpenCL framework:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export LIBRARY_PATH=/opt/homebrew/opt/ocl-icd/lib:$LIBRARY_PATH
+clang &lt;program-source&gt;.c -lOpenCL
+
+// Use PoCL&#39;s debugging functionality to ensure it runs through PoCL.
+POCL_DEBUG=all ./a.out
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Setting up and running PoCL on MacOS</a><ul>
+<li><a class="reference internal" href="#note-about-the-kernel-compiler">Note about the kernel compiler</a></li>
+<li><a class="reference internal" href="#installing-pocl-on-macos-using-pre-built-binaries">Installing PoCL on MacOS using pre-built binaries</a></li>
+<li><a class="reference internal" href="#building-pocl-from-source-on-macos">Building PoCL from source on MacOS</a><ul>
+<li><a class="reference internal" href="#for-a-standard-build-without-the-icd-loader">For a standard build without the ICD loader</a></li>
+<li><a class="reference internal" href="#for-a-build-with-the-icd-loader">For a build with the ICD loader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/macos.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setting up and running PoCL on MacOS</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Release Notes for PoCL 7.0 &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Release Notes for PoCL 6.0" href="notes_6_0.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="notes_6_0.html" title="Release Notes for PoCL 6.0"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 7.0</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="release-notes-for-pocl-7-0">
+<h1>Release Notes for PoCL 7.0<a class="headerlink" href="#release-notes-for-pocl-7-0" title="Link to this heading">¶</a></h1>
+<section id="release-highlights">
+<h2>Release highlights<a class="headerlink" href="#release-highlights" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>PoCL received the official OpenCL 3.0 conformance stamp with the
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_450">CPU</a> (x86-64) and
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_453">Level Zero</a>
+drivers. Conformance testing via OpenCL-CTS passed with both OpenCL C
+and SPIR-V compilation modes, for both of the drivers.</p></li>
+<li><p>Proper support for Windows platform added, tested with CPU and Level Zero drivers.
+The CPU driver supports both MinGW and MSVC toolchains, Level Zero only MSVC for
+now.</p></li>
+<li><p>Support for LLVM versions 19 and 20.</p></li>
+<li><p>Support building with Khronos ICD, if the ICD supports OpenCL 3.0.</p></li>
+<li><p>Support for dynamic device addition and network discovery in
+PoCL-Remote.</p></li>
+<li><p>Initial support for Julia input through the OpenCL.jl package.</p></li>
+</ul>
+</section>
+<section id="notable-user-facing-changes">
+<h2>Notable user facing changes<a class="headerlink" href="#notable-user-facing-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>CMake 3.15 is now required to build PoCL.</p></li>
+<li><p>New env variable POCL_MAX_COMPUTE_UNITS. This is similar to
+existing POCL_CPU_MAX_CU_COUNT, but is not driver-specific,
+hence can be used to limit the CU count of all drivers that
+support limiting CU count. If both are specified, the driver
+specific variable takes precedence.</p></li>
+<li><p>The callbacks for context destruction, memory destruction and event
+callbacks were moved to a separate thread (that runs asynchronously).
+This might have unexpected effect on the behavior of program using
+libpocl, since callbacks might be executed with some delay.</p></li>
+<li><p>Level Zero devices, if found, are shown in the platform by default
+in addition to the CPU drivers.</p></li>
+<li><p>Works with the upstream llama.cpp’s OpenCL backend without
+modifications on PoCL-LZ.</p></li>
+<li><p>Various fixes and improvements to SYCL input via the Intel DPC++.</p></li>
+<li><p>Various improvements to support running OpenVINO out-of-the-box.</p></li>
+</ul>
+</section>
+<section id="driver-specific-features">
+<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Link to this heading">¶</a></h2>
+<section id="cpu-drivers">
+<h3>CPU drivers<a class="headerlink" href="#cpu-drivers" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>When built with -DENABLE_CONFORMANCE=ON, PoCL’s CPU driver
+is now able to pass the full OpenCL-CTS conformance testsuite.</p></li>
+<li><p>Proper and now CI-tested Windows platform support, using both
+MinGW and MSVC toolchains.</p></li>
+<li><p>Support for generating NSIS packages on Windows.</p></li>
+<li><p>The cl_khr_command_buffer implementation has been updated to v0.9.6.
+Note that this version is not backwards compatible with previous versions.</p></li>
+<li><p>Implemented version 1.0.2 of the cl_ext_buffer_device_address extension.</p></li>
+<li><p>Implemented version 0.9.3 of the cl_khr_command_buffer_mutable_dispatch.</p></li>
+<li><p>Implemented cl_intel_subgroups_{char/short/long} extensions.</p></li>
+<li><p>Implemented missing intel_sub_groups_shuffle_down/up for scalar types.</p></li>
+<li><p>Implemented cl_intel_subgroup shuffle/xor/up/down with vector arguments
+(this is required by SYCL-CTS).</p></li>
+<li><p>Implemented read_imageh() function.</p></li>
+<li><p>SPIR-V support has been improved to support additional subgroup-related
+functions.</p></li>
+<li><p>SPIR-V up to version 1.5 is now supported with LLVM 20, and up to 1.4
+with LLVM 19.</p></li>
+<li><p>The max_mem_alloc_size of the CPU device is now equal to global_mem_size
+(previously was limited to 1/4 of global_mem_size).</p></li>
+<li><p>Handling of LLVM’s ‘Unreachable’ instructions has been improved. The
+new handling depends on the workitem handler; with “loopvec” the
+Unreachable is removed; with CBS the unreachable is converted to set
+an error flag, which the CPU driver then uses to set the NDRange
+event’s state to failed.</p></li>
+<li><p>With “distro” builds, the kernel-lib variants now include
+the “generic” CPU variant as a fallback.</p></li>
+<li><p>OpenCL C printf() now correctly supports all OpenCL vector types.</p></li>
+<li><p>Added option to disable the support of subnormal floats.</p></li>
+<li><p>Added option to avoid division-by-zero exceptions using an LLVM pass
+instead of SIGFPE handler (CMake option ENABLE_SIGFPE_HANDLER).
+This has the advantage of being a platform-independent and
+scheduler-independent solution that works also with the
+oneTBB and OpenMP runtimes.</p></li>
+<li><p>Support for using LLVMSPIRVLib for SPIR-V input translation,
+as an alternative to calling llvm-spirv binary.</p></li>
+</ul>
+<section id="cpu-kernel-compiler-improvements">
+<h4>CPU kernel compiler improvements<a class="headerlink" href="#cpu-kernel-compiler-improvements" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>Improved the work-group vectorization of kernels which use the global
+id as the iteration variable. Now the loop vectorizer should
+generate wide loads/stores more often than falling back to
+scatter/gather when global ids are used.</p></li>
+<li><p>The implicit WG vectorization with the ‘loopvec’ method is reenabled,
+after accidentally disabling it when upgrading to the latest LLVM
+version.</p></li>
+<li><p>New env variables POCL_VECTORIZER_FORCE_VECTOR_WIDTH and
+POCL_VECTORIZER_PREFER_VECTOR_WIDTH enable more control over the vector width
+chosen by LLVM when using ‘loopvec’ WG vectorization.</p></li>
+<li><p>Inlining of builtin functions has been improved to inline more
+aggressively. This should result in much better performance
+of kernels using many builtins.</p></li>
+<li><p>PoCL can now use libraries of vectorized math functions (SLEEF
+on ARM, libmvec or Intel SVML on x86) to implement OpenCL’s math
+builtins with vector arguments. This is currently enabled only when
+building with ENABLE_CONFORMANCE=OFF and LLVM &gt;= 18.0</p></li>
+<li><p>Rematerialization of work-item private variables across parallel
+regions. Certain values are recomputed instead of storing the
+value in workgroup context arrays. This usually reduces the
+required stack size significantly and improves loop
+vectorization opportunities.</p></li>
+</ul>
+</section>
+</section>
+<section id="remote-driver">
+<h3>Remote driver<a class="headerlink" href="#remote-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for dynamic device addition and network discovery.
+This new feature allows discovery of remote servers located
+in LAN or WAN environments and enables runtime addition of
+discovered devices to the remote client’s platform. Network
+discovery is performed thorugh mDNS, unicast-DNS-SD, and
+DHT-based mechanisms, using Avahi and OpenDHT libraries.</p></li>
+<li><p>Support for passing more (vendor-specific) device infos
+from the pocld server to libpocl’s remote driver.</p></li>
+<li><p>Command buffers that refer to only a single remote device are
+now handled entirely on the server side as described in
+<cite>this publication &lt;https://doi.org/10.1145/3731125.3731129&gt;</cite>
+for massive reductions in communication overhead.</p></li>
+</ul>
+</section>
+<section id="level-zero-driver">
+<h3>Level Zero driver<a class="headerlink" href="#level-zero-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>When built with -DENABLE_CONFORMANCE=ON, PoCL’s Level Zero driver
+is now able to pass the full OpenCL-CTS conformance testsuite.</p></li>
+<li><p>Added support for many OpenCL extensions and language features, such as
+__opencl_c_ext_fpXX_XYZ_atomic_load_store, cl_intel_subgroups_XYZ,
+cl_khr_subgroups_XYZ, cl_intel_device_attribute_query,
+cl_intel_split_work_group_barrier, cl_khr_integer_dot_product,
+cl_khr_device_uuid, cl_khr_create_command_queue, cl_khr_pci_bus_info,
+and SPV_INTEL_inline_assembly.</p></li>
+<li><p>Support for cl_khr_command_buffer.</p></li>
+<li><p>Support for bundling all required files in the built libpocl library.
+This currently only works with the Level Zero driver, CPU driver cannot
+be yet made self-contained.</p></li>
+<li><p>Initial support for LLVM’s SPIRV backend.</p></li>
+<li><p>Windows platform support.</p></li>
+<li><p>Support for using LLVMSPIRVLib for SPIR-V input translation,
+instead of llvm-spirv binary.</p></li>
+<li><p>Support for LLVM 19 and 20.</p></li>
+</ul>
+</section>
+<section id="cuda-driver">
+<h3>CUDA driver<a class="headerlink" href="#cuda-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for LLVM 19 and 20.</p></li>
+</ul>
+</section>
+<section id="proxy-driver">
+<h3>Proxy driver<a class="headerlink" href="#proxy-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for SPIR-V input (clCreateProgramWithIL).</p></li>
+<li><p>Support for using ‘tree-sitter’ library to parse &amp;
+extract kernel argument metadata directly from source</p></li>
+</ul>
+</section>
+</section>
+<section id="support-for-julia">
+<h2>Support for Julia<a class="headerlink" href="#support-for-julia" title="Link to this heading">¶</a></h2>
+<p>It is now possible to use PoCL with Julia through the OpenCL.jl package.
+The integration is still considered experimental, and the OpenCL.jl
+interface package itself is under active (re)development, but it is
+already possible to run many kernels using PoCL as the backend.
+For example:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">OpenCL</span><span class="p">,</span><span class="w"> </span><span class="n">pocl_jll</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span>
+
+<span class="k">const</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">   __kernel void vadd(__global const float *a,</span>
+<span class="s">                      __global const float *b,</span>
+<span class="s">                      __global float *c) {</span>
+<span class="s">      int i = get_global_id(0);</span>
+<span class="s">      c[i] = a[i] + b[i];</span>
+<span class="s">    }&quot;&quot;&quot;</span>
+
+<span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,)</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round</span><span class="o">.</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="kt">Float32</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round</span><span class="o">.</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="kt">Float32</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="n">d_a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CLArray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">d_b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CLArray</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">d_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CLArray</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="n">prog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cl</span><span class="o">.</span><span class="n">Program</span><span class="p">(;</span><span class="w"> </span><span class="n">source</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">cl</span><span class="o">.</span><span class="n">build!</span>
+<span class="n">kern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cl</span><span class="o">.</span><span class="n">Kernel</span><span class="p">(</span><span class="n">prog</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vadd&quot;</span><span class="p">)</span>
+
+<span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prod</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+<span class="n">clcall</span><span class="p">(</span><span class="n">kern</span><span class="p">,</span><span class="w"> </span><span class="kt">Tuple</span><span class="p">{</span><span class="kt">Ptr</span><span class="p">{</span><span class="kt">Float32</span><span class="p">},</span><span class="w"> </span><span class="kt">Ptr</span><span class="p">{</span><span class="kt">Float32</span><span class="p">},</span><span class="w"> </span><span class="kt">Ptr</span><span class="p">{</span><span class="kt">Float32</span><span class="p">}},</span>
+<span class="w">       </span><span class="n">d_a</span><span class="p">,</span><span class="w"> </span><span class="n">d_b</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="p">;</span><span class="w"> </span><span class="n">global_size</span><span class="o">=</span><span class="p">(</span><span class="n">len</span><span class="p">,))</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Array</span><span class="p">(</span><span class="n">d_c</span><span class="p">)</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="n">c</span>
+</pre></div>
+</div>
+<p>OpenCL.jl also provides a high-level Julia to SPIR-V compiler,
+making it possible to significantly simplify the above example:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># import packages, allocate data, etc</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">vadd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_global_id</span><span class="p">()</span>
+<span class="w">    </span><span class="nd">@inbounds</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="k">end</span>
+
+<span class="nd">@opencl</span><span class="w"> </span><span class="n">global_size</span><span class="o">=</span><span class="n">len</span><span class="w"> </span><span class="n">vadd</span><span class="p">(</span><span class="n">d_a</span><span class="p">,</span><span class="w"> </span><span class="n">d_b</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The initial goal of this work is to provide a CPU fallback for executing
+Julia’s GPU kernels and applications by leveraging the CPU drivers
+in PoCL. For more information, refer to
+<a class="reference external" href="https://juliagpu.org/post/2025-01-13-opencl_0.10/">the blog post on OpenCL.jl 0.10</a>.</p>
+</section>
+<section id="experimental-and-work-in-progress">
+<h2>Experimental and work-in-progress<a class="headerlink" href="#experimental-and-work-in-progress" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>New experimental support for Defined Built-in Kernels (DBK) has
+been added to the CPU drivers. These DBKs allow for a
+standardized set of built-in kernels with well-defined
+semantics that can be configured during creation of the OpenCL
+program. Currently the following prototype DBKs are implemented:
+GEMM, matrix multiplication, JPEG en-/de-code, and ONNX runtime
+inference. The Extension documentation draft can be found on
+<a class="reference external" href="https://github.com/KhronosGroup/OpenCL-Docs/pull/1007">github</a>.
+Please note that these DBKs are still under experimentation and
+are subject to change without notice.</p></li>
+<li><p>Added support for Intel NPU (or “AI Boost” in the CPU specification)
+as a custom device. Source compilation is not supported yet but GEMM
+and matrix multiplications can be offloaded to the NPU device using
+DBKs. Note that the feature is in very experimental stage and the
+supported DBKs subject to changes.</p></li>
+</ul>
+</section>
+<section id="deprecation-feature-removal-notices">
+<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The old “work-item replication” work-group function generation
+method was removed to clean up the kernel compiler. It did not
+anymore have any use cases that could not be covered by fully
+unrolling “loops”.</p></li>
+<li><p>Removed support for building tests &amp; examples with OpenCL &lt; 3.0;
+the tests &amp; examples are always built with PoCL’s own CL 3.0 headers,
+and building ICD-enabled PoCL requires ICD that supports OpenCL 3.0.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Release Notes for PoCL 7.0</a><ul>
+<li><a class="reference internal" href="#release-highlights">Release highlights</a></li>
+<li><a class="reference internal" href="#notable-user-facing-changes">Notable user facing changes</a></li>
+<li><a class="reference internal" href="#driver-specific-features">Driver-specific features</a><ul>
+<li><a class="reference internal" href="#cpu-drivers">CPU drivers</a><ul>
+<li><a class="reference internal" href="#cpu-kernel-compiler-improvements">CPU kernel compiler improvements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#remote-driver">Remote driver</a></li>
+<li><a class="reference internal" href="#level-zero-driver">Level Zero driver</a></li>
+<li><a class="reference internal" href="#cuda-driver">CUDA driver</a></li>
+<li><a class="reference internal" href="#proxy-driver">Proxy driver</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#support-for-julia">Support for Julia</a></li>
+<li><a class="reference internal" href="#experimental-and-work-in-progress">Experimental and work-in-progress</a></li>
+<li><a class="reference internal" href="#deprecation-feature-removal-notices">Deprecation/feature removal notices</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="notes_6_0.html"
+                          title="previous chapter">Release Notes for PoCL 6.0</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/notes_7_0.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="notes_6_0.html" title="Release Notes for PoCL 6.0"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 7.0</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
