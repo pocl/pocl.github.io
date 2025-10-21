@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 7.0 documentation</title>
+    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=0d2a8836"></script>
+    <script src="_static/documentation_options.js?v=a9520c2f"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 
@@ -155,14 +155,13 @@ Workaround: always build programs for all devices. More details:
 <li><p>ARM Mali OpenCL SDK (on Linux) and some Android OpenCL implementations fail
 to return anything for clGetKernelArgInfo calls,
 so it’s unusable by itself (as backend for the proxy driver or for pocld).
-It is usable if pocl is built with at least two drivers (proxy/remote/pthread
-etc) of which at least one provides the build information.
-For OpenCL (pocl) users, it means all CL programs (to be used with Mali) must
-be built for at least two devices from two drivers,
-so the other driver provides the build information Mali does not.
-This Mali bug is only fixable by using another driver, or writing some extra
-compilation/parsing step, because without argument metadata
-it’s impossible to tell if an argument to clSetKernelArg is a pointer or an integer.</p></li>
+If pocl is built with at least two drivers (proxy/remote/pthread
+etc) of which at least one provides the build information, this problem is
+avoided.
+When none of the devices a CL program is built for provides kernel argument
+information, pocl will attempt to parse the kernel source with a
+<a class="reference external" href="https://github.com/lefp/tree-sitter-opencl.git">tree-sitter grammar</a> to extract kernel argument definitions as a best-effort
+fallback.</p></li>
 </ul>
 </section>
 <section id="how-to-build">
@@ -635,7 +634,7 @@ or buffers larger than 4G.</p></li>
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 

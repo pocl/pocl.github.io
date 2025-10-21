@@ -1,0 +1,324 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fixed-Function Accelerators &#8212; Portable Computing Language (PoCL) 3.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Proxy driver" href="proxy.html" />
+    <link rel="prev" title="NVIDIA GPU support" href="cuda.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="proxy.html" title="Proxy driver"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cuda.html" title="NVIDIA GPU support"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported features and devices</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fixed-function-accelerators">
+<h1>Fixed-Function Accelerators<a class="headerlink" href="#fixed-function-accelerators" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">accel</span></code> driver can be used for easy integration of custom fixed-function
+accelerators through a standardized hardware interface and a standardized
+procedure for enqueuing commands.</p>
+<div class="section" id="interface">
+<h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
+<p>The control register interface for the fixed-function accelerators is quite
+simple. The address space of the device is split into four regions, the size of
+which is determined by the largest of the memories in these regions.
+Therefore, the region is selected with the highest bits of the address space of
+the accelerator:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">High bits</th>
+<th class="head">Address Space</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>00</td>
+<td>Control registers</td>
+</tr>
+<tr class="row-odd"><td>01</td>
+<td>Instruction memory</td>
+</tr>
+<tr class="row-even"><td>10</td>
+<td>Data memory</td>
+</tr>
+<tr class="row-odd"><td>11</td>
+<td>Parameter memory</td>
+</tr>
+</tbody>
+</table>
+<p>The size of the memories is read from the control registers, which is sufficient
+to determine the size of the address space of the accelerator as well as the
+offsets of each memory. The control registers are also used to control the
+execution of the accelerator:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="25%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Offset</th>
+<th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0x000</td>
+<td>STATUS</td>
+<td>Status of the accelerator. Bit 0 is high when the execution is stalled
+due to any reason, bit 1 is high when the external stall signal is active,
+and bit 2 is high when the accelerator reset is active.</td>
+</tr>
+<tr class="row-odd"><td>0x100</td>
+<td>AQL_READ_IDX_LOW</td>
+<td>Read index of the AQL queue (low 32 bits). Read only.</td>
+</tr>
+<tr class="row-even"><td>0x104</td>
+<td>AQL_READ_IDX_HIGH</td>
+<td>Read index of the AQL queue (high 32 bits). Read only.</td>
+</tr>
+<tr class="row-odd"><td>0x108</td>
+<td>AQL_WRITE_IDX_LOW</td>
+<td>Write index of the AQL queue (low 32 bits). Writing to this register
+increments the 64-bit value.</td>
+</tr>
+<tr class="row-even"><td>0x10C</td>
+<td>AQL_WRITE_IDX_HIGH</td>
+<td>Write index of the AQL queue (high 32 bits). Read only.</td>
+</tr>
+<tr class="row-odd"><td>0x200</td>
+<td>COMMAND</td>
+<td>Command register to control execution. Writing 1 to this register resets
+the accelerator, writing 2 lifts reset and external stall, and writing 4
+enables the external stall signal, pausing execution.</td>
+</tr>
+<tr class="row-even"><td>0x300</td>
+<td>DEVICE_CLASS</td>
+<td>Device class (vendor ID) of the accelerator. Currently unused by the
+driver.</td>
+</tr>
+<tr class="row-odd"><td>0x304</td>
+<td>DEVICE_ID</td>
+<td>Device ID of the accelerator. Currently unused by the driver.</td>
+</tr>
+<tr class="row-even"><td>0x308</td>
+<td>INTERFACE_TYPE</td>
+<td>Version number of the interface. This describes interface
+version 2.</td>
+</tr>
+<tr class="row-odd"><td>0x30C</td>
+<td>CORE_COUNT</td>
+<td>Core count of the accelerator. Multicore devices are currently not
+supported.</td>
+</tr>
+<tr class="row-even"><td>0x310</td>
+<td>CTRL_SIZE</td>
+<td>Size of control memory (this register space) in bytes.
+Must be at least 1024.</td>
+</tr>
+<tr class="row-odd"><td>0x314</td>
+<td>DMEM_SIZE</td>
+<td>Size of the data memory in bytes</td>
+</tr>
+<tr class="row-even"><td>0x318</td>
+<td>IMEM_SIZE</td>
+<td>Size of the instruction memory in bytes</td>
+</tr>
+<tr class="row-odd"><td>0x31c</td>
+<td>PMEM_SIZE</td>
+<td>Size of the parameter memory in bytes.</td>
+</tr>
+</tbody>
+</table>
+<p>The instruction memory can be used to configure the accelerator. However, it
+currently has to be done manually, and is not managed by pocl. The data memory
+is used to store an AQL Queue, as defined by the <a class="reference external" href="http://www.hsafoundation.com/standards/">HSA Runtime Programmer’s
+Reference Manual</a>, the write and read
+indexes of which are exposed by the control registers. The size of the queue is
+such that it uses all of the data memory. Finally, the parameter memory is used
+to store data and argument buffers as well as completion signals for the
+kernels.</p>
+<p>As a practical example, enqueuing a kernel dispatch packet proceeds as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The driver allocates and populates the OpenCL buffers and the argument
+buffer for the kernel, as well as space for a 32-bit completion signal.</li>
+<li>The driver writes the kernel packet, excluding the header, to the device.
+Its position depends on the value of the write index. The completion signal
+address as well as the argument buffer address and pointers to buffer
+arguments are given as physical addresses in the accelerator’s address
+space. The kernel object simply corresponds to the kernel IDs shown in the
+table below.</li>
+<li>The driver sets the packet header and increments the queue write index.</li>
+<li>The device executes the kernel and writes a 1 in case of a success or a 2
+in case of a failure to the completion signal address, if it is not 0.</li>
+<li>The driver sees the completion signal change, and can consider the command
+completed.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To enable this driver, simply add <code class="docutils literal"><span class="pre">-DENABLE_ACCEL_DEVICE=1</span></code> to the cmake
+arguments. On small FPGA SoCs and other relatively low performance hosts, you
+may wish to follow the instructions in <a class="reference internal" href="install.html#pocl-without-llvm"><span class="std std-ref">LLVM-less build</span></a>.</p>
+<p>The fixed-function accelerators need to be told what kernel to execute. For
+this, the accel driver has a list of builtin kernels that can be referred to
+in the <code class="docutils literal"><span class="pre">clCreateProgramWithBuiltInKernels</span></code> call:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Kernel name</th>
+<th class="head">Kernel ID</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>pocl.copy</td>
+<td>0</td>
+<td>Copies from argument 0 to argument 1 as many bytes as there are work items</td>
+</tr>
+<tr class="row-odd"><td>pocl.add32</td>
+<td>1</td>
+<td>32-bit element-wise addition on arrays pointed to by arguments 0 and 1,
+stored in an array pointed to by argument 3</td>
+</tr>
+<tr class="row-even"><td>pocl.mul32</td>
+<td>2</td>
+<td>As pocl.add32, but with 32-bit multiplication</td>
+</tr>
+</tbody>
+</table>
+<p>This list will be expanded in the future.</p>
+<p>There is an example program using the accel driver in <code class="docutils literal"><span class="pre">examples/accel</span></code> which
+also includes the VHDL code for synthesizing the accelerator. The accelerator
+has been developed with the <a class="reference external" href="http://openasip.org/">TCE toolset</a>. In order to
+synthesize the accelerator for a Xilinx FPGA SoC, you can follow the
+instructions in the <a class="reference external" href="http://openasip.org/user_manual/TCE.pdf">TCE manual</a>,
+in the section titled System-on-a-Chip design with AlmaIF Integrator. Make sure
+to check the accelerator base address from Vivado.</p>
+<p>Driver arguments are used to tell pocl where the accelerator is and what
+functions it supports. To run this example manually, execute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">POCL_DEVICES</span><span class="o">=</span><span class="n">accel</span> <span class="n">POCL_ACCEL0_PARAMETERS</span><span class="o">=</span><span class="mh">0x43C00000</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="o">./</span><span class="n">accel_example</span>
+</pre></div>
+</div>
+<p>The environment variables define an accelerator with base physical address of
+0x43C0_0000 that can execute pocl.add32 and pocl.mul32. When running the
+example, verify that the address given in the parameter matches the base address
+of the accelerator.</p>
+<p>Note that as the driver requires write access to <code class="docutils literal"><span class="pre">/dev/mem</span></code> for memory
+mapping, you may need to execute the application with elevated privileges. In
+this case, note that <code class="docutils literal"><span class="pre">sudo</span></code> by default overrides your environment variables.
+You can either assign them in the same command, or use <code class="docutils literal"><span class="pre">sudo</span></code> with the
+<code class="docutils literal"><span class="pre">--preserve-env</span></code> switch.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Fixed-Function Accelerators</a><ul>
+<li><a class="reference internal" href="#interface">Interface</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cuda.html"
+                        title="previous chapter">NVIDIA GPU support</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="proxy.html"
+                        title="next chapter">Proxy driver</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/accel.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="proxy.html" title="Proxy driver"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cuda.html" title="NVIDIA GPU support"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="features.html" >Supported features and devices</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-2021 PoCL developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
