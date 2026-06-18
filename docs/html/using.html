@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Usage &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>Usage &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
       </ul>
     </div>  
@@ -200,7 +200,18 @@ Using this limits the amount of debug messages produced. Current options are:
 ‘refcounts’, ‘timing’, ‘hsa’, ‘tce’, ‘cuda’, ‘vulkan’, ‘proxy’ and ‘all’.
 Note: setting POCL_DEBUG to 1 still works and equals error+warning+general.</p>
 </div></blockquote>
-<ul class="simple">
+<ul>
+<li><p><strong>POCL_DEBUG_LLVM_OPTS</strong></p>
+<p>Set LLVM options for debugging purposes. Multiple options are
+supported and are separated by <code class="docutils literal notranslate"><span class="pre">,</span></code>. Options taking values are
+defined as <code class="docutils literal notranslate"><span class="pre">-some-option=some-value</span></code>. Leading dashes on the option
+names are optional.</p>
+<p>Most of the options listed in <code class="docutils literal notranslate"><span class="pre">opt-XX</span> <span class="pre">--help</span></code> and <code class="docutils literal notranslate"><span class="pre">opt-XX</span>
+<span class="pre">--help-hidden</span></code> are assumed to work but some of them may be
+unavailable due to being tied to specific tools and not to the LLVM
+library or depending on the configuration of LLVM (e.g. <code class="docutils literal notranslate"><span class="pre">-debug</span></code>
+may not work in release builds of LLVM).</p>
+</li>
 <li><p><strong>POCL_DEBUG_LLVM_PASSES</strong></p></li>
 </ul>
 <blockquote>
@@ -338,7 +349,7 @@ allocation sizes. Default: 1.</p>
 <p>if enabled, some drivers (CUDA, CPU, Level0) use an extra step of
 verification of LLVM modules at certain stages (program.bc always,
 kernel bitcode (parallel.bc) only with some drivers).
-Defaults to 0 if CMAKE_BUILD_TYPE=Debug and 1 otherwise.</p>
+Defaults to 1 if CMAKE_BUILD_TYPE=Debug and 0 otherwise.</p>
 </li>
 <li><p><strong>POCL_MAX_WORK_GROUP_SIZE</strong></p></li>
 </ul>
@@ -427,7 +438,7 @@ it to the work-item context. Enabled by default.</p>
 </ul>
 <blockquote>
 <div><p>These variables are used to configure different aspects of the remote driver
-and daemon. See <span class="xref std std-ref">remote_label</span> for details.</p>
+and daemon. See <a class="reference internal" href="remote.html#remote-label"><span class="std std-ref">Remote Driver</span></a> for details.</p>
 <blockquote>
 <div><ul class="simple">
 <li><dl class="simple">
@@ -696,7 +707,7 @@ ninja<span class="w"> </span>install
 <span class="nb">export</span><span class="w"> </span><span class="nv">DYLD_LIBRARY_PATH</span><span class="o">=</span>&lt;path-to-installation-directory&gt;/lib:<span class="nv">$DYLD_LIBRARY_PATH</span>
 clang<span class="w"> </span>&lt;program-source&gt;.c<span class="w"> </span>-lOpenCL
 
-//<span class="w"> </span>Use<span class="w"> </span>PoCL<span class="err">&#39;</span>s<span class="w"> </span>debugging<span class="w"> </span>functionality<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>it<span class="w"> </span>runs<span class="w"> </span>through<span class="w"> </span>PoCL.
+<span class="c1"># Use PoCL&#39;s debugging functionality to ensure it runs through PoCL.</span>
 <span class="nv">POCL_DEBUG</span><span class="o">=</span>all<span class="w"> </span>./a.out
 </pre></div>
 </div>
@@ -731,7 +742,7 @@ ninja<span class="w"> </span>install
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LIBRARY_PATH</span><span class="o">=</span>/opt/homebrew/opt/ocl-icd/lib:<span class="nv">$LIBRARY_PATH</span>
 clang<span class="w"> </span>&lt;program-source&gt;.c<span class="w"> </span>-lOpenCL
 
-//<span class="w"> </span>Use<span class="w"> </span>PoCL<span class="err">&#39;</span>s<span class="w"> </span>debugging<span class="w"> </span>functionality<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>it<span class="w"> </span>runs<span class="w"> </span>through<span class="w"> </span>PoCL.
+<span class="c1"># Use PoCL&#39;s debugging functionality to ensure it runs through PoCL.</span>
 <span class="nv">POCL_DEBUG</span><span class="o">=</span>all<span class="w"> </span>./a.out
 </pre></div>
 </div>
@@ -851,7 +862,7 @@ match, it is recommended to use versions that are reasonably close to each other
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:pocl/pocl.git
 cd pocl
 mkdir build &amp;&amp; cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=&lt;path-to-installation-directory&gt; -DLLVM_SPIRV=&lt;path-to-llvm-spirv&gt; -DWITH_LLVM_CONFIG=&lt;path-to-llvm-config&gt;
+cmake .. -DCMAKE_INSTALL_PREFIX=&lt;path-to-installation-directory&gt; -DWITH_LLVM_CONFIG=&lt;path-to-llvm-config&gt;
 ninja install
 </pre></div>
 </div>
@@ -1028,7 +1039,7 @@ hello<span class="w"> </span>from:<span class="w"> </span><span class="o">(</spa
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Usage</a></li> 
       </ul>
     </div>

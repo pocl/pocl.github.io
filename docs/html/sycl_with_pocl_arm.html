@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How to use PoCL as SYCL’s OpenCL runtime backend on ARM &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>How to use PoCL as SYCL’s OpenCL runtime backend on ARM &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="debug.html" title="Debugging OpenCL applications with PoCL"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></li> 
       </ul>
     </div>  
@@ -224,7 +224,7 @@ a build directory and from inside execute CMake. Remember to replace the paths a
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CC</span><span class="o">=</span><span class="s2">&quot;clang&quot;</span> <span class="n">CXX</span><span class="o">=</span><span class="s2">&quot;clang++&quot;</span> <span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="n">Ninja</span> <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=&lt;</span><span class="n">YOUR</span> <span class="n">POCL</span> <span class="n">INSTALLATION</span> <span class="n">PREFIX</span><span class="o">&gt;</span> \
 <span class="o">-</span><span class="n">DENABLE_ICD</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DCMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;&lt;YOUR VANILLA LLVM PREFIX&gt;;$VVV_ICD_LOADER;$VVV_OCL_HEADERS&quot;</span> \
-<span class="o">-</span><span class="n">DENABLE_SPIRV</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DLLVM_SPIRV</span><span class="o">=&lt;</span><span class="n">FULL</span> <span class="n">PATH</span> <span class="n">TO</span> <span class="n">THE</span> <span class="n">llvm</span><span class="o">-</span><span class="n">spirv</span> <span class="n">BINARY</span> <span class="n">FROM</span> <span class="n">INTEL</span> <span class="n">LLVM</span><span class="o">&gt;</span>  \
+<span class="o">-</span><span class="n">DENABLE_SPIRV</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DHOST_LLVM_SPIRV</span><span class="o">=&lt;</span><span class="n">FULL</span> <span class="n">PATH</span> <span class="n">TO</span> <span class="n">THE</span> <span class="n">llvm</span><span class="o">-</span><span class="n">spirv</span> <span class="n">BINARY</span> <span class="n">FROM</span> <span class="n">INTEL</span> <span class="n">LLVM</span><span class="o">&gt;</span>  \
 <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">RelWithDebInfo</span> <span class="o">-</span><span class="n">DSTATIC_LLVM</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
 </pre></div>
 </div>
@@ -450,7 +450,7 @@ parts: they might be in the ICD-Loader, in PoCL or in SYCL.</p>
         <li class="right" >
           <a href="debug.html" title="Debugging OpenCL applications with PoCL"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">How to use PoCL as SYCL’s OpenCL runtime backend on ARM</a></li> 
       </ul>
     </div>

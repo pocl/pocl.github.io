@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>Remote Driver &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 
@@ -165,7 +165,7 @@ fallback.</p></li>
 </ul>
 </section>
 <section id="how-to-build">
-<span id="remote-how-to-build-label"></span><h2>How to Build<a class="headerlink" href="#how-to-build" title="Link to this heading">¶</a></h2>
+<span id="remote-how-to-build"></span><h2>How to Build<a class="headerlink" href="#how-to-build" title="Link to this heading">¶</a></h2>
 <p>First you need to install the build dependencies.
 These are listed in <a class="reference internal" href="install.html#pocl-install"><span class="std std-ref">Installation</span></a> or alternatively you can
 also take a look at the Dockerfiles in <code class="docutils literal notranslate"><span class="pre">tools/docker</span></code>.</p>
@@ -241,7 +241,7 @@ shutdown. Setting <code class="docutils literal notranslate"><span class="pre">P
 and allows clients to reconnect to their existing session.</p>
 <section id="android-build-client-only">
 <h3>Android Build (Client Only)<a class="headerlink" href="#android-build-client-only" title="Link to this heading">¶</a></h3>
-<p>See <span class="xref std std-ref">android-label</span> on how to do this.</p>
+<p>See <a class="reference internal" href="install.html#android-label"><span class="std std-ref">Android support</span></a> on how to do this.</p>
 </section>
 <section id="windows-build-server-only">
 <h3>Windows build (server only)<a class="headerlink" href="#windows-build-server-only" title="Link to this heading">¶</a></h3>
@@ -373,6 +373,30 @@ way to achieve that seems to have all machines are equipped with an Intel NIC,
 and then setup PTP (Precision time protocol). Note that PTP requires hardware
 support from <em>every</em> network device in path to achieve sub-microsecond precision.</p>
 </section>
+<section id="network-event-traces">
+<h3>Network Event Traces<a class="headerlink" href="#network-event-traces" title="Link to this heading">¶</a></h3>
+<p>PoCL-Remote also has a bespoke performance tracing function for network commands
+specifically. This is mainly intended as a tool for developers to help diagnose
+performance bottlenecks in PoCL-Remote itself and as such is <em>not</em> part of the
+PoCL build. The traces come in the form of a minimal binary trace file format
+and a SDL3-based standalone viewer, the sources of which can be found under
+<code class="docutils literal notranslate"><span class="pre">tools/remote-trace-viewer</span></code>.</p>
+<p>To create a trace, assign the desired output file name to the
+<code class="docutils literal notranslate"><span class="pre">POCL_REMOTE_NETWORK_TRACE</span></code> environment variable before launching the OpenCL
+application to be traced. Afterwards launch the viewer with the trace file as
+the its command line argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">POCL_DEVICES</span><span class="o">=</span><span class="n">remote</span>
+<span class="n">export</span> <span class="n">POCL_REMOTE0_PARAMETERS</span><span class="o">=</span><span class="n">localhost</span><span class="p">:</span><span class="mi">7777</span><span class="o">/</span><span class="mi">0</span>
+<span class="n">export</span> <span class="n">POCL_REMOTE_NETWORK_TRACE</span><span class="o">=</span><span class="n">remote</span><span class="o">-</span><span class="n">clinfo</span><span class="o">.</span><span class="n">trace</span>
+<span class="n">clinfo</span>
+<span class="n">tools</span><span class="o">/</span><span class="n">remote</span><span class="o">-</span><span class="n">trace</span><span class="o">-</span><span class="n">viewer</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">viewer</span> <span class="n">remote</span><span class="o">-</span><span class="n">clinfo</span><span class="o">.</span><span class="n">trace</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The file will only be created once the application exits.</p>
+</div>
+</section>
 <section id="distributed-sycl-execution-using-pocl-r">
 <h3>Distributed SYCL Execution Using PoCL-R<a class="headerlink" href="#distributed-sycl-execution-using-pocl-r" title="Link to this heading">¶</a></h3>
 <p>oneAPI DPC++ can be used to distribute SYCL applications using PoCL-R. Notably,
@@ -409,7 +433,7 @@ listen for server announcements.</p></li>
 </ul>
 <p><strong>Discovery Build and Environment Variables</strong></p>
 <p>To build the remote server or client with discovery follow the steps in
-<span class="xref std std-ref">remote-how-to-build</span>, in addition to those, follow the following build
+<a class="reference internal" href="#remote-how-to-build"><span class="std std-ref">How to Build</span></a>, in addition to those, follow the following build
 options:</p>
 <p>Remote Client:</p>
 <ul class="simple">
@@ -451,7 +475,7 @@ client nodes to use when publishing or listening for server details within
 the DHT network. Set to “poclremoteservernetwork” by default.</p></li>
 </ul>
 <p>Run remote client with these environment variables in addition to the ones
-specified in <span class="xref std std-ref">remote-how-to-build</span>.</p>
+specified in <a class="reference internal" href="#remote-how-to-build"><span class="std std-ref">How to Build</span></a>.</p>
 <p><strong>Examples</strong></p>
 <p>Discovery in client using mDNS:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir build; cd build;
@@ -581,6 +605,7 @@ or buffers larger than 4G.</p></li>
 <li><a class="reference internal" href="#using-lttng">Using LTTNG</a></li>
 <li><a class="reference internal" href="#viewing-traces">Viewing Traces</a></li>
 <li><a class="reference internal" href="#remote-and-local-traces">Remote and Local Traces</a></li>
+<li><a class="reference internal" href="#network-event-traces">Network Event Traces</a></li>
 <li><a class="reference internal" href="#distributed-sycl-execution-using-pocl-r">Distributed SYCL Execution Using PoCL-R</a></li>
 <li><a class="reference internal" href="#dynamic-device-management-and-network-discovery">Dynamic Device Management and Network Discovery</a></li>
 </ul>
@@ -634,7 +659,7 @@ or buffers larger than 4G.</p></li>
         <li class="right" >
           <a href="level0.html" title="Level Zero driver"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Remote Driver</a></li> 

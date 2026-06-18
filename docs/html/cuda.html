@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NVIDIA GPU support &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>NVIDIA GPU support &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="hsa.html" title="HSA"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">NVIDIA GPU support</a></li> 
@@ -155,6 +155,10 @@ compared to Linux (<code class="docutils literal notranslate"><span class="pre">
 <ul class="simple">
 <li><p>image types and samplers are unimplemented</p></li>
 <li><p>printf format support is incomplete</p></li>
+<li><p>subgroup reduce is not supported with CUDA versions older than 9.0</p></li>
+<li><p>subgroup ballot is only supported on SM_30 - SM_64 targets with CUDA 9.0+</p></li>
+<li><p>LLVM 21 is not supported due to an upstream bug. Use LLVM 17-20 instead. For
+details, see <a class="reference external" href="https://github.com/llvm/llvm-project/issues/154772">https://github.com/llvm/llvm-project/issues/154772</a></p></li>
 </ul>
 <p>Additionally, there has been little effort to optimize the performance of this
 backend so far - the current effort is on implementing remaining functionality.
@@ -244,7 +248,7 @@ Pull requests and other contributions are also very welcome.</p>
         <li class="right" >
           <a href="hsa.html" title="HSA"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">NVIDIA GPU support</a></li> 

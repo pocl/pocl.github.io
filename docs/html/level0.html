@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Level Zero driver &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>Level Zero driver &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="vulkan.html" title="Vulkan driver"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" accesskey="U">Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Level Zero driver</a></li> 
@@ -67,7 +67,7 @@ bugs related to opaque-pointer changes in LLVM and SPIRV-LLVM-Translator.</p>
 <p>The libze_loader + headers should support at least Level Zero specification version 1.11;
 older may work but are untested.</p>
 <p>To build the Level Zero driver driver (with recommended options):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DENABLE_LEVEL0</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DENABLE_LLVM</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DSTATIC_LLVM</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DWITH_LLVM_CONFIG</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">config</span> <span class="o">-</span><span class="n">DLLVM_SPIRV</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">spirv</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">pocl</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DENABLE_LEVEL0</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DENABLE_LLVM</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span><span class="n">DSTATIC_LLVM</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DWITH_LLVM_CONFIG</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">llvm</span><span class="o">-</span><span class="n">config</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">pocl</span><span class="o">-</span><span class="n">source</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Using STATIC_LLVM is recommended to avoid problems with symbol conflicts
@@ -185,7 +185,7 @@ at clBuildProgram-time). Useful with programs that have thousands of kernels
         <li class="right" >
           <a href="vulkan.html" title="Vulkan driver"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="drivers.html" >Supported device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Level Zero driver</a></li> 

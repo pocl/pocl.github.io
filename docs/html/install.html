@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>Installation &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
@@ -149,14 +149,26 @@ possible breakage.</p>
 use “;” as separator (you’ll have to escape it for bash).</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DWITH_LLVM_CONFIG=&lt;path-to-llvm-config&gt;</span></code>
-<strong>IMPORTANT</strong> Path to a llvm-config binary.
-This determines the LLVM installation used by pocl.
-If not specified, pocl will try to find and link against
-llvm-config in PATH env var (usually means your system LLVM).</p></li>
+<strong>IMPORTANT</strong> Path to a llvm-config binary. This is one of
+the ways to tell PoCL which LLVM installation it should use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DLLVM_DIR=&lt;path-to-llvm-install-dir&gt;</span></code>
+<strong>IMPORTANT</strong> Path to a LLVM installation directory, which
+must contain <cite>lib/cmake/llvm</cite> subdirectories. If specified,
+PoCL will use find_package(LLVM) to find a LLVM installation.</p>
+<p>If neither of LLVM_DIR &amp; WITH_LLVM_CONFIG are specified, PoCL
+will try to find LLVM via CMake config files, then fallback to
+searching for llvm-config executable in PATH env var.</p>
+<p>If both LLVM_DIR &amp; WITH_LLVM_CONFIG are specified, and
+CMAKE_CROSSCOMPILING is false, PoCL will prefer LLVM_DIR.
+If CMAKE_CROSSCOMPILING is true, PoCL assumes LLVM_DIR points
+to the Target LLVM and WITH_LLVM_CONFIG points to Host LLVM.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-DSTATIC_LLVM</span></code> pocl uses <code class="docutils literal notranslate"><span class="pre">llvm-config</span> <span class="pre">--libs</span></code> to get list of LLVM libraries
 it should link to. With this flag enabled, it additionally passes <code class="docutils literal notranslate"><span class="pre">--link-static</span></code>
-to <code class="docutils literal notranslate"><span class="pre">llvm-config</span></code>; otherwise it passes <code class="docutils literal notranslate"><span class="pre">--link-shared</span></code>. Default is OFF (=shared).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-DLLVM_SPIRV</span></code> Path to a llvm-spirv binary of SPIRV-LLVM-Translator. Note that
+to <code class="docutils literal notranslate"><span class="pre">llvm-config</span></code>; otherwise it passes <code class="docutils literal notranslate"><span class="pre">--link-shared</span></code>. Default is OFF (=shared).
+Note that not all builds of LLVM support both Static &amp; Shared linkage; this
+will result in CMake error.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-DHOST_LLVM_SPIRV</span></code> Path to a llvm-spirv binary of SPIRV-LLVM-Translator. Note that
 only the builds of open-source Khronos Translator are supported, and the binary
 must be built for the same LLVM version as PoCL is being built against. If not
 given, PoCL will try to autodetect a llvm-spirv binary with suitable version.
@@ -328,6 +340,14 @@ others. For ARM64 &amp; RISC-V we have CMake Toolchain files accompanied by Dock
 which cross-compile LLVM for the target machine. You can use the same Toolchain files
 for cross-compiling PoCL for the target machine. The files can be found in
 <cite>tools/docker/LLVM/cross/</cite>, the required preparation is described in each Dockerfile.</p>
+<p>For the cross build, PoCL will need separate Host and Target LLVMs (they must
+have matching major version, though not necessarily the exact same configuration).
+Both must support at least the LLVM target you want to use.
+Pass the Host LLVM using -DWITH_LLVM_CONFIG, and Target LLVM using -DLLVM_DIR. The
+former must point to llvm-config binary, the latter must be a LLVM install root
+on the Target (&lt;LLVM_DIR&gt;/lib/cmake/llvm must exist and contain CMake files).
+You will also need the GNU cross compiler to build PoCL, which can be installed
+in Debian based distros via package ‘g++-14-riscv64-linux-gnu’.</p>
 </section>
 <section id="building-running-in-docker">
 <h2>Building &amp; running in Docker<a class="headerlink" href="#building-running-in-docker" title="Link to this heading">¶</a></h2>
@@ -411,20 +431,16 @@ packages both with a native and a cross build.</p>
 <p>Defining the CMake LLC_HOST_CPU parameter to ‘spacemit-x60’ should suffice
 for the native build after the basic PoCL build prerequisities have been
 installed.</p>
-<p>For the cross build, you can use the LLVM in your development PC as
-long as it supports the RISC-V target. It doesn’t have to be the only/default
-target, the same LLVM you use for X86_64 development should work. Just
-make sure you use the same LLVM version as installed in the development board.</p>
-<p>You need the GNU cross compiler to build PoCL, which can be installed
-in Debian based distros via package ‘g++-14-riscv64-linux-gnu’.</p>
+<p>For the cross build, PoCL will need separate Host and Target LLVMs,
+as well as GNU cross compiler. See the ‘Cross-compiling PoCL’ section for details.</p>
 <p>Then, mount the root of the development board file system to some directory
 in your disk. For example, mounting using sshfs:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export BOARD_ROOT=$HOME/rv/root_fs</span>
 <span class="go">sshfs username@bananapie.host.name:/ $BOARD_ROOT</span>
 </pre></div>
 </div>
-<p>Then configure PoCL for a cross build and build it.
-Provide the paths to the board LLVM and ICD loader so the compiler can link against them.</p>
+<p>Then configure PoCL for a cross build and build it. Provide the paths to
+the board LLVM and ICD loader so the compiler can link against them.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export RISCV_CPU=spacemit-x60</span>
 <span class="go">export LLVM_NATIVE_HOME=$BOARD_ROOT/usr</span>
 <span class="go">export ICD_NATIVE_LIB=$BOARD_ROOT/usr/lib/riscv64-linux-gnu</span>
@@ -433,16 +449,17 @@ Provide the paths to the board LLVM and ICD loader so the compiler can link agai
 <span class="go">cd pocl_source_dir</span>
 <span class="go">mkdir build &amp;&amp; cd build</span>
 <span class="go">cmake .. -DCMAKE_MAKE_PROGRAM=/usr/bin/make           \</span>
-<span class="go"> -DLLVM_CONFIG=$(which llvm-config-20)                \</span>
+<span class="go"> -DCMAKE_BUILD_TYPE=Release                           \</span>
+<span class="go"> -DWITH_LLVM_CONFIG=/usr/bin/llvm-config-20           \</span>
+<span class="go"> -DLLVM_DIR=$LLVM_NATIVE_HOME                         \</span>
 <span class="go"> -DHOST_DEVICE_BUILD_HASH=riscv64-unknown-linux-gnu   \</span>
-<span class="go"> -DCMAKE_TOOLCHAIN_FILE=../ToolchainRISCV.cmake       \</span>
+<span class="go"> -DCMAKE_TOOLCHAIN_FILE=Toolchain.cmake               \</span>
 <span class="go"> -DLLC_TRIPLE=riscv64-unknown-linux-gnu               \</span>
 <span class="go"> -DLLC_HOST_CPU=${RISCV_CPU}                          \</span>
 <span class="go"> -DLLVM_HOST_TARGET=riscv64-unknown-linux-gnu         \</span>
 <span class="go"> -DCMAKE_PREFIX_PATH=${NATIVE_LIBS}                   \</span>
 <span class="go"> -DCMAKE_INSTALL_PREFIX=${BOARD_ROOT}/local/          \</span>
 <span class="go"> -DENABLE_ICD=ON                                      \</span>
-<span class="go"> -DENABLE_LOADABLE_DRIVERS=ON                         \</span>
 <span class="go"> -DKERNELLIB_HOST_CPU_VARIANTS=${RISCV_CPU}</span>
 
 <span class="go"> make -j5</span>
@@ -490,7 +507,7 @@ Later on, the build continues with <cite>make</cite> …</p>
 <p>Note the CUDA option to enable the GPU support on those computers.</p>
 </section>
 <section id="android-support">
-<h2>Android support<a class="headerlink" href="#android-support" title="Link to this heading">¶</a></h2>
+<span id="android-label"></span><h2>Android support<a class="headerlink" href="#android-support" title="Link to this heading">¶</a></h2>
 <p>It is possible to build and use PoCL on Android. However, the setup requires a number of options to be set.
 To see an example project, have a look at the <a class="reference external" href="https://github.com/cpc/PoCL-R-Reference-Android-Java-Client">PoCL-R Reference Android Java Client</a> .
 This Reference app uses both the <a class="reference internal" href="proxy.html#proxy-label"><span class="std std-ref">proxy</span></a> and <a class="reference internal" href="remote.html#remote-label"><span class="std std-ref">remote</span></a> device in its example apps. It also builds a custom version of <a class="reference external" href="http://jocl.org/">JOCL</a> so
@@ -834,7 +851,7 @@ useful to set a breakpoint on exit: “b NtTerminateProcess”</p>
         <li class="right" >
           <a href="index.html" title="Welcome to Portable Computing Language (PoCL)’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>

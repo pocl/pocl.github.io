@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OpenCL conformance &#8212; Portable Computing Language (PoCL) 7.1 documentation</title>
+    <title>OpenCL conformance &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script src="_static/documentation_options.js?v=a9520c2f"></script>
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="opencl_status.html" title="Supported OpenCL features"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" accesskey="U">Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">OpenCL conformance</a></li> 
       </ul>
@@ -71,8 +71,7 @@ some CTS tests will fail on such build.</p>
 <section id="supported-unsupported-optional-opencl-3-0-features">
 <h2>Supported &amp; Unsupported optional OpenCL 3.0 features<a class="headerlink" href="#supported-unsupported-optional-opencl-3-0-features" title="Link to this heading">¶</a></h2>
 <p>This list is only related to CPU devices (cpu &amp; cpu-minimal drivers).
-Other drivers (CUDA, TCE etc) only support OpenCL 1.2.
-Note that 3.0 support on CPU devices requires LLVM 14 or newer.</p>
+Other drivers (CUDA, TCE etc) only support OpenCL 1.2.</p>
 <p>Supported 3.0 features:</p>
 <blockquote>
 <div><ul class="simple">
@@ -127,19 +126,6 @@ instead of default creating from OpenCL C source.</p>
 <p>Additionally, there is a new cmake label, <code class="docutils literal notranslate"><span class="pre">conformance_30_only</span></code>
 to run tests which are only relevant to OpenCL 3.0.</p>
 </section>
-<section id="known-issues-related-to-cts">
-<span id="known-issues"></span><h2>Known issues related to CTS<a class="headerlink" href="#known-issues-related-to-cts" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>With LLVM 15 and 16, when running CTS with the offline compilation mode
-(= via SPIR-V), Clang + SPIR-V translator produce invalid
-SPIR-V for several tests. PoCL bugreport:
-<a class="reference external" href="https://github.com/pocl/pocl/issues/1232">https://github.com/pocl/pocl/issues/1232</a>
-Related Khronos issues:
-<a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2008">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2008</a>
-<a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2024">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2024</a>
-<a class="reference external" href="https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2025">https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/2025</a></p></li>
-</ul>
-</section>
 <section id="conformance-tests-results">
 <h2>Conformance tests results<a class="headerlink" href="#conformance-tests-results" title="Link to this heading">¶</a></h2>
 <p>PoCL has submitted for OpenCL conformance in December 2024, and has been
@@ -171,7 +157,6 @@ accepted as conformant product in January 2025. The submission is here:
 <li><a class="reference internal" href="#conformance-related-cmake-options">Conformance related CMake options</a></li>
 <li><a class="reference internal" href="#supported-unsupported-optional-opencl-3-0-features">Supported &amp; Unsupported optional OpenCL 3.0 features</a></li>
 <li><a class="reference internal" href="#how-to-run-the-opencl-3-0-conformance-test-suite">How to run the OpenCL 3.0 conformance test suite</a></li>
-<li><a class="reference internal" href="#known-issues-related-to-cts">Known issues related to CTS</a></li>
 <li><a class="reference internal" href="#conformance-tests-results">Conformance tests results</a></li>
 </ul>
 </li>
@@ -221,7 +206,7 @@ accepted as conformant product in January 2025. The submission is here:
         <li class="right" >
           <a href="opencl_status.html" title="Supported OpenCL features"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="features.html" >Supported OpenCL features, device drivers</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">OpenCL conformance</a></li> 
       </ul>
