@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Release Notes for PoCL 7.2 &#8212; Portable Computing Language (PoCL) 7.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=9eaa8645"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Release Notes for PoCL 7.1" href="notes_7_1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="notes_7_1.html" title="Release Notes for PoCL 7.1"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" accesskey="U">Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 7.2</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="release-notes-for-pocl-7-2">
+<h1>Release Notes for PoCL 7.2<a class="headerlink" href="#release-notes-for-pocl-7-2" title="Link to this heading">¶</a></h1>
+<section id="release-highlights">
+<h2>Release highlights<a class="headerlink" href="#release-highlights" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Conformance results were submitted for OpenCL 3.0 conformance with the
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_468">CPU x86-64 (AVX512)</a> ,
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_469">CPU RISC-V RV64GC</a> and
+<a class="reference external" href="https://www.khronos.org/conformance/adopters/conformant-products/opencl#submission_469">CPU RISC-V RVA22+RVV1.0</a>
+devices, using OpenCL-CTS tag v2026-03-25-00.
+Conformance testing via OpenCL-CTS passed with both OpenCL C
+and SPIR-V compilation modes, for all of these devices.</p></li>
+<li><p>Support for LLVM version 22</p></li>
+</ul>
+</section>
+<section id="cmake-changes">
+<h2>CMake changes<a class="headerlink" href="#cmake-changes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>PoCL now supports configuring LLVM via both llvm-config binary (<cite>-DWITH_LLVM_CONFIG=&lt;path&gt;</cite>),
+and LLVMConfig.cmake (<cite>-DLLVM_DIR=&lt;path&gt;</cite>). Support for cross-compiling was also improved,
+and requires using both these options, pointing to target &amp; host LLVMs.</p></li>
+<li><p><cite>LLVM_SPIRV</cite> CMake option was replaced by <cite>HOST_LLVM_SPIRV</cite></p></li>
+<li><p>Added <cite>POCL_DEBUG_LLVM_OPTS</cite> environment variable. This allows directly
+passing multiple LLVM options for debugging purposes.</p></li>
+</ul>
+</section>
+<section id="runtime-fixes-features">
+<h2>Runtime fixes &amp; features<a class="headerlink" href="#runtime-fixes-features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>OpenCL-CTS updated to upstream tag v2026-03-25-00 and fixed related bugs:</p>
+<ul>
+<li><p>clCreateContext: return error on invalid <cite>CL_CONTEXT_INTEROP_USER_SYNC</cite> flag</p></li>
+<li><p>clSetKernelArg: for buffer argument, accept arg_value NULL or pointer to NULL</p></li>
+<li><p>clSetKernelExecInfo: fix out-of-bounds read of the USM indirect pointer list.</p></li>
+<li><p>clCreateContextFromType: return error on unknown values of device_type bitfield</p></li>
+<li><p>clGetDeviceIDs: return error on unknown values of device_type bitfield</p></li>
+<li><p>clSetKernelArgSVMPointer: return <cite>CL_INVALID_ARG_INDEX</cite> for some error conditions</p></li>
+<li><p>clEnqueueNDRange: accept <cite>local_size == NULL</cite> if required-wg-size is nonzero</p></li>
+<li><p>clCreateProgramWithIL: return <cite>CL_INVALID_OPERATION</cite> if no devices support SPIR-V</p></li>
+</ul>
+</li>
+<li><p>Fixed an out-of-bounds read in <cite>clSetKernelExecInfo</cite> when registering
+indirect USM pointers (<cite>CL_KERNEL_EXEC_INFO_USM_PTRS_INTEL</cite>): the size of
+the pointer list was passed on in bytes where a pointer count was expected,
+causing the runtime to read past the end of the user-provided list.</p></li>
+<li><p><cite>clGetKernelArgInfo(CL_KERNEL_ARG_NAME)</cite> now returns the source
+argument names for SPIR/SPIR-V binaries on the CPU driver (previously
+returned <cite>CL_KERNEL_ARG_INFO_NOT_AVAILABLE</cite> even when the binary
+contained the names). The <cite>llvm-spirv</cite> translator preserves SPIR-V
+<cite>OpName</cite> decorations on <cite>llvm::Argument`s rather than as
+`!kernel_arg_name</cite> metadata, and PoCL now reads them from there.</p></li>
+</ul>
+</section>
+<section id="driver-specific-features">
+<h2>Driver-specific features<a class="headerlink" href="#driver-specific-features" title="Link to this heading">¶</a></h2>
+<section id="remote-driver">
+<h3>Remote driver<a class="headerlink" href="#remote-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed various clLinkProgram issues in the remote driver.</p></li>
+<li><p>Fixed remote driver spuriously reconnecting for no apparent reason.</p></li>
+<li><p>Added support for event tracing of network commands</p></li>
+</ul>
+</section>
+<section id="cuda-driver">
+<h3>CUDA driver<a class="headerlink" href="#cuda-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Implemented <cite>sub_group_{reduce,scan_exclusive,scan_inclusive}_*</cite> and
+<cite>sub_group_{all,any,broadcast}</cite>. (reduce is only available for PTX6.0+)</p></li>
+<li><p>Note that CUDA driver does not support LLVM 21, due to a bug
+in upstream Clang code. Users must use LLVM 18,19,20 or 22 with CUDA.
+For details see <a class="reference external" href="https://github.com/llvm/llvm-project/issues/154772">https://github.com/llvm/llvm-project/issues/154772</a></p></li>
+<li><p>Fixed pre-mangled subgroup intrinsic names</p></li>
+<li><p>Implemented support for additional parameters to clGetKernelSubgroupInfo():
+<cite>CL_KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE</cite>,
+<cite>CL_KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE</cite>,
+<cite>CL_KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT</cite></p></li>
+<li><p>Fixed <cite>printf</cite> to work correctly when using LLVM 19/20 (issue 2021)</p></li>
+</ul>
+</section>
+<section id="openasip-ttasim-driver">
+<h3>OpenASIP (ttasim) driver<a class="headerlink" href="#openasip-ttasim-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded the driver to use OpenASIP v2.2 which uses LLVM 21.</p></li>
+<li><p>Removed the big endian target support</p></li>
+</ul>
+</section>
+<section id="cpu-driver">
+<h3>CPU driver<a class="headerlink" href="#cpu-driver" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The atomic operations on floats (<cite>cl_ext_float_atomic</cite>) are now
+disabled when <cite>-DENABLE_CONFORMANCE=ON</cite>.
+When <cite>-DENABLE_CONFORMANCE=OFF</cite>, <cite>cl_ext_float_atomic</cite> is enabled.
+This is due to issues in OpenCL-CTS that prevent passing the testsuite
+when <cite>cl_ext_float_atomic</cite> is enabled.</p></li>
+<li><p>Implemented new extensions: <cite>cl_khr_extended_bit_ops</cite>, <cite>cl_khr_device_uuid</cite>,
+<cite>cl_khr_suggested_local_work_size</cite>, <cite>cl_khr_integer_dot_product</cite></p></li>
+<li><p>Improved support for FP16 math builtins. Not all of the math builtins
+are supported yet; approx 15 are still missing.</p></li>
+<li><p>When using SPIR-V input, extensions <cite>cl_khr_spirv_linkonce_odr</cite> and
+<cite>cl_khr_spirv_no_integer_wrap_decoration</cite> are now supported</p></li>
+<li><p>Fixed missing support of a few FP16 overloads
+of <cite>vload/vstore/convert_type</cite> builtins in SPIRV input</p></li>
+<li><p>Reported sizes for <cite>INTEL_SUB_GROUP_SIZES</cite> were reverted to earlier behavior,
+PoCL now only reports power-of-2 sizes.</p></li>
+<li><p>Implemented support for <cite>cl_khr_kernel_clock</cite> (requires Clang support for
+<cite>__builtin_readcyclecounter</cite> builtin function)</p></li>
+<li><p>Re-enabled support for <cite>__opencl_c_program_scope_global_variables</cite>. This had
+a problem with SPIR-V input when using certain versions of <cite>llvm-spirv</cite>
+translator, however this has now been fixed in the translator.</p></li>
+<li><p>Mac OS X: statically-linked LLVM symbols are now hidden also when using the CMake-package setup</p></li>
+<li><p>Fixed kernel-side sub-group queries for non-divisible work-group sizes</p></li>
+<li><p>Honor <cite>intel_reqd_sub_group_size</cite> attribute in clGetKernelSubGroupInfo()</p></li>
+<li><p><cite>SIGFPE</cite> handler is now fixed to enable only on x86-64, not all x86</p></li>
+</ul>
+</section>
+</section>
+<section id="deprecation-feature-removal-notices">
+<h2>Deprecation/feature removal notices<a class="headerlink" href="#deprecation-feature-removal-notices" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Support for LLVM version 17 was removed, versions 18 to 22 are supported</p></li>
+</ul>
+</section>
+<section id="experimental-and-work-in-progress">
+<h2>Experimental and work-in-progress<a class="headerlink" href="#experimental-and-work-in-progress" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added a work-in-progress MLIR-based OpenCL C kernel compilation flow for CPUs.
+The flow supports both Polygeist and ClangIR front-ends.
+Support for basic features such as local memory and some built-ins is included,
+but the majority of built-in functions or barriers are not yet supported.
+Contributions are welcome to increase the test coverage.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Release Notes for PoCL 7.2</a><ul>
+<li><a class="reference internal" href="#release-highlights">Release highlights</a></li>
+<li><a class="reference internal" href="#cmake-changes">CMake changes</a></li>
+<li><a class="reference internal" href="#runtime-fixes-features">Runtime fixes &amp; features</a></li>
+<li><a class="reference internal" href="#driver-specific-features">Driver-specific features</a><ul>
+<li><a class="reference internal" href="#remote-driver">Remote driver</a></li>
+<li><a class="reference internal" href="#cuda-driver">CUDA driver</a></li>
+<li><a class="reference internal" href="#openasip-ttasim-driver">OpenASIP (ttasim) driver</a></li>
+<li><a class="reference internal" href="#cpu-driver">CPU driver</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deprecation-feature-removal-notices">Deprecation/feature removal notices</a></li>
+<li><a class="reference internal" href="#experimental-and-work-in-progress">Experimental and work-in-progress</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="notes_7_1.html"
+                          title="previous chapter">Release Notes for PoCL 7.1</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/notes_7_2.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="notes_7_1.html" title="Release Notes for PoCL 7.1"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Portable Computing Language (PoCL) 7.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="release_notes.html" >Release Notes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Release Notes for PoCL 7.2</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2010-2025 PoCL developers.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
